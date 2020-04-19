@@ -31,7 +31,10 @@ const processIntellisenseErrors = (output: string, doc: vscode.TextDocument, dia
             const lineNo = parseInt(split[0]) - 1;
             const charNo = parseInt(split[1]);
 
-            const fullErr = errGroup.join(`\n`);
+            /// strip away filepath and line info
+            errGroup[0] = errGroup[0].substr(errGroup[0].indexOf(errLine) + errLine.length + 2);
+            const fullErr= errGroup.join(`\n`);
+
             const diagnostic: vscode.Diagnostic =
                 {
                     severity: vscode.DiagnosticSeverity.Error,
@@ -73,7 +76,10 @@ const execIntellisense = (doc: vscode.TextDocument, diagCol: vscode.DiagnosticCo
 
         const additionalArgs: string[] = config.intellisense.additionalCommandLineArguments.trim().split(/\s+/);
 
-        const args = [`-s`].concat(additionalArgs).concat(tmpFilePath);
+        /// to include the current directory of the file as a search path
+        const includeArg = `--include=${path.dirname(doc.uri.fsPath)}`;
+
+        const args = [`-s`].concat(additionalArgs).concat(includeArg).concat(tmpFilePath);
 
         const s = cp.spawn(binName, args, { cwd: tmpPath });
 

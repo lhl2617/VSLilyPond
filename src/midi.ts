@@ -54,7 +54,8 @@ const loadMIDI = () => {
     }
 };
 
-const pollMIDIStatus = () => {
+
+const getPlayTimeStamp = (durationMS: number, positionMS: number): string => {
     const msToMMSS = (ms: number) => {
         const seconds = Math.round(ms / 1000);
         const mm = Math.round(seconds / 60).toString();
@@ -63,18 +64,22 @@ const pollMIDIStatus = () => {
         return `${mm}:${ss}`;
     };
 
-    const duration = MIDIState.player.durationMS();
-    const position = MIDIState.player.positionMS();
+    const durationMMSS = msToMMSS(durationMS);
+    const positionMMSS = msToMMSS(positionMS);
+    return `${positionMMSS}\/${durationMMSS}`;
+};
 
+
+const pollMIDIStatus = () => {
+    const durationMS = MIDIState.player.durationMS();
+    const positionMS = MIDIState.player.positionMS();
     /// need to be called with a 500 ms timeout otherwise it will fail!
     /// this is because position gets set to 0 when the midi finishes playing.
-    if (position === 0 && (MIDIState.player && MIDIState.playing || MIDIState.paused)) {
+    if (positionMS === 0 && (MIDIState.player && MIDIState.playing || MIDIState.paused)) {
         stopMIDI();
     }
     else {
-        const durationMMSS = msToMMSS(duration);
-        const positionMMSS = msToMMSS(position);
-        vscode.window.setStatusBarMessage(`Playing \`${MIDIState.currMidiFilePath}\`: ${positionMMSS}\/${durationMMSS}`);
+        vscode.window.setStatusBarMessage(`Playing \`${MIDIState.currMidiFilePath}\`: ${getPlayTimeStamp(durationMS, positionMS)}`);
         timeout = setTimeout(pollMIDIStatus, 100);
     }
 };
@@ -126,7 +131,10 @@ export const pauseMIDI = () => {
             MIDIState.player.pause();
             MIDIState.paused = true;
             MIDIState.playing = false;
-            vscode.window.setStatusBarMessage(`Paused MIDI: ${MIDIState.currMidiFilePath}`);
+
+            const durationMS = MIDIState.player.durationMS();
+            const positionMS = MIDIState.player.positionMS();
+            vscode.window.setStatusBarMessage(`Paused MIDI: \`${MIDIState.currMidiFilePath}\`: ${getPlayTimeStamp(durationMS, positionMS)}`);
             if (timeout) {
                 clearTimeout(timeout);
             }

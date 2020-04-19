@@ -5,12 +5,9 @@ import { logger, LogLevel, stripFileExtension } from './util';
 const JZZ = require('jzz');
 require('jzz-midi-smf')(JZZ);
 
-console.log(JZZ().info());
-
 let timeout: NodeJS.Timer | undefined = undefined;
 let statusBarItems: Record<string, vscode.StatusBarItem> = {};
 
-const midiout = JZZ().openMidiOut();
 
 type MIDIStateType = {
     player: any | undefined,
@@ -34,7 +31,6 @@ const getMidiFilePathFromActiveTextEditor = () => {
         throw new Error(`No active text editor open`);
     }
     const midiFileName = stripFileExtension(activeTextEditor.document.uri.fsPath) + `.mid`;
-    console.log(midiFileName);
     return midiFileName;
 };
 
@@ -47,11 +43,14 @@ const loadMIDI = () => {
         const smf = JZZ.MIDI.SMF(data);
         MIDIState.currMidiFilePath = midiFileName;
         MIDIState.player = smf.player();
+
+        const config = vscode.workspace.getConfiguration(`vslilypond`);
+        const midiout = (config.midiPlayback.output.length) ? JZZ().openMidiOut(config.midiPlayback.output) : JZZ().openMidiOut();
         MIDIState.player.connect(midiout);
     }
     catch (err) {
         logger(err.message, LogLevel.error, true);
-        throw new Error(`Cannot find MIDI file to play - make sure you are outputting a MIDI file and you have an active \`lilypond\` text document.`)
+        throw new Error(`Cannot find MIDI file to play - make sure you are outputting a MIDI file and you have an active \`lilypond\` text document.`);
     }
 };
 
@@ -208,4 +207,15 @@ const updateMIDIStatusBarItem = () => {
         statusBarItems.pause.hide();
         statusBarItems.stop.hide();
     }
+};
+
+/// set output midi device
+export const setOutputMIDIDevice = () => {
+    const outputs: string[] = JZZ().info().outputs.map((x: any) => x.name);
+    vscode.window.showQuickPick(outputs).then((val: string | undefined) => {
+        if (val) {
+            const config = vscode.workspace.getConfiguration(`vslilypond`);
+            config.update(`midiPlayback.output`, val, vscode.ConfigurationTarget.Global);
+        }
+    });
 };

@@ -64,6 +64,10 @@
 				"title": "VSLilyPond: MIDI Playback: Reset"
 			},
 			{
+				"command": "extension.setOutputMIDIDevice",
+				"title": "VSLilyPond: MIDI Playback: Set output device"
+			},
+			{
 				"command": "extension.compile",
 				"title": "VSLilyPond: Compile"
 			}
@@ -74,7 +78,7 @@
 				"vslilypond.intellisense.enabled": {
 					"type": "boolean",
 					"default": true,
-					"description": "Displays errors with red underlines as you type. Disable to improve performance."
+					"description": "Displays errors with red underlines as you type. Disable to improve performance. Reload required."
 				},
 				"vslilypond.intellisense.additionalCommandLineArguments": {
 					"type": "string",
@@ -99,12 +103,17 @@
 				"vslilypond.compilation.compileOnSave": {
 					"type": "boolean",
 					"default": true,
-					"description": "Compiles file upon saving. Disable to improve performance."
+					"description": "Compiles file upon saving. Disable to improve performance. Reload required."
 				},
 				"vslilypond.compilation.additionalCommandLineArguments": {
 					"type": "string",
 					"default": "",
 					"description": "Additional command line arguments supplied to `lilypond` upon compilation. Note that `-s` (silent mode) is predefined. If you use intellisense, please also supply necessary arguments to the corresponding additional command line arguments."
+				},
+				"vslilypond.midiPlayback.output": {
+					"type": "string",
+					"default": "",
+					"description": "MIDI Device used for output. You can use the command `VSLilyPond: MIDI Playback: Set output device` to select a device from a list."
 				}
 			}
 		}

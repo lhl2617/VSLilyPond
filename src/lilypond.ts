@@ -6,6 +6,8 @@ import { binName, langId } from './consts';
 /// compile
 export const compile = (mute: boolean = false, textDocument: vscode.TextDocument | undefined = undefined, timeout: number = 10000): void => {
     try {
+        const config = vscode.workspace.getConfiguration(`vslilypond`);
+
         const workspacePath = getWorkspacePath();
         if (!workspacePath) { throw new Error(`Cannot get workspace folder path`); }
 
@@ -17,9 +19,10 @@ export const compile = (mute: boolean = false, textDocument: vscode.TextDocument
 
         const filePath = activeTextDocument.uri.fsPath;
 
-        // todo:- preferences
+        const formatArg = `--${config.compilation.outputFormat}`;
+        const additionalArgs: string[] = config.compilation.additionalCommandLineArguments.trim().split(/\s+/);
 
-        const args = [`-s`, `--pdf`, filePath];
+        const args = [`-s`, formatArg].concat(additionalArgs).concat(filePath);
 
         vscode.window.setStatusBarMessage(`Compiling...`);
         const s = cp.spawn(binName, args, { cwd: workspacePath, timeout: timeout });

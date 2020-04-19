@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import { lilypondExists } from './util';
 import { compile } from './lilypond';
 import { subscribeIntellisense } from './intellisense';
-import { playMIDI, stopMIDI, pauseMIDI, resumeMIDI, resetMIDI, initMIDIStatusBarItems } from './midi';
+import { playMIDI, stopMIDI, pauseMIDI, resumeMIDI, resetMIDI, initMIDIStatusBarItems, setOutputMIDIDevice } from './midi';
 
 export function activate(context: vscode.ExtensionContext) {
 	/// need to make sure `lilypond` exists in PATH variable, otherwise throw an error and exit
@@ -11,13 +11,41 @@ export function activate(context: vscode.ExtensionContext) {
 		return;
 	}
 
+	const config = vscode.workspace.getConfiguration(`vslilypond`);
+
+
+
+
+	/// ===== ===== ===== COMPILATION ===== ===== =====
 	/// compile to pdf
 	const compileCmd = vscode.commands.registerCommand('extension.compile', () => {
 		compile();
 	});
 	context.subscriptions.push(compileCmd);
 
+	/// compile upon saving
+	if (config.compilation.compileOnSave) {
+		vscode.workspace.onDidSaveTextDocument((textDoc: vscode.TextDocument) => {
+			compile(true, textDoc, 1000);
+		});
+	}
 
+
+
+
+
+	/// ===== ===== ===== INTELLISENSE ===== ===== =====
+	/// intellisense
+	if (config.intellisense.enabled) {
+		const diagnosticCollection = vscode.languages.createDiagnosticCollection();
+		subscribeIntellisense(context, diagnosticCollection);
+	}
+
+
+
+
+
+	/// ===== ===== ===== MIDI PLAYBACK ===== ===== =====
 	/// play midi
 	const playMidiCmd = vscode.commands.registerCommand('extension.playMIDI', () => {
 		playMIDI();
@@ -48,20 +76,17 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 	context.subscriptions.push(resetMidiCmd);
 
-	/// compile upon saving
-	vscode.workspace.onDidSaveTextDocument((textDoc: vscode.TextDocument) => {
-		compile(true, textDoc, 1000);
+	const setOutputMidiDeviceCmd = vscode.commands.registerCommand('extension.setOutputMIDIDevice', () => {
+		setOutputMIDIDevice();
 	});
+	context.subscriptions.push(setOutputMidiDeviceCmd);
 
-	/// intellisense
-	const diagnosticCollection = vscode.languages.createDiagnosticCollection();
-	subscribeIntellisense(context, diagnosticCollection);
-
-
-	console.log(vscode.workspace.getConfiguration(`myExtension`));
 
 	/// status bar items for MIDI playback
 	initMIDIStatusBarItems();
+
+
+
 
 }
 

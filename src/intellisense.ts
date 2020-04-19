@@ -64,12 +64,16 @@ const execIntellisense = (doc: vscode.TextDocument, diagCol: vscode.DiagnosticCo
 
     const tmpFilePath = path.join(tmpPath, 'intellisenseTmp.txt');
 
+    const config = vscode.workspace.getConfiguration(`vslilypond`);
+
     fs.writeFile(tmpFilePath, doc.getText(), (err) => {
         if (err) {
             logger(err.message, LogLevel.error, true);
         }
 
-        const args = [`-s`, tmpFilePath];
+        const additionalArgs: string[] = config.intellisense.additionalCommandLineArguments.trim().split(/\s+/);
+
+        const args = [`-s`].concat(additionalArgs).concat(tmpFilePath);
 
         const s = cp.spawn(binName, args, { cwd: tmpPath });
 

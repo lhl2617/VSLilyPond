@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import { lilypondExists } from './util';
 import { compile } from './lilypond';
 import { subscribeIntellisense } from './intellisense';
-import { playMIDI } from './midi';
+import { playMIDI, stopMIDI, pauseMIDI } from './midi';
 
 export function activate(context: vscode.ExtensionContext) {
 	/// need to make sure `lilypond` exists in PATH variable, otherwise throw an error and exit
@@ -26,9 +26,15 @@ export function activate(context: vscode.ExtensionContext) {
 
 	/// stop midi 
 	const stopMidiCmd = vscode.commands.registerCommand('extension.stopMIDI', () => {
-		vscode.window.showInformationMessage('stop midi!');
+		stopMIDI();
 	});
 	context.subscriptions.push(stopMidiCmd);
+
+	/// pause midi 
+	const pauseMidiCmd = vscode.commands.registerCommand('extension.pauseMIDI', () => {
+		pauseMIDI();
+	});
+	context.subscriptions.push(pauseMidiCmd);
 
 
 	/// compile upon saving

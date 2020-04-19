@@ -48,6 +48,10 @@
 				"title": "LilyPond++: Stop MIDI"
 			},
 			{
+				"command": "extension.pauseMIDI",
+				"title": "LilyPond++: Pause MIDI"
+			},
+			{
 				"command": "extension.compile",
 				"title": "LilyPond++: Compile"
 			}
@@ -77,6 +81,7 @@
 	},
 	"dependencies": {
 		"jazz-midi-electron": "^1.1.4",
+		"jzz-midi-smf": "^1.3.3",
 		"lodash": "^4.17.15"
 	}
 }

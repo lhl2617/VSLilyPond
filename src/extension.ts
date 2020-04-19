@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import { lilypondExists } from './util';
 import { compile } from './lilypond';
 import { subscribeIntellisense } from './intellisense';
-import { playMIDI, stopMIDI, pauseMIDI } from './midi';
+import { playMIDI, stopMIDI, pauseMIDI, resumeMIDI, resetMIDI } from './midi';
 
 export function activate(context: vscode.ExtensionContext) {
 	/// need to make sure `lilypond` exists in PATH variable, otherwise throw an error and exit
@@ -36,11 +36,22 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 	context.subscriptions.push(pauseMidiCmd);
 
+	/// resume midi 
+	const resumeMidiCmd = vscode.commands.registerCommand('extension.resumeMIDI', () => {
+		resumeMIDI();
+	});
+	context.subscriptions.push(resumeMidiCmd);
+
+	/// reset midi 
+	const resetMidiCmd = vscode.commands.registerCommand('extension.resetMIDI', () => {
+		resetMIDI();
+	});
+	context.subscriptions.push(resetMidiCmd);
 
 	/// compile upon saving
-    vscode.workspace.onDidSaveTextDocument((textDoc: vscode.TextDocument) => {
-        compile(true, textDoc, 1000);
-    });
+	vscode.workspace.onDidSaveTextDocument((textDoc: vscode.TextDocument) => {
+		compile(true, textDoc, 1000);
+	});
 
 	/// intellisense
 	const diagnosticCollection = vscode.languages.createDiagnosticCollection();

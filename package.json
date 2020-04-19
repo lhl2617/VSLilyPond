@@ -52,6 +52,14 @@
 				"title": "LilyPond++: Pause MIDI"
 			},
 			{
+				"command": "extension.resumeMIDI",
+				"title": "LilyPond++: Resume MIDI"
+			},
+			{
+				"command": "extension.resetMIDI",
+				"title": "LilyPond++: Reset MIDI"
+			},
+			{
 				"command": "extension.compile",
 				"title": "LilyPond++: Compile"
 			}

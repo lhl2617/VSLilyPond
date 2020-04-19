@@ -4,6 +4,8 @@ import { logger, LogLevel, stripFileExtension } from './util';
 const JZZ = require('jzz');
 require('jzz-midi-smf')(JZZ);
 
+let timeout: NodeJS.Timer | undefined = undefined;
+
 const midiout = JZZ().openMidiOut();
 
 type MIDIStateType = {
@@ -39,36 +41,40 @@ const loadMIDI = () => {
 
         const data = fs.readFileSync(midiFileName, `binary`);
         const smf = JZZ.MIDI.SMF(data);
-        MIDIState.player = smf.player();          
-    } 
+        MIDIState.currMidiFilePath = midiFileName;
+        MIDIState.player = smf.player();
+        MIDIState.player.connect(midiout);
+    }
     catch (err) {
         logger(err.message, LogLevel.error, false);
     }
 };
 
+const pollMIDIStatus = () => {
+    const duration = MIDIState.player.durationMS();
+    const position = MIDIState.player.positionMS();
+
+    const percentage = duration > 0 ? ((position / duration) * 100).toFixed(0) : 0;
+
+    /// need to be called with a 500 ms timeout otherwise it will fail!
+    if (position === 0 && (MIDIState.player && MIDIState.playing || MIDIState.paused)) {
+        stopMIDI();
+    }
+    else {
+        vscode.window.setStatusBarMessage(`Playing \`${MIDIState.currMidiFilePath}\`: ${percentage}\%`);
+        timeout = setTimeout(pollMIDIStatus, 100);
+    }
+};
+
 export const playMIDI = () => {
     try {
-        if (!MIDIState.player
-            || MIDIState.currMidiFilePath && MIDIState.currMidiFilePath !== getMidiFilePathFromActiveTextEditor()) {
-            loadMIDI();
-        }
+        resetMIDI();
+        loadMIDI();
 
         if (MIDIState.player) {
-            if (MIDIState.playing) {
-                // stop it first
-                stopMIDI();
-            }
-    
-            if (MIDIState.paused) {
-                // resume if paused
-                MIDIState.player.resume();
-                MIDIState.paused = false;
-            }
-            else {
-                MIDIState.player.play();
-            }
-            MIDIState.playing = true;   
-            vscode.window.setStatusBarMessage(`Playing ${MIDIState.currMidiFilePath}`);     
+            MIDIState.player.play();
+            MIDIState.playing = true;
+            timeout = setTimeout(pollMIDIStatus, 500);
         }
         else {
             throw new Error(`Unable to load MIDI player`);
@@ -85,7 +91,10 @@ export const stopMIDI = () => {
             MIDIState.player.stop();
             MIDIState.playing = false;
             MIDIState.paused = false;
-            vscode.window.setStatusBarMessage(``);   
+            vscode.window.setStatusBarMessage(``);
+            if (timeout) {
+                clearTimeout(timeout);
+            }
         }
         else {
             throw new Error(`No active MIDI file to stop`);
@@ -101,7 +110,11 @@ export const pauseMIDI = () => {
         if (MIDIState.player && MIDIState.playing && !MIDIState.paused) {
             MIDIState.player.pause();
             MIDIState.paused = true;
-            vscode.window.setStatusBarMessage(``);   
+            MIDIState.playing = false;
+            vscode.window.setStatusBarMessage(``);
+            if (timeout) {
+                clearTimeout(timeout);
+            }
         }
         else {
             throw new Error(`No active MIDI file to pause`);
@@ -112,7 +125,29 @@ export const pauseMIDI = () => {
     }
 };
 
+export const resumeMIDI = () => {
+    try {
+        if (MIDIState.player && MIDIState.paused && !MIDIState.playing) {
+            MIDIState.player.resume();
+            MIDIState.paused = false;
+            MIDIState.playing = true;
+            timeout = setTimeout(pollMIDIStatus, 500);
+        }
+        else {
+            throw new Error(`No paused MIDI file to resume`);
+        }
+    }
+    catch (err) {
+        logger(err.message, LogLevel.error, false);
+    }
+}
+
 export const resetMIDI = () => {
-    stopMIDI();
+    if (MIDIState.player && MIDIState.playing || MIDIState.paused) {
+        stopMIDI();
+    }
+    if (timeout) {
+        clearTimeout(timeout);
+    }
     MIDIState = initialMIDIState;
 };

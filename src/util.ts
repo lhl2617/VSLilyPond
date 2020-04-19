@@ -42,7 +42,6 @@ export const lilypondExists = (): boolean => {
         cp.execSync(`${binName} -v`);
     }
     catch (err) {
-        console.error(err);
         return false; // does not exist
     }
     return true;

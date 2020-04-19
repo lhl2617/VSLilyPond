@@ -1,0 +1,82 @@
+{
+	"name": "lilypondpp",
+	"displayName": "LilyPondPP",
+	"description": "LilyPond syntax highlighting and helper features",
+	"version": "0.0.1",
+	"engines": {
+		"vscode": "^1.44.0"
+	},
+	"categories": [
+		"Languages"
+	],
+	"activationEvents": [
+		"onCommand:extension.compile",
+		"onCommand:extension.playMIDI",
+		"onCommand:extension.stopMIDI",
+		"onLanguage:lilypond"
+	],
+	"main": "./out/extension.js",
+	"contributes": {
+		"languages": [
+			{
+				"id": "lilypond",
+				"aliases": [
+					"LilyPond",
+					"lilypond"
+				],
+				"extensions": [
+					".ily",
+					".ly"
+				],
+				"configuration": "./language-configuration.json"
+			}
+		],
+		"grammars": [
+			{
+				"language": "lilypond",
+				"scopeName": "source.lilypond",
+				"path": "./syntaxes/lilypond.tmLanguage"
+			}
+		],
+		"commands": [
+			{
+				"command": "extension.playMIDI",
+				"title": "LilyPond++: Play MIDI"
+			},
+			{
+				"command": "extension.stopMIDI",
+				"title": "LilyPond++: Stop MIDI"
+			},
+			{
+				"command": "extension.compile",
+				"title": "LilyPond++: Compile"
+			}
+		]
+	},
+	"scripts": {
+		"vscode:prepublish": "npm run compile",
+		"compile": "tsc -p ./",
+		"lint": "eslint src --ext ts",
+		"watch": "tsc -watch -p ./",
+		"pretest": "npm run compile && npm run lint",
+		"test": "node ./out/test/runTest.js"
+	},
+	"devDependencies": {
+		"@types/glob": "^7.1.1",
+		"@types/mocha": "^7.0.1",
+		"@types/node": "^12.11.7",
+		"@types/vscode": "^1.44.0",
+		"eslint": "^6.8.0",
+		"@typescript-eslint/parser": "^2.18.0",
+		"@typescript-eslint/eslint-plugin": "^2.18.0",
+		"@types/lodash": "^4.14.150",
+		"glob": "^7.1.6",
+		"mocha": "^7.0.1",
+		"typescript": "^3.7.5",
+		"vscode-test": "^1.3.0"
+	},
+	"dependencies": {
+		"jazz-midi-electron": "^1.1.4",
+		"lodash": "^4.17.15"
+	}
+}

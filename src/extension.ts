@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import { lilypondExists } from './util';
 import { compile } from './lilypond';
 import { subscribeIntellisense } from './intellisense';
-import { playMIDI, stopMIDI, pauseMIDI, resumeMIDI, resetMIDI } from './midi';
+import { playMIDI, stopMIDI, pauseMIDI, resumeMIDI, resetMIDI, initMIDIStatusBarItems } from './midi';
 
 export function activate(context: vscode.ExtensionContext) {
 	/// need to make sure `lilypond` exists in PATH variable, otherwise throw an error and exit
@@ -56,6 +56,12 @@ export function activate(context: vscode.ExtensionContext) {
 	/// intellisense
 	const diagnosticCollection = vscode.languages.createDiagnosticCollection();
 	subscribeIntellisense(context, diagnosticCollection);
+
+
+	console.log(vscode.workspace.getConfiguration(`myExtension`));
+
+	/// status bar items for MIDI playback
+	initMIDIStatusBarItems();
 
 }
 

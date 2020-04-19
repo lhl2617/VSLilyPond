@@ -1,6 +1,7 @@
 {
-	"name": "lilypondpp",
-	"displayName": "LilyPondPP",
+	"name": "VSLilyPond",
+	"displayName": "VSLilyPond",
+	"publisher": "lhl2617",
 	"description": "LilyPond syntax highlighting and helper features",
 	"version": "0.0.1",
 	"engines": {
@@ -13,6 +14,9 @@
 		"onCommand:extension.compile",
 		"onCommand:extension.playMIDI",
 		"onCommand:extension.stopMIDI",
+		"onCommand:extension.pauseMIDI",
+		"onCommand:extension.resumeMIDI",
+		"onCommand:extension.resetMIDI",
 		"onLanguage:lilypond"
 	],
 	"main": "./out/extension.js",
@@ -41,29 +45,69 @@
 		"commands": [
 			{
 				"command": "extension.playMIDI",
-				"title": "LilyPond++: Play MIDI"
+				"title": "VSLilyPond: MIDI Playback: Play (from start)"
 			},
 			{
 				"command": "extension.stopMIDI",
-				"title": "LilyPond++: Stop MIDI"
+				"title": "VSLilyPond: MIDI Playback: Stop"
 			},
 			{
 				"command": "extension.pauseMIDI",
-				"title": "LilyPond++: Pause MIDI"
+				"title": "VSLilyPond: MIDI Playback: Pause"
 			},
 			{
 				"command": "extension.resumeMIDI",
-				"title": "LilyPond++: Resume MIDI"
+				"title": "VSLilyPond: MIDI Playback: Resume"
 			},
 			{
 				"command": "extension.resetMIDI",
-				"title": "LilyPond++: Reset MIDI"
+				"title": "VSLilyPond: MIDI Playback: Reset"
 			},
 			{
 				"command": "extension.compile",
-				"title": "LilyPond++: Compile"
+				"title": "VSLilyPond: Compile"
 			}
-		]
+		],
+		"configuration": {
+			"title": "VSLilyPond",
+			"properties": {
+				"vslilypond.intellisense.enabled": {
+					"type": "boolean",
+					"default": true,
+					"description": "Displays errors with red underlines as you type. Disable to improve performance."
+				},
+				"vslilypond.intellisense.additionalCommandLineArguments": {
+					"type": "string",
+					"default": "",
+					"description": "Additional command line arguments supplied to `lilypond` upon compiling for intellisense. Note that `-s` (silent mode) is predefined. If required, please also supply necessary arguments compilation additional command line arguments."
+				},
+				"vslilypond.compilation.outputFormat": {
+					"type": "string",
+					"default": "pdf",
+					"enum": [
+						"pdf",
+						"png",
+						"ps"
+					],
+					"enumDescriptions": [
+						"Generate PDF files",
+						"Generate PNG files",
+						"Generate PostScript files"
+					],
+					"description": "Output format."
+				},
+				"vslilypond.compilation.compileOnSave": {
+					"type": "boolean",
+					"default": true,
+					"description": "Compiles file upon saving. Disable to improve performance."
+				},
+				"vslilypond.compilation.additionalCommandLineArguments": {
+					"type": "string",
+					"default": "",
+					"description": "Additional command line arguments supplied to `lilypond` upon compilation. Note that `-s` (silent mode) is predefined. If you use intellisense, please also supply necessary arguments to the corresponding additional command line arguments."
+				}
+			}
+		}
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
@@ -88,7 +132,6 @@
 		"vscode-test": "^1.3.0"
 	},
 	"dependencies": {
-		"jazz-midi-electron": "^1.1.4",
 		"jzz-midi-smf": "^1.3.3",
 		"lodash": "^4.17.15"
 	}

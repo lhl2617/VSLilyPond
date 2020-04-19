@@ -1,10 +1,14 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import { logger, LogLevel, stripFileExtension } from './util';
+
 const JZZ = require('jzz');
 require('jzz-midi-smf')(JZZ);
 
+console.log(JZZ().info());
+
 let timeout: NodeJS.Timer | undefined = undefined;
+let statusBarItems: Record<string, vscode.StatusBarItem> = {};
 
 const midiout = JZZ().openMidiOut();
 
@@ -46,22 +50,32 @@ const loadMIDI = () => {
         MIDIState.player.connect(midiout);
     }
     catch (err) {
-        logger(err.message, LogLevel.error, false);
+        logger(err.message, LogLevel.error, true);
+        throw new Error(`Cannot find MIDI file to play - make sure you are outputting a MIDI file and you have an active \`lilypond\` text document.`)
     }
 };
 
 const pollMIDIStatus = () => {
+    const msToMMSS = (ms: number) => {
+        const seconds = Math.round(ms / 1000);
+        const mm = Math.round(seconds / 60).toString();
+        const ss = Math.round(seconds % 60).toString().padStart(2, `0`);
+
+        return `${mm}:${ss}`;
+    };
+
     const duration = MIDIState.player.durationMS();
     const position = MIDIState.player.positionMS();
 
-    const percentage = duration > 0 ? ((position / duration) * 100).toFixed(0) : 0;
-
     /// need to be called with a 500 ms timeout otherwise it will fail!
+    /// this is because position gets set to 0 when the midi finishes playing.
     if (position === 0 && (MIDIState.player && MIDIState.playing || MIDIState.paused)) {
         stopMIDI();
     }
     else {
-        vscode.window.setStatusBarMessage(`Playing \`${MIDIState.currMidiFilePath}\`: ${percentage}\%`);
+        const durationMMSS = msToMMSS(duration);
+        const positionMMSS = msToMMSS(position);
+        vscode.window.setStatusBarMessage(`Playing \`${MIDIState.currMidiFilePath}\`: ${positionMMSS}\/${durationMMSS}`);
         timeout = setTimeout(pollMIDIStatus, 100);
     }
 };
@@ -74,7 +88,7 @@ export const playMIDI = () => {
         if (MIDIState.player) {
             MIDIState.player.play();
             MIDIState.playing = true;
-            timeout = setTimeout(pollMIDIStatus, 500);
+            timeout = setTimeout(pollMIDIStatus, 100);
         }
         else {
             throw new Error(`Unable to load MIDI player`);
@@ -83,6 +97,7 @@ export const playMIDI = () => {
     catch (err) {
         logger(err.message, LogLevel.error, false);
     }
+    updateMIDIStatusBarItem();
 };
 
 export const stopMIDI = () => {
@@ -103,6 +118,7 @@ export const stopMIDI = () => {
     catch (err) {
         logger(err.message, LogLevel.error, false);
     }
+    updateMIDIStatusBarItem();
 };
 
 export const pauseMIDI = () => {
@@ -111,7 +127,7 @@ export const pauseMIDI = () => {
             MIDIState.player.pause();
             MIDIState.paused = true;
             MIDIState.playing = false;
-            vscode.window.setStatusBarMessage(``);
+            vscode.window.setStatusBarMessage(`Paused MIDI: ${MIDIState.currMidiFilePath}`);
             if (timeout) {
                 clearTimeout(timeout);
             }
@@ -123,6 +139,7 @@ export const pauseMIDI = () => {
     catch (err) {
         logger(err.message, LogLevel.error, false);
     }
+    updateMIDIStatusBarItem();
 };
 
 export const resumeMIDI = () => {
@@ -131,16 +148,17 @@ export const resumeMIDI = () => {
             MIDIState.player.resume();
             MIDIState.paused = false;
             MIDIState.playing = true;
-            timeout = setTimeout(pollMIDIStatus, 500);
+            timeout = setTimeout(pollMIDIStatus, 100);
         }
         else {
-            throw new Error(`No paused MIDI file to resume`);
+            playMIDI(); // play from beginning
         }
     }
     catch (err) {
         logger(err.message, LogLevel.error, false);
     }
-}
+    updateMIDIStatusBarItem();
+};
 
 export const resetMIDI = () => {
     if (MIDIState.player && MIDIState.playing || MIDIState.paused) {
@@ -150,4 +168,44 @@ export const resetMIDI = () => {
         clearTimeout(timeout);
     }
     MIDIState = initialMIDIState;
+    updateMIDIStatusBarItem();
+};
+
+export const initMIDIStatusBarItems = () => {
+    {
+        let playBtn = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
+        playBtn.command = `extension.resumeMIDI`;
+        playBtn.text = `$(play) Play MIDI`;
+        playBtn.tooltip = `Play MIDI output file (Resumes if paused)`;
+        statusBarItems.play = playBtn;
+    }
+    {
+        let pauseBtn = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 99);
+        pauseBtn.command = `extension.pauseMIDI`;
+        pauseBtn.text = `$(debug-pause) Pause MIDI`;
+        pauseBtn.tooltip = `Pause MIDI playback`;
+        statusBarItems.pause = pauseBtn;
+    }
+    {
+        let stopBtn = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 98);
+        stopBtn.command = `extension.stopMIDI`;
+        stopBtn.text = `$(debug-stop) Stop MIDI`;
+        stopBtn.tooltip = `Stop MIDI playback`;
+        statusBarItems.stop = stopBtn;
+    }
+    updateMIDIStatusBarItem();
+};
+
+/// update status bar item for midi playback
+const updateMIDIStatusBarItem = () => {
+    if (MIDIState.playing) {
+        statusBarItems.play.hide();
+        statusBarItems.pause.show();
+        statusBarItems.stop.show();
+    }
+    else {
+        statusBarItems.play.show();
+        statusBarItems.pause.hide();
+        statusBarItems.stop.hide();
+    }
 };

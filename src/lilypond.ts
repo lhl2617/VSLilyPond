@@ -18,6 +18,7 @@ export const compile = (mute: boolean = false, textDocument: vscode.TextDocument
         const filePath = activeTextDocument.uri.fsPath;
 
         // todo:- preferences
+
         const args = [`-s`, `--pdf`, filePath];
 
         vscode.window.setStatusBarMessage(`Compiling...`);

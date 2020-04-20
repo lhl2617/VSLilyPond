@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import { lilypondExists } from './util';
 import { compile } from './lilypond';
 import { subscribeIntellisense } from './intellisense';
-import { playMIDI, stopMIDI, pauseMIDI, resumeMIDI, resetMIDI, initMIDIStatusBarItems, setOutputMIDIDevice } from './midi';
+import { MIDIOut, MIDIIn } from './midi';
 
 export function activate(context: vscode.ExtensionContext) {
 	/// need to make sure `lilypond` exists in PATH variable, otherwise throw an error and exit
@@ -48,46 +48,67 @@ export function activate(context: vscode.ExtensionContext) {
 	/// ===== ===== ===== MIDI PLAYBACK ===== ===== =====
 	/// play midi
 	const playMidiCmd = vscode.commands.registerCommand('extension.playMIDI', () => {
-		playMIDI();
+		MIDIOut.playMIDI();
 	});
 	context.subscriptions.push(playMidiCmd);
 
 	/// stop midi 
 	const stopMidiCmd = vscode.commands.registerCommand('extension.stopMIDI', () => {
-		stopMIDI();
+		MIDIOut.stopMIDI();
 	});
 	context.subscriptions.push(stopMidiCmd);
 
 	/// pause midi 
 	const pauseMidiCmd = vscode.commands.registerCommand('extension.pauseMIDI', () => {
-		pauseMIDI();
+		MIDIOut.pauseMIDI();
 	});
 	context.subscriptions.push(pauseMidiCmd);
 
 	/// resume midi 
 	const resumeMidiCmd = vscode.commands.registerCommand('extension.resumeMIDI', () => {
-		resumeMIDI();
+		MIDIOut.resumeMIDI();
 	});
 	context.subscriptions.push(resumeMidiCmd);
 
 	/// reset midi 
 	const resetMidiCmd = vscode.commands.registerCommand('extension.resetMIDI', () => {
-		resetMIDI();
+		MIDIOut.resetMIDI();
 	});
 	context.subscriptions.push(resetMidiCmd);
 
+	/// set midi output device
 	const setOutputMidiDeviceCmd = vscode.commands.registerCommand('extension.setOutputMIDIDevice', () => {
-		setOutputMIDIDevice();
+		MIDIOut.setOutputMIDIDevice();
 	});
 	context.subscriptions.push(setOutputMidiDeviceCmd);
 
+	/// status bar items for MIDI playback
+	MIDIOut.initMIDIStatusBarItems();
+
+
+
+	
+	/// ===== ===== ===== MIDI INPUT ===== ===== =====
+	/// start midi input
+	const startInputMidiCmd = vscode.commands.registerCommand('extension.startMIDIInput', () => {
+		MIDIIn.startMIDIInput();
+	});
+	context.subscriptions.push(startInputMidiCmd);
+
+	/// start midi input
+	const stopInputMidiCmd = vscode.commands.registerCommand('extension.stopMIDIInput', () => {
+		MIDIIn.stopMIDIInput();
+	});
+	context.subscriptions.push(stopInputMidiCmd);
+
+	/// set midi output device
+	const setInputMidiDeviceCmd = vscode.commands.registerCommand('extension.setInputMIDIDevice', () => {
+		MIDIIn.setInputMIDIDevice();
+	});
+	context.subscriptions.push(setInputMidiDeviceCmd);
 
 	/// status bar items for MIDI playback
-	initMIDIStatusBarItems();
-
-
-
-
+	MIDIIn.initMIDIStatusBarItems();
 }
 
 // this method is called when your extension is deactivated

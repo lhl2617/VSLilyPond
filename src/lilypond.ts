@@ -39,6 +39,9 @@ export const compile = (mute: boolean = false, textDocument: vscode.TextDocument
             if (code === 0) {
                 logger(`Compiled successfully`, LogLevel.info, mute);
             }
+            else {
+                logger(`Compilation failed`, LogLevel.error, mute);
+            }
             vscode.window.setStatusBarMessage(``);
         });
     }

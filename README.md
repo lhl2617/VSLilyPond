@@ -42,6 +42,10 @@ Contributions are welcome, please submit issues/pull requests in the GitHub repo
 
 ## Release Notes
 
+### 1.0.1
+
+Minor touch up, use Webpack to optimise.
+
 ### 1.0.0
 
 Initial release

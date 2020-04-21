@@ -1,7 +1,6 @@
 import * as vscode from 'vscode';
 import * as cp from 'child_process';
-import { binName, debugMode } from './consts';
-import * as path from 'path';
+import { binName } from './consts';
 import * as fs from 'fs';
 
 export enum LogLevel {

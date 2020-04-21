@@ -5,8 +5,6 @@ import { logger, LogLevel, stripFileExtension } from './util';
 const JZZ = require('jzz');
 require('jzz-midi-smf')(JZZ);
 
-console.log(JZZ().info());
-
 export namespace MIDIOut {
 
     let timeout: NodeJS.Timer | undefined = undefined;
@@ -242,7 +240,7 @@ export namespace MIDIIn {
         active: boolean
     };
 
-    type MIDIInputConfig = { accidentals: `sharp` | `flat`; relativeMode: boolean; chordMode: boolean };
+    type MIDIInputConfig = { accidentals: `sharps` | `flats`; relativeMode: boolean; chordMode: boolean };
 
     const initialMidiInState: MIDIInStateType = {
         midiInPort: undefined,
@@ -273,11 +271,11 @@ export namespace MIDIIn {
     };
 
     /// maps midi numbers from 0-11 to the name based on the sharps/flat mode
-    const getNoteChar = (accidentals: `sharp` | `flat`, noteNum: number): string => {
+    const getNoteChar = (accidentals: `sharps` | `flats`, noteNum: number): string => {
         if (noteNum < 0 || noteNum > 11) {
             throw new Error(`NoteNumber should be within [0,11]; got ${noteNum}`);
         }
-        const isSharp = accidentals === `sharp`;
+        const isSharp = accidentals === `sharps`;
         const map: Record<number, string> = {
             0: `c`,
             1: isSharp ? `cis` : `des`,
@@ -295,6 +293,7 @@ export namespace MIDIIn {
         return map[noteNum];
     };
 
+
     const getAbsoluteOctavePostfix = (octaveNum: number): string => {
         if (octaveNum < 0 || octaveNum > 9) {
             throw new Error(`OctaveNumber should be within [0,9]; got ${octaveNum}`);
@@ -307,40 +306,65 @@ export namespace MIDIIn {
         }
     };
 
+    const notesToString = (notes: Set<number>, accidentals: `sharps` | `flats`, relativeMode: boolean): string | undefined => {
+        try {
+            const midiNumberToNoteName = (note: number): string => {
+                if (note <= 20 || note >= 128) {
+                    throw new Error(`MIDI Note ${note} out of range!`);
+                }
+                /// C3(48) -> 3
+                const octaveNum = Math.trunc(note / 12) - 1;
+
+                /// C3(48) -> 0
+                const noteNum = note % 12;
+
+                const fullNoteStr = getNoteChar(accidentals, noteNum) + (relativeMode ? `` : getAbsoluteOctavePostfix(octaveNum));
+                return fullNoteStr;
+            };
+
+
+            if (notes.size === 1) {
+                /// one note
+                return ` ` + midiNumberToNoteName([...notes][0]);
+            }
+            else if (notes.size > 1) {
+                /// chord
+                return ` <` +
+                    [...notes]
+                        .sort()
+                        .map(midiNumberToNoteName)
+                        .join(` `)
+                    + `>`;
+            }
+        }
+        catch (err) {
+            logger(`Error outputting note: ${err.message}`, LogLevel.error, false);
+        }
+    };
+
     midiInMsgProcessor._receive = (msg: any) => {
-        console.log(msg);
 
         const MIDINoteNumber: number = msg[1];
         const velocity: number = msg[2]; /// 0 if lift
         const MIDIInputConfig = getMIDIInputConfig();
         const { accidentals, relativeMode, chordMode } = MIDIInputConfig;
 
+
         const outputNotes = (notes: Set<number>) => {
-            try {
-
-                const midiNumberToNoteName = (note: number): string => {
-                    if (note <= 20 || note >= 128) {
-                        throw new Error(`MIDI Note ${note} out of range!`);
-                    }
-                    /// C3(48) -> 3
-                    const octaveNum = Math.trunc(note / 12) - 1;
-
-                    /// C3(48) -> 0
-                    const noteNum = note % 12;
-
-                    const fullNoteStr = getNoteChar(accidentals, noteNum) + relativeMode ? getAbsoluteOctavePostfix(octaveNum) : ``;
-                    return fullNoteStr;
-                };
-
-                const output = ` ` +
-                        [...notes]
-                            .map(midiNumberToNoteName)
-                            .join(` `);
-
-                console.log(`outputting: ${output}`);
-            }
-            catch (err) {
-                logger(`Error outputting note: ${err.message}`, LogLevel.error, false);
+            const outputString = notesToString(notes, accidentals, relativeMode);
+            if (outputString) {
+                try {
+                    const activeTextEditor = vscode.window.activeTextEditor;
+                    if (!activeTextEditor) { throw new Error(`No active text editor open`); }
+                    
+                    activeTextEditor.edit((editBuilder: vscode.TextEditorEdit) => {
+                        const position = activeTextEditor.selection.active;
+                        editBuilder.insert(position, outputString);
+                    });
+                }
+                catch (err) {
+                    logger(err.message, LogLevel.error, false);
+                }
             }
         };
 

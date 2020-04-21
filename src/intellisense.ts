@@ -18,9 +18,31 @@ const triggerIntellisense = (doc: vscode.TextDocument, diagCol: vscode.Diagnosti
 
 const processIntellisenseErrors = (output: string, doc: vscode.TextDocument, diagCol: vscode.DiagnosticCollection) => {
     const errorLines = output.split(`\n`);
-    const errorGroups = lodash.chunk(errorLines, 3);
-    if (errorGroups[errorGroups.length - 1].length !== 3) {
-        errorGroups.pop();
+    let errorGroups: string[][] = [];
+    let currErrGroup: string[] = [];
+
+    /// group the errors
+    for (let i = 0; i < errorLines.length; ++i) {
+        const line = errorLines[i];
+        const errStr = line.match(/[0-9]+:[0-9]+/);
+
+        if (errStr && errStr.length && errStr[0].length) {
+            if (currErrGroup.length) {
+                errorGroups.push(currErrGroup);
+                currErrGroup = [];
+            }
+            currErrGroup.push(line);
+        }
+        else {
+            /// only push if there is an error /[0-9]+:[0-9]+/
+            if (currErrGroup.length) {
+                currErrGroup.push(line);
+            }
+        }
+    }
+    if (currErrGroup.length) {
+        errorGroups.push(currErrGroup);
+        currErrGroup = [];
     }
 
     const processErrorGroup = (errGroup: string[]): vscode.Diagnostic | undefined => {
@@ -33,21 +55,21 @@ const processIntellisenseErrors = (output: string, doc: vscode.TextDocument, dia
 
             /// strip away filepath and line info
             errGroup[0] = errGroup[0].substr(errGroup[0].indexOf(errLine) + errLine.length + 2);
-            const fullErr= errGroup.join(`\n`);
+            const fullErr = errGroup.join(`\n`);
 
             const diagnostic: vscode.Diagnostic =
-                {
-                    severity: vscode.DiagnosticSeverity.Error,
-                    range: new vscode.Range(lineNo, 0, lineNo, charNo),
-                    message: fullErr,
-                };
+            {
+                severity: vscode.DiagnosticSeverity.Error,
+                range: new vscode.Range(lineNo, 0, lineNo, charNo),
+                message: fullErr,
+            };
             return diagnostic;
         }
         return undefined;
     };
 
     // @ts-ignore
-    const gottenDiag: vscode.Diagnostic[] = 
+    const gottenDiag: vscode.Diagnostic[] =
         errorGroups
             .map(errGroup => processErrorGroup(errGroup))
             .filter(x => x !== undefined);

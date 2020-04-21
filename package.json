@@ -16,7 +16,6 @@
 		"lilypond", "midi"
 	],
 	"preview": true,
-	"icon": "./assets/icon.png"
 	"activationEvents": [
 		"onCommand:extension.playMIDI",
 		"onCommand:extension.stopMIDI",

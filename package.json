@@ -1,7 +1,8 @@
 {
-	"name": "VSLilyPond",
+	"name": "vslilypond",
 	"displayName": "VSLilyPond",
 	"publisher": "lhl2617",
+	"license": "SEE LICENSE IN README.md",
 	"repository": "https://github.com/lhl2617/VSLilyPond",
 	"description": "Provides syntax and error highlighting, compilation on save, MIDI (input and playback) support for LilyPond in VSCode. ",
 	"version": "1.0.1",
@@ -9,8 +10,13 @@
 		"vscode": "^1.44.0"
 	},
 	"categories": [
-		"Languages"
+		"Programming Languages", "Linters"
 	],
+	"keywords": [
+		"lilypond", "midi"
+	],
+	"preview": true,
+	"icon": "./assets/icon.png"
 	"activationEvents": [
 		"onCommand:extension.playMIDI",
 		"onCommand:extension.stopMIDI",

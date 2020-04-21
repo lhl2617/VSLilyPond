@@ -200,7 +200,7 @@
 		"watch": "tsc -watch -p ./",
 		"pretest": "npm run compile && npm run lint",
 		"test": "node ./out/test/runTest.js",
-		"generateDocs": "ts-node ./docs/docsGenerator.ts"
+		"generateDocs": "ts-node ./src/docsGenerator/docsGenerator.ts"
 	},
 	"devDependencies": {
 		"@types/glob": "^7.1.1",

@@ -4,7 +4,7 @@
 	"publisher": "lhl2617",
 	"repository": "https://github.com/lhl2617/VSLilyPond",
 	"description": "Provides syntax and error highlighting, compilation on save, MIDI (input and playback) support for LilyPond in VSCode. ",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"engines": {
 		"vscode": "^1.44.0"
 	},
@@ -24,7 +24,7 @@
 		"onCommand:extension.compile",
 		"onLanguage:lilypond"
 	],
-	"main": "./out/extension.js",
+	"main": "./dist/extension",
 	"contributes": {
 		"languages": [
 			{
@@ -194,10 +194,10 @@
 		}
 	},
 	"scripts": {
-		"vscode:prepublish": "npm run compile",
-		"compile": "tsc -p ./ && npm run generateDocs",
+		"vscode:prepublish": "webpack --mode production && npm run generateDocs",
+		"compile": "webpack --mode none && npm run generateDocs",
 		"lint": "eslint src --ext ts",
-		"watch": "tsc -watch -p ./",
+		"watch": "webpack --mode none --watch",
 		"pretest": "npm run compile && npm run lint",
 		"test": "node ./out/test/runTest.js",
 		"generateDocs": "ts-node ./src/docsGenerator/docsGenerator.ts"
@@ -213,9 +213,12 @@
 		"eslint": "^6.8.0",
 		"glob": "^7.1.6",
 		"mocha": "^7.0.1",
+		"ts-loader": "^7.0.1",
 		"ts-node": "^8.9.0",
 		"typescript": "^3.7.5",
-		"vscode-test": "^1.3.0"
+		"vscode-test": "^1.3.0",
+		"webpack": "^4.43.0",
+		"webpack-cli": "^3.3.11"
 	},
 	"dependencies": {
 		"jzz-midi-smf": "^1.3.3",

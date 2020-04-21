@@ -1,65 +1,46 @@
-# lilypondpp README
+# VSLilyPond
 
-This is the README for your extension "lilypondpp". After writing up a brief description, we recommend including the following sections.
+Provides syntax and error highlighting, compilation on save, MIDI (input and playback) support for LilyPond in VSCode. Works with any VSCode supported PDF previewer for PDF preview.
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+### Syntax and error highlighting
+![Syntax and error highlighting](./docs/assets/gifs/syntaxHighlighting.gif)
 
-For example if there is an image subfolder under your extension project workspace:
+### Compilation on save
+![Compilation on save](./docs/assets/gifs/compileSave.gif)
 
-\!\[feature X\]\(images/feature-x.png\)
+### MIDI Input
+![MIDI Input](./docs/assets/gifs/midiInput.gif)
+Supports chord mode, relative mode and sharp/flat accidentals. See [DEMOS.md](./docs/DEMOS.md) for advanced features in action, and [SETTINGS.md](./docs/SETTINGS.md) on how to toggle them.
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+### MIDI Playback
+
+![MIDI Playback](./docs/assets/gifs/midiPlayback.gif)
 
 ## Requirements
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+* LilyPond (Tested on 2.20.0)
+* VSCode PDF previewer (Recommended: [vscode-pdf](https://marketplace.visualstudio.com/items?itemName=tomoki1207.pdf))
+* (Optional) MIDI Devices for MIDI Input and Playback
 
-## Extension Settings
+## Extension Controls, Commands and Settings
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
-This extension contributes the following settings:
-
-* `myExtension.enable`: enable/disable this extension
-* `myExtension.thing`: set to `blah` to do something
+* Commands: See [docs/COMMANDS.md](docs/COMMANDS.md)
+* Settings: See [docs/SETTINGS.md](docs/SETTINGS.md)
+* Status Bar interface: See [docs/STATUSBAR.md](docs/STATUSBAR.md)
 
 ## Known Issues
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+* Test-suite is in progress
 
 ## Release Notes
 
-Users appreciate release notes as you update your extension.
-
 ### 1.0.0
 
-Initial release of ...
+Initial release
 
-### 1.0.1
+## Acknowledgements
+Base syntax highlighting based on [original VSCode LilyPond extension](https://marketplace.visualstudio.com/items?itemName=truefire.lilypond) by Trudy Firestone. See that repository for additional acknowledgements.
 
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
------------------------------------------------------------------------------------------------------------
-
-## Working with Markdown
-
-**Note:** You can author your README using Visual Studio Code.  Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux)
-* Toggle preview (`Shift+CMD+V` on macOS or `Shift+Ctrl+V` on Windows and Linux)
-* Press `Ctrl+Space` (Windows, Linux) or `Cmd+Space` (macOS) to see a list of Markdown snippets
-
-### For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+License: Creative Commons Attribution-NonCommercial 3.0 Unported (CC BY-NC 3.0) license, http://creativecommons.org/licenses/by-sa/3.0/.

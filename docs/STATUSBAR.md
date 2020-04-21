@@ -1,8 +1,9 @@
 # VSLilyPond Status Bar
 
 ## MIDI Playback 
-Left side of Status bar
 ![MIDI Playback](./assets/gifs/midiPlayback.gif)
+
+Left side of Status bar
 
 ### Play MIDI
 ![Play MIDI](./assets/statusbar/playMIDI.png)

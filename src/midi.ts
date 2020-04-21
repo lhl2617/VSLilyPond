@@ -252,6 +252,14 @@ export namespace MIDIIn {
     let MIDIInState: MIDIInStateType = initialMidiInState;
     let statusBarItems: Record<string, vscode.StatusBarItem> = {};
 
+    /// notes that haven't been lifted up
+    let activeNotes: Set<number> = new Set();
+    /// chord notes that have been lifted off 
+    let chordNotes: Set<number> = new Set();
+
+    let midiInMsgProcessor = JZZ.Widget();
+    /// function called when a midi msg is received
+
     const getMIDIInputConfig = (): MIDIInputConfig => {
         const config = vscode.workspace.getConfiguration(`vslilypond`);
 
@@ -264,23 +272,76 @@ export namespace MIDIIn {
         };
     };
 
-    /// notes that haven't been lifted up
-    let activeNotes: Set<number> = new Set();
-    /// chord notes that have been lifted off 
-    let chordNotes: Set<number> = new Set();
+    /// maps midi numbers from 0-11 to the name based on the sharps/flat mode
+    const getNoteChar = (accidentals: `sharp` | `flat`, noteNum: number): string => {
+        if (noteNum < 0 || noteNum > 11) {
+            throw new Error(`NoteNumber should be within [0,11]; got ${noteNum}`);
+        }
+        const isSharp = accidentals === `sharp`;
+        const map: Record<number, string> = {
+            0: `c`,
+            1: isSharp ? `cis` : `des`,
+            2: `d`,
+            3: isSharp ? `dis` : `ees`,
+            4: `e`,
+            5: `f`,
+            6: isSharp ? `fis` : `ges`,
+            7: `g`,
+            8: isSharp ? `gis` : `aes`,
+            9: `a`,
+            10: isSharp ? `ais` : `bes`,
+            11: `b`
+        };
+        return map[noteNum];
+    };
 
-    let midiInMsgProcessor = JZZ.Widget();
+    const getAbsoluteOctavePostfix = (octaveNum: number): string => {
+        if (octaveNum < 0 || octaveNum > 9) {
+            throw new Error(`OctaveNumber should be within [0,9]; got ${octaveNum}`);
+        }
+        if (octaveNum <= 3) {
+            return `,`.repeat(3 - octaveNum);
+        }
+        else {
+            return `\'`.repeat(octaveNum - 3);
+        }
+    };
+
     midiInMsgProcessor._receive = (msg: any) => {
         console.log(msg);
+
         const MIDINoteNumber: number = msg[1];
         const velocity: number = msg[2]; /// 0 if lift
         const MIDIInputConfig = getMIDIInputConfig();
         const { accidentals, relativeMode, chordMode } = MIDIInputConfig;
 
         const outputNotes = (notes: Set<number>) => {
-            let str = ``;
-            notes.forEach((n) => str += n.toString());
-            console.log(`outputting: ${(str)}`);
+            try {
+
+                const midiNumberToNoteName = (note: number): string => {
+                    if (note <= 20 || note >= 128) {
+                        throw new Error(`MIDI Note ${note} out of range!`);
+                    }
+                    /// C3(48) -> 3
+                    const octaveNum = Math.trunc(note / 12) - 1;
+
+                    /// C3(48) -> 0
+                    const noteNum = note % 12;
+
+                    const fullNoteStr = getNoteChar(accidentals, noteNum) + relativeMode ? getAbsoluteOctavePostfix(octaveNum) : ``;
+                    return fullNoteStr;
+                };
+
+                const output = ` ` +
+                        [...notes]
+                            .map(midiNumberToNoteName)
+                            .join(` `);
+
+                console.log(`outputting: ${output}`);
+            }
+            catch (err) {
+                logger(`Error outputting note: ${err.message}`, LogLevel.error, false);
+            }
         };
 
         if (velocity) {
@@ -311,7 +372,7 @@ export namespace MIDIIn {
             }
             else {
                 /// lifting during non-chord mode
-                if (activeNotes.size) { 
+                if (activeNotes.size) {
                     if (activeNotes.size > 1) {
                         logger(`Outputting a chord despite not in chord mode!`, LogLevel.warning, false);
                     }

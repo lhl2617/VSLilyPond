@@ -10,7 +10,7 @@ Displays errors with red underlines as you type. Disable to improve performance.
 
 Type: `boolean`
 
-Default value: N/A
+Default value: `true`
 
 ### vslilypond.intellisense.additionalCommandLineArguments
 
@@ -36,7 +36,7 @@ Compiles file upon saving. Disable to improve performance. Reload required.
 
 Type: `boolean`
 
-Default value: N/A
+Default value: `true`
 
 ### vslilypond.compilation.additionalCommandLineArguments
 
@@ -72,7 +72,7 @@ Chord mode in music entry. Registers notes that are pressed and held together as
 
 Type: `boolean`
 
-Default value: N/A
+Default value: `false`
 
 ### vslilypond.midiInput.relativeMode
 
@@ -80,7 +80,7 @@ Relative mode (as opposed to absolute mode).
 
 Type: `boolean`
 
-Default value: N/A
+Default value: `false`
 
 ### vslilypond.midiInput.accidentals
 

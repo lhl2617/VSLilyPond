@@ -81,7 +81,7 @@ Object.entries(groupedSettings).forEach(([groupName, settings]) => {
             `### ${setting.title}`,
             setting.description,
             `Type: \`${setting.type}\``,
-            `Default value: ${setting.default.length ? `\`${setting.default}\`` : `N/A`}`
+            `Default value: ${setting.default.toString().length ? `\`${setting.default.toString()}\`` : `N/A`}`
         ]);
     });
 });

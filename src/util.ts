@@ -23,18 +23,6 @@ export const logger = (msg: string, logLevel: LogLevel, mute: boolean = false) =
     getLogger()(msg);
 };
 
-export const getWorkspacePath = () => {
-    const folders = vscode.workspace.workspaceFolders ?? [];
-    if (folders.length === 1) {
-        return folders[0].uri.fsPath;
-    }
-    else {
-        vscode.window.showErrorMessage(`LilyPond++ only supports 1 project folder.`);
-    }
-    return undefined;
-};
-
-
 /// check whether `lilypond` is available
 export const lilypondExists = (): boolean => {
     try {

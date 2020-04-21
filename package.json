@@ -2,8 +2,9 @@
 	"name": "VSLilyPond",
 	"displayName": "VSLilyPond",
 	"publisher": "lhl2617",
+	"repository": "https://github.com/lhl2617/VSLilyPond",
 	"description": "Provides syntax and error highlighting, compilation on save, MIDI (input and playback) support for LilyPond in VSCode. ",
-	"version": "0.0.1",
+	"version": "1.0.0",
 	"engines": {
 		"vscode": "^1.44.0"
 	},

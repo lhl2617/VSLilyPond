@@ -7,7 +7,7 @@ import { ensureDirectoryExists, logger, LogLevel } from './util';
 import { langId, binName } from './consts';
 
 // INTELLISENSE
-let timeout: NodeJS.Timer | undefined = undefined;
+let timeout: any = undefined;
 const triggerIntellisense = (doc: vscode.TextDocument, diagCol: vscode.DiagnosticCollection, context: vscode.ExtensionContext) => {
     if (timeout) {
         clearTimeout(timeout);

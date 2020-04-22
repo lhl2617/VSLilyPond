@@ -1,13 +1,15 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import { logger, LogLevel, stripFileExtension } from './util';
-
-const JZZ = require('jzz');
-require('jzz-midi-smf')(JZZ);
+import * as JZZ from 'jzz';
+/// no types for jzz-midi-smf
+// @ts-ignore
+import * as jzzMidiSmf from 'jzz-midi-smf';
+jzzMidiSmf(JZZ);
 
 export namespace MIDIOut {
 
-    let timeout: NodeJS.Timer | undefined = undefined;
+    let timeout: any = undefined;
     let statusBarItems: Record<string, vscode.StatusBarItem> = {};
 
     type MIDIOutStateType = {
@@ -26,10 +28,10 @@ export namespace MIDIOut {
 
     let MIDIOutState: MIDIOutStateType = initialMIDIOutState;
 
-    const getMidiFilePathFromActiveTextEditor = () => {
+    const getMidiFilePathFromWindow = () => {
         const activeTextEditor = vscode.window.activeTextEditor;
         if (!activeTextEditor) {
-            throw new Error(`No active \`lilypond\`text editor open`);
+            throw new Error(`No active \`lilypond\`text editor open (Please click inside a \`lilypond\` text document to make it active)`);
         }
         const midiFileName = stripFileExtension(activeTextEditor.document.uri.fsPath) + `.mid`;
         return midiFileName;
@@ -38,7 +40,7 @@ export namespace MIDIOut {
     /// loads midi file based on current active text editor into MIDIOutState.player
     const loadMIDI = () => {
         try {
-            const midiFileName = getMidiFilePathFromActiveTextEditor();
+            const midiFileName = getMidiFilePathFromWindow();
             let data: string;
             try {
                 data = fs.readFileSync(midiFileName, `binary`);
@@ -46,6 +48,8 @@ export namespace MIDIOut {
             catch (err) {
                 throw new Error(`Cannot find MIDI file to play - make sure you are outputting a MIDI file`);
             }
+            /// .SMF is passed to JZZ from jzz-midi-smf
+            // @ts-ignore
             const smf = JZZ.MIDI.SMF(data);
             MIDIOutState.currMidiFilePath = midiFileName;
             MIDIOutState.player = smf.player();
@@ -342,6 +346,8 @@ export namespace MIDIIn {
         }
     };
 
+    /// ._receive is passed to JZZ from jzz-midi-smf
+    // @ts-ignore
     midiInMsgProcessor._receive = (msg: any) => {
 
         const MIDINoteNumber: number = msg[1];
@@ -356,7 +362,7 @@ export namespace MIDIIn {
                 try {
                     const activeTextEditor = vscode.window.activeTextEditor;
                     if (!activeTextEditor) { throw new Error(`No active text editor open`); }
-                    
+
                     activeTextEditor.edit((editBuilder: vscode.TextEditorEdit) => {
                         const position = activeTextEditor.selection.active;
                         editBuilder.insert(position, outputString);

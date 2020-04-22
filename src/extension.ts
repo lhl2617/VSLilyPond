@@ -87,7 +87,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 
 
-	
+
 	/// ===== ===== ===== MIDI INPUT ===== ===== =====
 	/// start midi input
 	const startInputMidiCmd = vscode.commands.registerCommand('extension.startMIDIInput', () => {

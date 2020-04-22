@@ -12,4 +12,3 @@ vsc-extension-quickstart.md
 node_modules
 out/
 src/
-webpack.config.json

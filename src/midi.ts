@@ -1,11 +1,11 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import { logger, LogLevel, stripFileExtension } from './util';
-
-const JZZ = require('jzz');
-require('jzz-midi-smf')(JZZ);
-
-console.log(JZZ().info());
+import * as JZZ from 'jzz';
+/// no types for jzz-midi-smf
+// @ts-ignore
+import * as jzzMidiSmf from 'jzz-midi-smf';
+jzzMidiSmf(JZZ);
 
 export namespace MIDIOut {
 
@@ -48,6 +48,8 @@ export namespace MIDIOut {
             catch (err) {
                 throw new Error(`Cannot find MIDI file to play - make sure you are outputting a MIDI file`);
             }
+            /// .SMF is passed to JZZ from jzz-midi-smf
+            // @ts-ignore
             const smf = JZZ.MIDI.SMF(data);
             MIDIOutState.currMidiFilePath = midiFileName;
             MIDIOutState.player = smf.player();
@@ -344,6 +346,8 @@ export namespace MIDIIn {
         }
     };
 
+    /// ._receive is passed to JZZ from jzz-midi-smf
+    // @ts-ignore
     midiInMsgProcessor._receive = (msg: any) => {
 
         const MIDINoteNumber: number = msg[1];

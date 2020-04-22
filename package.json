@@ -21,7 +21,6 @@
 	"extensionDependencies": [
 		"truefire.lilypond"
 	],
-	"preview": true,
 	"activationEvents": [
 		"onCommand:extension.playMIDI",
 		"onCommand:extension.stopMIDI",

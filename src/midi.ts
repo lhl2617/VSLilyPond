@@ -28,10 +28,10 @@ export namespace MIDIOut {
 
     let MIDIOutState: MIDIOutStateType = initialMIDIOutState;
 
-    const getMidiFilePathFromActiveTextEditor = () => {
+    const getMidiFilePathFromWindow = () => {
         const activeTextEditor = vscode.window.activeTextEditor;
         if (!activeTextEditor) {
-            throw new Error(`No active \`lilypond\`text editor open`);
+            throw new Error(`No active \`lilypond\`text editor open (Please click inside a \`lilypond\` text document to make it active)`);
         }
         const midiFileName = stripFileExtension(activeTextEditor.document.uri.fsPath) + `.mid`;
         return midiFileName;
@@ -40,7 +40,7 @@ export namespace MIDIOut {
     /// loads midi file based on current active text editor into MIDIOutState.player
     const loadMIDI = () => {
         try {
-            const midiFileName = getMidiFilePathFromActiveTextEditor();
+            const midiFileName = getMidiFilePathFromWindow();
             let data: string;
             try {
                 data = fs.readFileSync(midiFileName, `binary`);

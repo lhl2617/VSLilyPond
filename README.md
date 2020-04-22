@@ -47,9 +47,8 @@ Please submit issues in the [Github repository](https://github.com/lhl2617/VSLil
 ### 1.0.3
 
 * Add [truefire](https://marketplace.visualstudio.com/items?itemName=truefire.lilypond)'s VSCode extension as dependency
-* Optimise MIDI playback to work even when no text editors are active
 * Update documentation and GIFs
-* Revert to non-webpack version 
+* Fix [#5](https://github.com/lhl2617/VSLilyPond/issues/5), revert to non-webpack version.
 
 ### 1.0.2
 

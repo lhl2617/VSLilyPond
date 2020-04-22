@@ -10,12 +10,17 @@
 		"vscode": "^1.44.0"
 	},
 	"categories": [
-		"Programming Languages", "Linters"
+		"Programming Languages",
+		"Linters"
 	],
 	"keywords": [
-		"lilypond", "midi", "music"
+		"lilypond",
+		"midi",
+		"music"
 	],
-	"extensionDependencies": [ "truefire.lilypond" ],
+	"extensionDependencies": [
+		"truefire.lilypond"
+	],
 	"preview": true,
 	"activationEvents": [
 		"onCommand:extension.playMIDI",

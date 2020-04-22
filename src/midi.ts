@@ -7,7 +7,7 @@ require('jzz-midi-smf')(JZZ);
 
 export namespace MIDIOut {
 
-    let timeout: NodeJS.Timer | undefined = undefined;
+    let timeout: any = undefined;
     let statusBarItems: Record<string, vscode.StatusBarItem> = {};
 
     type MIDIOutStateType = {
@@ -356,7 +356,7 @@ export namespace MIDIIn {
                 try {
                     const activeTextEditor = vscode.window.activeTextEditor;
                     if (!activeTextEditor) { throw new Error(`No active text editor open`); }
-                    
+
                     activeTextEditor.edit((editBuilder: vscode.TextEditorEdit) => {
                         const position = activeTextEditor.selection.active;
                         editBuilder.insert(position, outputString);

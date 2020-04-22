@@ -5,6 +5,8 @@ import { logger, LogLevel, stripFileExtension } from './util';
 const JZZ = require('jzz');
 require('jzz-midi-smf')(JZZ);
 
+console.log(JZZ().info());
+
 export namespace MIDIOut {
 
     let timeout: any = undefined;

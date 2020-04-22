@@ -7,14 +7,14 @@ Provides syntax and error highlighting, compilation on save, MIDI (input and pla
 ### Syntax and error highlighting 📜 
 ![Syntax and error highlighting](./docs/assets/gifs/syntaxHighlighting.gif)
 
-### Compilation on save :floppy_disk:
+### Compilation on save 💾
 ![Compilation on save](./docs/assets/gifs/compileSave.gif)
 
-### MIDI Input :musical_keyboard:
+### MIDI Input 🎹
 ![MIDI Input](./docs/assets/gifs/midiInput.gif)
 Supports chord mode, relative mode and sharp/flat accidentals. See [DEMOS.md](./docs/DEMOS.md) for advanced features in action, and [SETTINGS.md](./docs/SETTINGS.md) on how to toggle them.
 
-### MIDI Playback :musical_score:
+### MIDI Playback 🎼
 
 ![MIDI Playback](./docs/assets/gifs/midiPlayback.gif)
 
@@ -40,11 +40,11 @@ Please submit issues in the [Github repository](https://github.com/lhl2617/VSLil
 
 * File bugs and/or feature requests in the [Github repository](https://github.com/lhl2617/VSLilyPond)
 * Pull requests are welcome in the [Github repository](https://github.com/lhl2617/VSLilyPond)
-* Buy me a Coffee :coffee: via [PayPal](https://paypal.me/lhl2617)
+* Buy me a Coffee ☕️ via [PayPal](https://paypal.me/lhl2617)
 
 ## Release Notes
 
-### 1.0.3, 1.0.4
+### 1.0.3-1.0.5
 
 - Add [truefire](https://marketplace.visualstudio.com/items?itemName=truefire.lilypond)'s VSCode extension as dependency
 - Update documentation and GIFs

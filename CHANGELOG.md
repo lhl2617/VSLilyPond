@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.1.0
+- Refactored code base
+- Added test suite
+
 ## 1.0.6-1.0.7
 - Fix extension pointing to wrong build directory, causing it being unable to start up in some cases
 

@@ -2,7 +2,8 @@ import * as vscode from 'vscode';
 import { lilypondExists } from './util';
 import { compile } from './lilypond';
 import { subscribeIntellisense } from './intellisense';
-import { MIDIOut, MIDIIn } from './midi';
+import { MIDIOut } from './midiOut';
+import { MIDIIn } from './midiIn';
 
 export function activate(context: vscode.ExtensionContext) {
 	/// need to make sure `lilypond` exists in PATH variable, otherwise throw an error and exit

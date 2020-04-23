@@ -5,7 +5,7 @@
 	"license": "SEE LICENSE IN README.md",
 	"repository": "https://github.com/lhl2617/VSLilyPond",
 	"description": "Provides syntax and error highlighting, compilation on save, MIDI (input and playback) support for LilyPond in VSCode. ",
-	"version": "1.0.7",
+	"version": "1.1.0",
 	"engines": {
 		"vscode": "^1.44.0"
 	},
@@ -183,8 +183,8 @@
 		}
 	},
 	"scripts": {
-		"vscode:prepublish": "npm run compile",
-		"compile": "tsc -p ./ && npm run generateDocs",
+		"vscode:prepublish": "npm run test && npm run compile && npm run lint && npm run generateDocs",
+		"compile": "tsc -p ./",
 		"lint": "eslint src --ext ts",
 		"watch": "tsc -watch -p ./",
 		"pretest": "npm run compile && npm run lint",

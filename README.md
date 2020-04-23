@@ -44,7 +44,7 @@ Please submit issues in the [Github repository](https://github.com/lhl2617/VSLil
 
 ## Release Notes
 
-### 1.0.6
+### 1.0.6-1.0.7
 - Fix extension pointing to wrong build directory, causing it being unable to start up in some cases
 
 ### 1.0.3-1.0.5

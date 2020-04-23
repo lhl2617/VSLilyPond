@@ -31,7 +31,6 @@ Supports chord mode, relative mode and sharp/flat accidentals. See [DEMOS.md](./
 * Status Bar interface: See [docs/STATUSBAR.md](docs/STATUSBAR.md)
 
 ## Known Issues
-* Test-suite is in progress
 
 Please submit issues in the [Github repository](https://github.com/lhl2617/VSLilyPond)
 

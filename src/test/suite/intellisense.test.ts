@@ -5,7 +5,7 @@ import { groupErrors, getDiagError, DiagErrorInfo } from '../../intellisense';
 
 suite(`Intellisense Test Suite`, () => {
 	vscode.window.showInformationMessage('Start intellisense tests.');
-	test(`groupErrors test 1 - normal error`, () => {
+	test(`groupErrors - normal error`, () => {
 		const output =
 			[
 				`././pathetique.ly:3:1: error: unknown escaped string: \`\\verson\'`,
@@ -32,7 +32,7 @@ suite(`Intellisense Test Suite`, () => {
 		assert.equal(JSON.stringify(got), JSON.stringify(exp));
 	});
 
-	test(`groupErrors test 2 - ignore header lines`, () => {
+	test(`groupErrors - ignore header lines`, () => {
 		const output =
 			[
 				`GNU LilyPond`,
@@ -62,7 +62,7 @@ suite(`Intellisense Test Suite`, () => {
 		assert.equal(JSON.stringify(got), JSON.stringify(exp));
 	});
 
-	test(`groupErrors test 3 - no errors`, () => {
+	test(`groupErrors - no errors`, () => {
 		const output = ``;
 
 		const got = groupErrors(output);
@@ -70,7 +70,7 @@ suite(`Intellisense Test Suite`, () => {
 		assert.deepEqual(got, exp);
 	});
 
-	test(`groupErrors test 4 - ignore junk`, () => {
+	test(`groupErrors - ignore junk`, () => {
 		const output =
 			[
 				`GNU LilyPond`,
@@ -82,7 +82,7 @@ suite(`Intellisense Test Suite`, () => {
 		assert.equal(JSON.stringify(got), JSON.stringify(exp));
 	});
 
-	test(`groupErrors test 5 - generic functionality test`, () => {
+	test(`groupErrors - generic functionality test`, () => {
 		const output =
 			[
 				`1:2:3:4`,
@@ -106,7 +106,7 @@ suite(`Intellisense Test Suite`, () => {
 		assert.equal(JSON.stringify(got), JSON.stringify(exp));
 	});
 
-	test(`getDiagError test 1 - normal error 1`, () => {
+	test(`getDiagError - normal error 1`, () => {
 		const errGroup = [
 			`././pathetique.ly:3:1: error: unknown escaped string: \`\\verson\'`,
 			``,
@@ -128,7 +128,7 @@ suite(`Intellisense Test Suite`, () => {
 		assert.deepEqual(got, exp);
 	});
 
-	test(`getDiagError test 2 - normal error 2`, () => {
+	test(`getDiagError - normal error 2`, () => {
 		const errGroup =
 			[
 				`././pathetique.ly:3:16: error: syntax error, unexpected STRING, expecting \',\' or \'.\' or \'=\'`,
@@ -151,7 +151,7 @@ suite(`Intellisense Test Suite`, () => {
 		assert.deepEqual(got, exp);
 	});
 
-	test(`getDiagError test 3 - empty error group exception`, () => {
+	test(`getDiagError - empty error group exception`, () => {
 		const errGroup: string[] = [];
 
 		const expectThrow = () => getDiagError(errGroup);
@@ -159,7 +159,7 @@ suite(`Intellisense Test Suite`, () => {
 		assert.throws(expectThrow, new Error(`Error group is empty!`));
 	});
 
-	test(`getDiagError test 4 - cannot match error group`, () => {
+	test(`getDiagError - cannot match error group`, () => {
 		const errGroup: string[] = [``];
 
 		const expectThrow = () => getDiagError(errGroup);

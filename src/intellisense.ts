@@ -2,7 +2,6 @@ import * as vscode from 'vscode';
 import * as cp from 'child_process';
 import * as path from 'path';
 import * as fs from 'fs';
-import * as lodash from 'lodash';
 import { ensureDirectoryExists, logger, LogLevel } from './util';
 import { langId, binName } from './consts';
 
@@ -16,7 +15,7 @@ const triggerIntellisense = (doc: vscode.TextDocument, diagCol: vscode.Diagnosti
     timeout = setTimeout(() => execIntellisense(doc, diagCol, context), 500);
 };
 
-type DiagErrorInfo = {
+export type DiagErrorInfo = {
     error: string,
     lineNo: number,
     charNo: number

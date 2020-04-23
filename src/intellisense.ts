@@ -16,7 +16,14 @@ const triggerIntellisense = (doc: vscode.TextDocument, diagCol: vscode.Diagnosti
     timeout = setTimeout(() => execIntellisense(doc, diagCol, context), 500);
 };
 
-const processIntellisenseErrors = (output: string, doc: vscode.TextDocument, diagCol: vscode.DiagnosticCollection) => {
+type DiagErrorInfo = {
+    error: string,
+    lineNo: number,
+    charNo: number
+};
+
+/// group errors
+export const groupErrors = (output: string): string[][] => {
     const errorLines = output.split(`\n`);
     let errorGroups: string[][] = [];
     let currErrGroup: string[] = [];
@@ -44,28 +51,52 @@ const processIntellisenseErrors = (output: string, doc: vscode.TextDocument, dia
         errorGroups.push(currErrGroup);
         currErrGroup = [];
     }
+    return errorGroups;
+};
 
+export const getDiagError = (errGroup: string[]): DiagErrorInfo => {
+    if (errGroup.length === 0) {
+        throw new Error(`Error group is empty!`);
+    }
+    const errStr = errGroup[0].match(/[0-9]+:[0-9]+/);
+    if (!errStr || !errStr.length || !(errStr[0].length)) {
+        throw new Error(`Error group does not match lineNo:charNo format!`);
+    }
+    const errLine = errStr[0];
+    const split = errLine.split(`:`);
+    const lineNo = parseInt(split[0]) - 1;
+    const charNo = parseInt(split[1]);
+
+    /// strip away filepath and line info
+    errGroup[0] = errGroup[0].substr(errGroup[0].indexOf(errLine) + errLine.length + 2);
+    const fullErr = errGroup.join(`\n`);
+
+    return {
+        error: fullErr,
+        lineNo: lineNo,
+        charNo: charNo
+    };
+};
+
+const processIntellisenseErrors = (output: string, doc: vscode.TextDocument, diagCol: vscode.DiagnosticCollection) => {
+    const errorGroups = groupErrors(output);
     const processErrorGroup = (errGroup: string[]): vscode.Diagnostic | undefined => {
-        const errStr = errGroup[0].match(/[0-9]+:[0-9]+/);
-        if (errStr && errStr.length && errStr[0].length) {
-            const errLine = errStr[0];
-            const split = errLine.split(`:`);
-            const lineNo = parseInt(split[0]) - 1;
-            const charNo = parseInt(split[1]);
-
-            /// strip away filepath and line info
-            errGroup[0] = errGroup[0].substr(errGroup[0].indexOf(errLine) + errLine.length + 2);
-            const fullErr = errGroup.join(`\n`);
+        try {
+            const diagErr = getDiagError(errGroup);
+            const { lineNo, charNo, error } = diagErr;
 
             const diagnostic: vscode.Diagnostic =
             {
                 severity: vscode.DiagnosticSeverity.Error,
                 range: new vscode.Range(lineNo, 0, lineNo, charNo),
-                message: fullErr,
+                message: error,
             };
             return diagnostic;
         }
-        return undefined;
+        catch (err) {
+            logger(err.message, LogLevel.warning, true);
+            return undefined;
+        }
     };
 
     // @ts-ignore
@@ -93,30 +124,31 @@ const execIntellisense = (doc: vscode.TextDocument, diagCol: vscode.DiagnosticCo
 
     fs.writeFile(tmpFilePath, doc.getText(), (err) => {
         if (err) {
+            /// mute here because it is just intellisense
             logger(err.message, LogLevel.error, true);
         }
+        else {
+            const additionalArgs: string[] = config.intellisense.additionalCommandLineArguments.trim().split(/\s+/);
 
-        const additionalArgs: string[] = config.intellisense.additionalCommandLineArguments.trim().split(/\s+/);
-
-        /// to include the current directory of the file as a search path
-        const includeArg = `--include=${path.dirname(doc.uri.fsPath)}`;
-
-        const args = [`-s`].concat(additionalArgs).concat(includeArg).concat(tmpFilePath);
-
-        const s = cp.spawn(binName, args, { cwd: tmpPath });
-
-        s.stdout.on('data', (data) => {
-            logger(`Intellisense: no errors, ${data}`, LogLevel.info, true);
-        });
-
-        s.stderr.on('data', (data) => {
-            processIntellisenseErrors(data.toString(), doc, diagCol);
-        });
-
-        s.on('close', (code) => {
-            logger(`Intellisense process exited with code ${code}`, LogLevel.info, true);
-        });
-
+            /// to include the current directory of the file as a search path
+            const includeArg = `--include=${path.dirname(doc.uri.fsPath)}`;
+    
+            const args = [`-s`].concat(additionalArgs).concat(includeArg).concat(tmpFilePath);
+    
+            const s = cp.spawn(binName, args, { cwd: tmpPath });
+    
+            s.stdout.on('data', (data) => {
+                logger(`Intellisense: no errors, ${data}`, LogLevel.info, true);
+            });
+    
+            s.stderr.on('data', (data) => {
+                processIntellisenseErrors(data.toString(), doc, diagCol);
+            });
+    
+            s.on('close', (code) => {
+                logger(`Intellisense process exited with code ${code}`, LogLevel.info, true);
+            });
+        }
     });
 };
 

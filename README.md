@@ -2,6 +2,8 @@
 
 Provides syntax and error highlighting, compilation on save, MIDI (input and playback) support for [LilyPond](http://lilypond.org/) in VSCode. Works with any VSCode supported PDF previewer for PDF preview.
 
+See [docs/INSTALL.md](docs/INSTALL.md) for a setup guide.
+
 ## Features
 
 ### Syntax and error highlighting 📜 
@@ -20,6 +22,8 @@ Supports chord mode, relative mode and sharp/flat accidentals. See [DEMOS.md](./
 
 ## Requirements
 
+See [docs/INSTALL.md](docs/INSTALL.md) for a setup guide.
+
 * [LilyPond](http://lilypond.org/) (Tested on 2.20.0)
 * VSCode PDF previewer (Recommended: [vscode-pdf](https://marketplace.visualstudio.com/items?itemName=tomoki1207.pdf))
 * (Optional) MIDI Devices for MIDI Input and Playback
@@ -30,10 +34,11 @@ Supports chord mode, relative mode and sharp/flat accidentals. See [DEMOS.md](./
 * Settings: See [docs/SETTINGS.md](docs/SETTINGS.md)
 * Status Bar interface: See [docs/STATUSBAR.md](docs/STATUSBAR.md)
 
-## Known Issues
+## Known Issues & FAQ
 
 Please submit issues in the [Github repository](https://github.com/lhl2617/VSLilyPond)
 
+See the FAQ at [docs/FAQ.md](docs/FAQ.md).
 
 ## Contributing
 

@@ -4,6 +4,7 @@ import * as JZZ from 'jzz';
 /// no types for jzz-midi-smf
 // @ts-ignore
 import * as jzzMidiSmf from 'jzz-midi-smf';
+import { langId } from './consts';
 jzzMidiSmf(JZZ);
 
 export namespace MIDIIn {
@@ -196,7 +197,7 @@ export namespace MIDIIn {
     };
 
     /// start midi input
-    export const startMIDIInput = () => {
+    export const startMIDIInput = async () => {
         const config = vscode.workspace.getConfiguration(`vslilypond`);
         MIDIInState.midiInPort = (config.midiInput.input.length) ? JZZ().openMidiIn(config.midiInput.input) : JZZ().openMidiIn();
 
@@ -205,7 +206,7 @@ export namespace MIDIIn {
         updateMIDIStatusBarItem();
     };
 
-    export const stopMIDIInput = () => {
+    export const stopMIDIInput = async () => {
         if (MIDIInState.midiInPort) {
             MIDIInState.midiInPort.disconnect();
             MIDIInState.midiInPort.close();
@@ -216,7 +217,7 @@ export namespace MIDIIn {
     };
 
     /// set input midi device
-    export const setInputMIDIDevice = () => {
+    export const setInputMIDIDevice = async () => {
         const inputs: string[] = JZZ().info().inputs.map((x: any) => x.name);
         vscode.window.showQuickPick(inputs).then((val: string | undefined) => {
             if (val) {
@@ -244,15 +245,29 @@ export namespace MIDIIn {
         updateMIDIStatusBarItem();
     };
 
+    const shouldShowStatusBarItems = (): boolean => {
+        const activeTextEditor = vscode.window.activeTextEditor;
+        if (activeTextEditor && activeTextEditor.document.languageId === langId) {
+            return true;
+        }        
+        return false;
+    };
+
     /// update status bar item for midi playback
-    const updateMIDIStatusBarItem = () => {
-        if (MIDIInState.active) {
-            statusBarItems.start.hide();
-            statusBarItems.stop.show();
+    export const updateMIDIStatusBarItem = async () => {
+        if (shouldShowStatusBarItems()) {
+            if (MIDIInState.active) {
+                statusBarItems.start.hide();
+                statusBarItems.stop.show();
+            }
+            else {
+                statusBarItems.start.show();
+                statusBarItems.stop.hide();
+            }
         }
         else {
-            statusBarItems.start.show();
-            statusBarItems.stop.hide();
+            /// hide if no text editor or not LilyPond file
+            Object.values(statusBarItems).forEach((x) => x.hide());
         }
     };
 }

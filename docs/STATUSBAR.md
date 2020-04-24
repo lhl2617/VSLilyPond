@@ -8,7 +8,7 @@ Left side of Status bar
 ### Play MIDI
 ![Play MIDI](./assets/statusbar/playMIDI.png)
 
-Play/Resume MIDI. You can also use commands under `VSLilyPond: MIDI Playback`. MIDI Playback device is set using `VSLilyPond: MIDI Playback: Set output device` command. 
+Play/Resume MIDI and Play MIDI from a specific timestamp. You can also use commands under `VSLilyPond: MIDI Playback`. MIDI Playback device is set using `VSLilyPond: MIDI Playback: Set output device` command. 
 
 ### Control MIDI Playback
 ![Control MIDI Playback](./assets/statusbar/MIDIPlaying.png)

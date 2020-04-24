@@ -8,6 +8,10 @@
 
 Play MIDI from the start. You can also use the `Play MIDI` button on the left of the status bar. MIDI Playback device is set using `VSLilyPond: MIDI Playback: Set output device` command.
 
+### VSLilyPond: MIDI Playback: Play from...
+
+Play MIDI from a user-input timestamp. You can also use the `Play MIDI from...` button on the left of the status bar.
+
 ### VSLilyPond: MIDI Playback: Stop
 
 Stop MIDI playback. You can also use the `Stop MIDI` button on the left of the status bar.

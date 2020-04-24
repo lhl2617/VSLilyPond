@@ -5,7 +5,7 @@
 	"license": "SEE LICENSE IN README.md",
 	"repository": "https://github.com/lhl2617/VSLilyPond",
 	"description": "Provides syntax and error highlighting, compilation on save, MIDI (input and playback) support for LilyPond in VSCode. ",
-	"version": "1.1.2",
+	"version": "1.1.3",
 	"engines": {
 		"vscode": "^1.44.0"
 	},
@@ -42,6 +42,12 @@
 				"title": "VSLilyPond: MIDI Playback: Play (from start)",
 				"group": "MIDI Playback",
 				"description": "Play MIDI from the start. You can also use the `Play MIDI` button on the left of the status bar. MIDI Playback device is set using `VSLilyPond: MIDI Playback: Set output device` command."
+			},
+			{
+				"command": "extension.playMIDIFrom",
+				"title": "VSLilyPond: MIDI Playback: Play from...",
+				"group": "MIDI Playback",
+				"description": "Play MIDI from a user-input timestamp. You can also use the `Play MIDI from...` button on the left of the status bar."
 			},
 			{
 				"command": "extension.stopMIDI",

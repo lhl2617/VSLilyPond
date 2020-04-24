@@ -5,6 +5,7 @@ import * as JZZ from 'jzz';
 /// no types for jzz-midi-smf
 // @ts-ignore
 import * as jzzMidiSmf from 'jzz-midi-smf';
+import { langId } from './consts';
 jzzMidiSmf(JZZ);
 
 export namespace MIDIOut {
@@ -37,6 +38,48 @@ export namespace MIDIOut {
         const ss = Math.round(seconds % 60).toString().padStart(2, `0`);
 
         return `${mm}:${ss}`;
+    };
+
+    export const MMSSToms = (mmss: string): number => {
+        const matches = mmss.match(/^[0-9]+:[0-5][0-9]$/);
+        if (matches && matches.length && matches[0].length) {
+            const [mm, ss] = mmss.split(`:`).map((s) => parseInt(s));
+            const res = (mm * 60 + ss) * 1000;
+            return res;
+        }
+        throw new Error(`${mmss} does not match the required syntax: \/\^[0-9]+:[0-5][0-9]\$\/. Valid examples: 1:23, 10:59, 0:12`);
+    };
+
+    export const validateMIDIStartTimeInput = (durationMS: number, durationMMSS: string, mmss: string): string | undefined => {
+        try {
+            const ms = MMSSToms(mmss);
+            if (ms > durationMS) {
+                throw new Error(`Duration ${mmss} is longer than duration of actual MIDI file ${durationMMSS}`);
+            }
+        }
+        catch (err) {
+            return err.message;
+        }
+        /// return undefined when valid;
+        return undefined;
+    };
+
+    /// returns in ms the required start time
+    const askAndSetMIDIStartTime = async (durationMS: number): Promise<number> => {
+        const durationMMSS = msToMMSS(durationMS);
+        const data = vscode.window.showInputBox(
+            {
+                ignoreFocusOut: true,
+                placeHolder: `0:00`,
+                prompt: `Duration of MIDI is ${durationMMSS}. Please enter the start timestamp required in the format m:ss.`,
+                validateInput: (mmss: string) => validateMIDIStartTimeInput(durationMS, durationMMSS, mmss)
+            });
+        const value = await data;
+        if (value) {
+            const res = MMSSToms(value);
+            return res;
+        }
+        return 0;
     };
 
     const getMidiFilePathFromWindow = () => {
@@ -82,7 +125,7 @@ export namespace MIDIOut {
     };
 
 
-    const pollMIDIStatus = () => {
+    const pollMIDIStatus = async () => {
         const durationMS = MIDIOutState.player.durationMS();
         const positionMS = MIDIOutState.player.positionMS();
         /// need to be called with a 500 ms timeout otherwise it will fail!
@@ -96,9 +139,9 @@ export namespace MIDIOut {
         }
     };
 
-    export const playMIDI = () => {
+    export const playMIDI = async () => {
         try {
-            resetMIDI();
+            resetMIDI(true);
             loadMIDI();
 
             if (MIDIOutState.player) {
@@ -116,7 +159,31 @@ export namespace MIDIOut {
         updateMIDIStatusBarItem();
     };
 
-    export const stopMIDI = () => {
+    export const playMIDIFrom = async () => {
+        try {
+            resetMIDI(true);
+            loadMIDI();
+
+            if (MIDIOutState.player) {
+                /// get the maximum duration and ask user to input the required duration
+                const durationMS = MIDIOutState.player.durationMS();
+                const startMS = await askAndSetMIDIStartTime(durationMS);
+                MIDIOutState.player.play();
+                MIDIOutState.player.jumpMS(startMS);
+                MIDIOutState.playing = true;
+                timeout = setTimeout(pollMIDIStatus, 100);
+            }
+            else {
+                throw new Error(`Unable to load MIDI player`);
+            }
+        }
+        catch (err) {
+            logger(err.message, LogLevel.error, false);
+        }
+        updateMIDIStatusBarItem();
+    };
+
+    export const stopMIDI = async () => {
         try {
             if (MIDIOutState.player && MIDIOutState.playing || MIDIOutState.paused) {
                 MIDIOutState.player.stop();
@@ -137,7 +204,7 @@ export namespace MIDIOut {
         updateMIDIStatusBarItem();
     };
 
-    export const pauseMIDI = () => {
+    export const pauseMIDI = async () => {
         try {
             if (MIDIOutState.player && MIDIOutState.playing && !MIDIOutState.paused) {
                 MIDIOutState.player.pause();
@@ -161,7 +228,7 @@ export namespace MIDIOut {
         updateMIDIStatusBarItem();
     };
 
-    export const resumeMIDI = () => {
+    export const resumeMIDI = async () => {
         try {
             if (MIDIOutState.player && MIDIOutState.paused && !MIDIOutState.playing) {
                 MIDIOutState.player.resume();
@@ -179,7 +246,7 @@ export namespace MIDIOut {
         updateMIDIStatusBarItem();
     };
 
-    export const resetMIDI = () => {
+    export const resetMIDI = async (mute: boolean = false) => {
         if (MIDIOutState.player && MIDIOutState.playing || MIDIOutState.paused) {
             stopMIDI();
         }
@@ -187,6 +254,7 @@ export namespace MIDIOut {
             clearTimeout(timeout);
         }
         MIDIOutState = initialMIDIOutState;
+        logger(`MIDI Playback reset`, LogLevel.info, mute);
         updateMIDIStatusBarItem();
     };
 
@@ -194,19 +262,26 @@ export namespace MIDIOut {
         {
             let playBtn = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
             playBtn.command = `extension.resumeMIDI`;
-            playBtn.text = `$(play) Play MIDI`;
+            playBtn.text = `$(debug-start) Play MIDI`;
             playBtn.tooltip = `Play MIDI output file (Resumes if paused)`;
             statusBarItems.play = playBtn;
         }
         {
-            let pauseBtn = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 99);
+            let playFromBtn = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 99);
+            playFromBtn.command = `extension.playMIDIFrom`;
+            playFromBtn.text = `$(debug-continue) Play MIDI From...`;
+            playFromBtn.tooltip = `Play MIDI output file from a certain timesatmp`;
+            statusBarItems.playFrom = playFromBtn;
+        }
+        {
+            let pauseBtn = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 98);
             pauseBtn.command = `extension.pauseMIDI`;
             pauseBtn.text = `$(debug-pause) Pause MIDI`;
             pauseBtn.tooltip = `Pause MIDI playback`;
             statusBarItems.pause = pauseBtn;
         }
         {
-            let stopBtn = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 98);
+            let stopBtn = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 97);
             stopBtn.command = `extension.stopMIDI`;
             stopBtn.text = `$(debug-stop) Stop MIDI`;
             stopBtn.tooltip = `Stop MIDI playback`;
@@ -216,21 +291,29 @@ export namespace MIDIOut {
     };
 
     /// update status bar item for midi playback
-    const updateMIDIStatusBarItem = () => {
-        if (MIDIOutState.playing) {
-            statusBarItems.play.hide();
-            statusBarItems.pause.show();
-            statusBarItems.stop.show();
+    export const updateMIDIStatusBarItem = async () => {
+        if (shouldShowStatusBarItems()) {
+            if (MIDIOutState.playing) {
+                statusBarItems.play.hide();
+                statusBarItems.playFrom.hide();
+                statusBarItems.pause.show();
+                statusBarItems.stop.show();
+            }
+            else {
+                statusBarItems.play.show();
+                statusBarItems.playFrom.show();
+                statusBarItems.pause.hide();
+                statusBarItems.stop.hide();
+            }
         }
         else {
-            statusBarItems.play.show();
-            statusBarItems.pause.hide();
-            statusBarItems.stop.hide();
+            /// hide if no text editor or not LilyPond file
+            Object.values(statusBarItems).forEach((x) => x.hide());
         }
     };
 
     /// set output midi device
-    export const setOutputMIDIDevice = () => {
+    export const setOutputMIDIDevice = async () => {
         const outputs: string[] = JZZ().info().outputs.map((x: any) => x.name);
         vscode.window.showQuickPick(outputs).then((val: string | undefined) => {
             if (val) {
@@ -238,6 +321,19 @@ export namespace MIDIOut {
                 config.update(`midiPlayback.output`, val, vscode.ConfigurationTarget.Global);
             }
         });
+    };
+
+    const MIDIFileExists = (): boolean => {
+        const midiFilePath = getMidiFilePathFromWindow();
+        return fs.existsSync(midiFilePath);
+    };
+
+    const shouldShowStatusBarItems = (): boolean => {
+        const activeTextEditor = vscode.window.activeTextEditor;
+        if (activeTextEditor && activeTextEditor.document.languageId === langId && MIDIFileExists()) {
+            return true;
+        }
+        return false;
     };
 }
 

@@ -1,9 +1,10 @@
 import * as vscode from 'vscode';
 import { lilypondExists } from './util';
-import { compile } from './lilypond';
+import { compile, CompileMode, initCompile } from './lilypond';
 import { subscribeIntellisense } from './intellisense';
 import { MIDIOut } from './midiOut';
 import { MIDIIn } from './midiIn';
+import { langId } from './consts';
 
 export function activate(context: vscode.ExtensionContext) {
 	/// need to make sure `lilypond` exists in PATH variable, otherwise throw an error and exit
@@ -18,6 +19,9 @@ export function activate(context: vscode.ExtensionContext) {
 
 
 	/// ===== ===== ===== COMPILATION ===== ===== =====
+	/// init
+	initCompile();
+
 	/// compile to pdf
 	const compileCmd = vscode.commands.registerCommand('extension.compile', () => {
 		compile();
@@ -27,7 +31,9 @@ export function activate(context: vscode.ExtensionContext) {
 	/// compile upon saving
 	if (config.compilation.compileOnSave) {
 		vscode.workspace.onDidSaveTextDocument((textDoc: vscode.TextDocument) => {
-			compile(true, textDoc, 1000);
+			if (textDoc.languageId === langId) {
+				compile(CompileMode.onSave, true, textDoc, 1000);
+			}
 		});
 	}
 
@@ -52,6 +58,12 @@ export function activate(context: vscode.ExtensionContext) {
 		MIDIOut.playMIDI();
 	});
 	context.subscriptions.push(playMidiCmd);
+
+	/// play midi from
+	const playMidiFromCmd = vscode.commands.registerCommand('extension.playMIDIFrom', () => {
+		MIDIOut.playMIDIFrom();
+	});
+	context.subscriptions.push(playMidiFromCmd);
 
 	/// stop midi 
 	const stopMidiCmd = vscode.commands.registerCommand('extension.stopMIDI', () => {
@@ -89,6 +101,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 
 
+
 	/// ===== ===== ===== MIDI INPUT ===== ===== =====
 	/// start midi input
 	const startInputMidiCmd = vscode.commands.registerCommand('extension.startMIDIInput', () => {
@@ -110,6 +123,16 @@ export function activate(context: vscode.ExtensionContext) {
 
 	/// status bar items for MIDI playback
 	MIDIIn.initMIDIStatusBarItems();
+
+
+
+	
+	/// ===== ===== ===== LISTENERS ===== ===== =====
+	/// we need to update status bar when active text editor changes
+	vscode.window.onDidChangeActiveTextEditor((_) => {
+		MIDIIn.updateMIDIStatusBarItem();
+		MIDIOut.updateMIDIStatusBarItem();
+	});
 }
 
 // this method is called when your extension is deactivated

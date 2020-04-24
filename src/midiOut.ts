@@ -49,7 +49,7 @@ export namespace MIDIOut {
         throw new Error(`${mmss} does not match the required syntax: \/\^[0-9]+:[0-5][0-9]\$\/. Valid examples: 1:23, 10:59, 0:12`);
     };
 
-    const validateMIDIStartTimeInput = (durationMS: number, durationMMSS: string, mmss: string): string | undefined => {
+    export const validateMIDIStartTimeInput = (durationMS: number, durationMMSS: string, mmss: string): string | undefined => {
         try {
             const ms = MMSSToms(mmss);
             if (ms > durationMS) {

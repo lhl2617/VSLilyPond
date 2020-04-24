@@ -4,6 +4,7 @@
 - Optimise process spawning by limiting one each for compilation and intellisense
 - Code optimisations
 - Using output channels for failing processes to notify user
+- Added `Play from...` option for MIDI playback, allows user to input timestamp for MIDI to start from
 
 ## 1.1.2
 - Fix MIDI Input accepting messages that are not MIDI music messages (e.g. Modulation)

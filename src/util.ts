@@ -44,3 +44,7 @@ export const ensureDirectoryExists = (dirName: string) => {
 export const stripFileExtension = (fileName: string): string => {
 	return fileName.substring(0, fileName.lastIndexOf('.')) || fileName;
 };
+
+export const notUndefined = <T>(x: T | undefined): x is T => {
+    return x !== undefined;
+}

@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import * as cp from 'child_process';
 import * as path from 'path';
 import * as fs from 'fs';
-import { ensureDirectoryExists, logger, LogLevel } from './util';
+import { ensureDirectoryExists, logger, LogLevel, notUndefined } from './util';
 import { langId, binName } from './consts';
 
 // INTELLISENSE
@@ -98,11 +98,11 @@ const processIntellisenseErrors = (output: string, doc: vscode.TextDocument, dia
         }
     };
 
-    // @ts-ignore
     const gottenDiag: vscode.Diagnostic[] =
         errorGroups
-            .map(errGroup => processErrorGroup(errGroup))
-            .filter(x => x !== undefined);
+            .map(processErrorGroup)
+            .filter(notUndefined);
+
     const currentDiag = diagCol.get(doc.uri) ?? [];
 
     const diagnostics = currentDiag.concat(gottenDiag);

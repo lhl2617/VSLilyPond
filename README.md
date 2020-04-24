@@ -36,14 +36,14 @@ See [docs/INSTALL.md](docs/INSTALL.md) for a setup guide.
 
 ## Known Issues & FAQ
 
-Please submit issues in the [Github repository](https://github.com/lhl2617/VSLilyPond)
+Please submit issues in the [GitHub repository](https://github.com/lhl2617/VSLilyPond).
 
 See the FAQ at [docs/FAQ.md](docs/FAQ.md).
 
 ## Contributing
 
-* File bugs and/or feature requests in the [Github repository](https://github.com/lhl2617/VSLilyPond)
-* Pull requests are welcome in the [Github repository](https://github.com/lhl2617/VSLilyPond)
+* File bugs and/or feature requests in the [GitHub repository](https://github.com/lhl2617/VSLilyPond)
+* Pull requests are welcome in the [GitHub repository](https://github.com/lhl2617/VSLilyPond)
 * Buy me a Coffee ☕️ via [PayPal](https://paypal.me/lhl2617)
 
 Initial release

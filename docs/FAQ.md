@@ -11,3 +11,6 @@ On the bottom right corner in the VSCode status bar, make sure the language of t
 
 ### How to fix ``Cannot find MIDI file to play - make sure you are outputting a MIDI file``?
 Please make sure you are outputting a MIDI file via LilyPond. Read instructions [here](http://lilypond.org/doc/v2.18/Documentation/notation/midi-output).
+
+### I don't see the MIDI buttons in the status bar
+Please make sure you have an active LilyPond text editor open in VSCode. To make a document active, click on the body of the text editor. Make sure the language of the current editor is `LilyPond`.

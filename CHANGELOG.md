@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.1.1
+- Update documentation
+- Add setup guide
+
 ## 1.1.0
 - Refactored code base
 - Added test suite

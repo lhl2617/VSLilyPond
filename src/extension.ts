@@ -56,6 +56,12 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 	context.subscriptions.push(playMidiCmd);
 
+	/// play midi from
+	const playMidiFromCmd = vscode.commands.registerCommand('extension.playMIDIFrom', () => {
+		MIDIOut.playMIDIFrom();
+	});
+	context.subscriptions.push(playMidiFromCmd);
+
 	/// stop midi 
 	const stopMidiCmd = vscode.commands.registerCommand('extension.stopMIDI', () => {
 		MIDIOut.stopMIDI();

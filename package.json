@@ -44,6 +44,12 @@
 				"description": "Play MIDI from the start. You can also use the `Play MIDI` button on the left of the status bar. MIDI Playback device is set using `VSLilyPond: MIDI Playback: Set output device` command."
 			},
 			{
+				"command": "extension.playMIDIFrom",
+				"title": "VSLilyPond: MIDI Playback: Play from...",
+				"group": "MIDI Playback",
+				"description": "Play MIDI from a user-input timestamp. You can also use the `Play MIDI from...` button on the left of the status bar."
+			},
+			{
 				"command": "extension.stopMIDI",
 				"title": "VSLilyPond: MIDI Playback: Stop",
 				"group": "MIDI Playback",

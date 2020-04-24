@@ -80,8 +80,8 @@ export namespace MIDIIn {
 
 
     export const midiNumberToNoteName = (note: number, accidentals: `sharps` | `flats`, relativeMode: boolean): string => {
-        if (!(Number.isInteger(note)) || note <= 20 || note >= 128) {
-            throw new Error(`MIDI Note should be an integer within [20, 128], got ${note}`);
+        if (!(Number.isInteger(note)) || note < 12 || note > 127) {
+            throw new Error(`MIDI Note should be an integer within [12, 127], got ${note}`);
         }
         /// C3(48) -> 3
         const octaveNum = Math.trunc(note / 12) - 1;
@@ -185,10 +185,14 @@ export namespace MIDIIn {
     // @ts-ignore
     midiInMsgProcessor._receive = (msg: any) => {
         const MIDINoteNumber: number = msg[1];
-        const velocity: number = msg[2]; /// 0 if lift
-        const MIDIInputConfig = getMIDIInputConfig();
-
-        processNote(MIDINoteNumber, velocity, MIDIInputConfig)(outputNotes);
+        if (MIDINoteNumber >= 12 && MIDINoteNumber <= 127) {
+            const velocity: number = msg[2]; /// 0 if lift
+            const MIDIInputConfig = getMIDIInputConfig();
+            processNote(MIDINoteNumber, velocity, MIDIInputConfig)(outputNotes);
+        }
+        else {
+            logger(`Received other MIDI message: ${msg}`, LogLevel.warning, true);
+        }
     };
 
     /// start midi input

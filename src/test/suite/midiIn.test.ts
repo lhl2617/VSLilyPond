@@ -131,24 +131,24 @@ suite(`MIDIIn test suite`, () => {
         assert.equal(got, exp);
     });
 
-    test(`midiNumberToNoteName - exception below 20`, () => {
-        const note = 19;
+    test(`midiNumberToNoteName - exception below 12`, () => {
+        const note = 11;
         const accidentals: `sharps` | `flats` = `sharps`;
         const relativeMode = false;
 
         const expectThrow = () => MIDIIn.midiNumberToNoteName(note, accidentals, relativeMode);
 
-        assert.throws(expectThrow, new Error(`MIDI Note should be an integer within [20, 128], got ${note}`));
+        assert.throws(expectThrow, new Error(`MIDI Note should be an integer within [12, 127], got ${note}`));
     });
 
-    test(`midiNumberToNoteName - exception above 128`, () => {
-        const note = 129;
+    test(`midiNumberToNoteName - exception above 127`, () => {
+        const note = 128;
         const accidentals: `sharps` | `flats` = `sharps`;
         const relativeMode = false;
 
         const expectThrow = () => MIDIIn.midiNumberToNoteName(note, accidentals, relativeMode);
 
-        assert.throws(expectThrow, new Error(`MIDI Note should be an integer within [20, 128], got ${note}`));
+        assert.throws(expectThrow, new Error(`MIDI Note should be an integer within [12, 127], got ${note}`));
     });
 
     test(`midiNumberToNoteName - exception not integer`, () => {
@@ -158,7 +158,7 @@ suite(`MIDIIn test suite`, () => {
 
         const expectThrow = () => MIDIIn.midiNumberToNoteName(note, accidentals, relativeMode);
 
-        assert.throws(expectThrow, new Error(`MIDI Note should be an integer within [20, 128], got ${note}`));
+        assert.throws(expectThrow, new Error(`MIDI Note should be an integer within [12, 127], got ${note}`));
     });
 
     test(`midiNumberToNoteName - normal test 1`, () => {

@@ -13,7 +13,7 @@ export const logger = (msg: string, logLevel: LogLevel, mute: boolean = false) =
     const getLogger = () => {
         switch (logLevel) {
             case LogLevel.info:
-                return mute ? vscode.debug.activeDebugConsole.append : vscode.window.showInformationMessage;
+                return mute ? console.log : vscode.window.showInformationMessage;
             case LogLevel.warning:
                 return mute ? console.warn : vscode.window.showWarningMessage;
             case LogLevel.error:

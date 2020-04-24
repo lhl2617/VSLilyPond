@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { lilypondExists } from './util';
-import { compile } from './lilypond';
+import { compile, CompileMode } from './lilypond';
 import { subscribeIntellisense } from './intellisense';
 import { MIDIOut } from './midiOut';
 import { MIDIIn } from './midiIn';
@@ -27,7 +27,7 @@ export function activate(context: vscode.ExtensionContext) {
 	/// compile upon saving
 	if (config.compilation.compileOnSave) {
 		vscode.workspace.onDidSaveTextDocument((textDoc: vscode.TextDocument) => {
-			compile(true, textDoc, 1000);
+			compile(CompileMode.onSave, true, textDoc, 1000);
 		});
 	}
 

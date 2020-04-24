@@ -5,9 +5,13 @@ import * as fs from 'fs';
 import { ensureDirectoryExists, logger, LogLevel, notUndefined } from './util';
 import { langId, binName } from './consts';
 
+
 // INTELLISENSE
+
+let intellisenseProcess: cp.ChildProcessWithoutNullStreams | undefined = undefined;
 let timeout: any = undefined;
-const triggerIntellisense = (doc: vscode.TextDocument, diagCol: vscode.DiagnosticCollection, context: vscode.ExtensionContext) => {
+
+const triggerIntellisense = async (doc: vscode.TextDocument, diagCol: vscode.DiagnosticCollection, context: vscode.ExtensionContext) => {
     if (timeout) {
         clearTimeout(timeout);
         timeout = undefined;
@@ -77,7 +81,7 @@ export const getDiagError = (errGroup: string[]): DiagErrorInfo => {
     };
 };
 
-const processIntellisenseErrors = (output: string, doc: vscode.TextDocument, diagCol: vscode.DiagnosticCollection) => {
+const processIntellisenseErrors = async (output: string, doc: vscode.TextDocument, diagCol: vscode.DiagnosticCollection) => {
     const errorGroups = groupErrors(output);
     const processErrorGroup = (errGroup: string[]): vscode.Diagnostic | undefined => {
         try {
@@ -109,7 +113,7 @@ const processIntellisenseErrors = (output: string, doc: vscode.TextDocument, dia
     diagCol.set(doc.uri, diagnostics);
 };
 
-const execIntellisense = (doc: vscode.TextDocument, diagCol: vscode.DiagnosticCollection, context: vscode.ExtensionContext) => {
+const execIntellisense = async (doc: vscode.TextDocument, diagCol: vscode.DiagnosticCollection, context: vscode.ExtensionContext) => {
     diagCol.clear();
 
     const tmpPath = context.storagePath ?? "lilypondTmp";
@@ -131,21 +135,27 @@ const execIntellisense = (doc: vscode.TextDocument, diagCol: vscode.DiagnosticCo
 
             /// to include the current directory of the file as a search path
             const includeArg = `--include=${path.dirname(doc.uri.fsPath)}`;
-    
+
             const args = [`-s`].concat(additionalArgs).concat(includeArg).concat(tmpFilePath);
-    
-            const s = cp.spawn(binName, args, { cwd: tmpPath });
-    
-            s.stdout.on('data', (data) => {
+
+            if (intellisenseProcess) {
+                intellisenseProcess.kill();
+                intellisenseProcess = undefined;
+            }
+
+            intellisenseProcess = cp.spawn(binName, args, { cwd: tmpPath });
+
+            intellisenseProcess.stdout.on('data', (data) => {
                 logger(`Intellisense: no errors, ${data}`, LogLevel.info, true);
             });
-    
-            s.stderr.on('data', (data) => {
+
+            intellisenseProcess.stderr.on('data', (data) => {
                 processIntellisenseErrors(data.toString(), doc, diagCol);
             });
-    
-            s.on('close', (code) => {
+
+            intellisenseProcess.on('close', (code) => {
                 logger(`Intellisense process exited with code ${code}`, LogLevel.info, true);
+                intellisenseProcess = undefined;
             });
         }
     });

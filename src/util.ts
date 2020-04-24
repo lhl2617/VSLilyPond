@@ -13,7 +13,7 @@ export const logger = (msg: string, logLevel: LogLevel, mute: boolean = false) =
     const getLogger = () => {
         switch (logLevel) {
             case LogLevel.info:
-                return mute ? console.log : vscode.window.showInformationMessage;
+                return mute ? vscode.debug.activeDebugConsole.append : vscode.window.showInformationMessage;
             case LogLevel.warning:
                 return mute ? console.warn : vscode.window.showWarningMessage;
             case LogLevel.error:
@@ -47,4 +47,4 @@ export const stripFileExtension = (fileName: string): string => {
 
 export const notUndefined = <T>(x: T | undefined): x is T => {
     return x !== undefined;
-}
+};

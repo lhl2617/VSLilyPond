@@ -196,7 +196,7 @@ export namespace MIDIIn {
     };
 
     /// start midi input
-    export const startMIDIInput = () => {
+    export const startMIDIInput = async () => {
         const config = vscode.workspace.getConfiguration(`vslilypond`);
         MIDIInState.midiInPort = (config.midiInput.input.length) ? JZZ().openMidiIn(config.midiInput.input) : JZZ().openMidiIn();
 
@@ -205,7 +205,7 @@ export namespace MIDIIn {
         updateMIDIStatusBarItem();
     };
 
-    export const stopMIDIInput = () => {
+    export const stopMIDIInput = async () => {
         if (MIDIInState.midiInPort) {
             MIDIInState.midiInPort.disconnect();
             MIDIInState.midiInPort.close();
@@ -216,7 +216,7 @@ export namespace MIDIIn {
     };
 
     /// set input midi device
-    export const setInputMIDIDevice = () => {
+    export const setInputMIDIDevice = async () => {
         const inputs: string[] = JZZ().info().inputs.map((x: any) => x.name);
         vscode.window.showQuickPick(inputs).then((val: string | undefined) => {
             if (val) {
@@ -245,7 +245,7 @@ export namespace MIDIIn {
     };
 
     /// update status bar item for midi playback
-    const updateMIDIStatusBarItem = () => {
+    const updateMIDIStatusBarItem = async () => {
         if (MIDIInState.active) {
             statusBarItems.start.hide();
             statusBarItems.stop.show();

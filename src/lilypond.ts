@@ -4,9 +4,35 @@ import { logger, LogLevel } from './util';
 import { binName, langId } from './consts';
 import * as path from 'path';
 
+export enum CompileMode {
+    onSave, // compile on save
+    onCompile // compile on command
+};
+
+type CompilerProcessType = {
+    compileMode: CompileMode,
+    process: cp.ChildProcessWithoutNullStreams,
+};
+
+let compileProcess: CompilerProcessType | undefined = undefined;
+
 /// compile
-export const compile = (mute: boolean = false, textDocument: vscode.TextDocument | undefined = undefined, timeout: number = 10000): void => {
+export const compile = async (
+    compileMode = CompileMode.onCompile,
+    mute: boolean = false,
+    textDocument: vscode.TextDocument | undefined = undefined,
+    timeout: number = 10000
+) => {
     try {
+        if (compileProcess) {
+            if (compileProcess.compileMode === CompileMode.onCompile && compileMode === CompileMode.onSave) {
+                /// currently running compile process is onCompile and the current caller is onSave
+                /// return and do nothing
+                return;
+            }
+            compileProcess.process.kill();
+            compileProcess = undefined;
+        }
         const config = vscode.workspace.getConfiguration(`vslilypond`);
 
         const activeTextDocument = textDocument ?? vscode.window.activeTextEditor?.document;
@@ -22,19 +48,21 @@ export const compile = (mute: boolean = false, textDocument: vscode.TextDocument
 
         const args = [`-s`, formatArg].concat(additionalArgs).concat(filePath);
 
+        logger(`Compiling...`, LogLevel.info, mute);
+        compileProcess = {
+            compileMode: compileMode,
+            process: cp.spawn(binName, args, { cwd: path.dirname(filePath), timeout: timeout })
+        };
 
-        vscode.window.setStatusBarMessage(`Compiling...`);
-        const s = cp.spawn(binName, args, { cwd: path.dirname(filePath), timeout: timeout });
-
-        s.stdout.on('data', (data) => {
+        compileProcess.process.stdout.on('data', (data) => {
             logger(`stdout: ${data}`, LogLevel.info, true);
         });
 
-        s.stderr.on('data', (data) => {
+        compileProcess.process.stderr.on('data', (data) => {
             logger(`Compilation Error: ${data}`, LogLevel.error, mute);
         });
 
-        s.on('close', (code) => {
+        compileProcess.process.on('close', (code) => {
             logger(`Compilation process exited with code ${code}`, LogLevel.info, true);
             if (code === 0) {
                 logger(`Compiled successfully`, LogLevel.info, mute);
@@ -42,7 +70,7 @@ export const compile = (mute: boolean = false, textDocument: vscode.TextDocument
             else {
                 logger(`Compilation failed`, LogLevel.error, mute);
             }
-            vscode.window.setStatusBarMessage(``);
+            compileProcess = undefined;
         });
     }
     catch (err) {

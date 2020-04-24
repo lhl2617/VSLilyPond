@@ -82,7 +82,7 @@ export namespace MIDIOut {
     };
 
 
-    const pollMIDIStatus = () => {
+    const pollMIDIStatus = async () => {
         const durationMS = MIDIOutState.player.durationMS();
         const positionMS = MIDIOutState.player.positionMS();
         /// need to be called with a 500 ms timeout otherwise it will fail!
@@ -96,7 +96,7 @@ export namespace MIDIOut {
         }
     };
 
-    export const playMIDI = () => {
+    export const playMIDI = async () => {
         try {
             resetMIDI();
             loadMIDI();
@@ -116,7 +116,7 @@ export namespace MIDIOut {
         updateMIDIStatusBarItem();
     };
 
-    export const stopMIDI = () => {
+    export const stopMIDI = async () => {
         try {
             if (MIDIOutState.player && MIDIOutState.playing || MIDIOutState.paused) {
                 MIDIOutState.player.stop();
@@ -137,7 +137,7 @@ export namespace MIDIOut {
         updateMIDIStatusBarItem();
     };
 
-    export const pauseMIDI = () => {
+    export const pauseMIDI = async () => {
         try {
             if (MIDIOutState.player && MIDIOutState.playing && !MIDIOutState.paused) {
                 MIDIOutState.player.pause();
@@ -161,7 +161,7 @@ export namespace MIDIOut {
         updateMIDIStatusBarItem();
     };
 
-    export const resumeMIDI = () => {
+    export const resumeMIDI = async () => {
         try {
             if (MIDIOutState.player && MIDIOutState.paused && !MIDIOutState.playing) {
                 MIDIOutState.player.resume();
@@ -179,7 +179,7 @@ export namespace MIDIOut {
         updateMIDIStatusBarItem();
     };
 
-    export const resetMIDI = () => {
+    export const resetMIDI = async () => {
         if (MIDIOutState.player && MIDIOutState.playing || MIDIOutState.paused) {
             stopMIDI();
         }
@@ -216,7 +216,7 @@ export namespace MIDIOut {
     };
 
     /// update status bar item for midi playback
-    const updateMIDIStatusBarItem = () => {
+    const updateMIDIStatusBarItem = async () => {
         if (MIDIOutState.playing) {
             statusBarItems.play.hide();
             statusBarItems.pause.show();
@@ -230,7 +230,7 @@ export namespace MIDIOut {
     };
 
     /// set output midi device
-    export const setOutputMIDIDevice = () => {
+    export const setOutputMIDIDevice = async () => {
         const outputs: string[] = JZZ().info().outputs.map((x: any) => x.name);
         vscode.window.showQuickPick(outputs).then((val: string | undefined) => {
             if (val) {

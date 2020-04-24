@@ -1,5 +1,8 @@
 # Change Log
 
+## 1.1.2
+- Fix MIDI Input accepting messages that are not MIDI music messages (e.g. Modulation)
+
 ## 1.1.1
 - Update documentation
 - Add setup guide

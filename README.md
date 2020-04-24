@@ -46,8 +46,6 @@ See the FAQ at [docs/FAQ.md](docs/FAQ.md).
 * Pull requests are welcome in the [GitHub repository](https://github.com/lhl2617/VSLilyPond)
 * Buy me a Coffee ☕️ via [PayPal](https://paypal.me/lhl2617)
 
-Initial release
-
 ## Acknowledgements
 Base syntax highlighting depends on [LilyPond extension](https://marketplace.visualstudio.com/items?itemName=truefire.lilypond) by Trudy Firestone, under the Creative Commons Attribution-NonCommercial 3.0 Unported (CC BY-NC 3.0) license (http://creativecommons.org/licenses/by-sa/3.0/). See that repository for additional acknowledgements.
 

@@ -8,6 +8,24 @@ import { langId, binName } from './consts';
 
 // INTELLISENSE
 
+/// make ready an output channel
+let intellisenseOutputChannel: vscode.OutputChannel | undefined = undefined;
+const initIntellisense = () => {
+    intellisenseOutputChannel = vscode.window.createOutputChannel(`VSLilyPond: Intellisense`);
+};
+
+const outputToChannel = async (msg: string, show: boolean = false) => {
+    if (intellisenseOutputChannel) {
+        intellisenseOutputChannel.appendLine(msg);
+        if (show) {
+            intellisenseOutputChannel.show(true);
+        }
+    }
+    else {
+        logger(`Unable to output to Intellisense OutputChannel, ${msg}`, LogLevel.warning, true);
+    }
+};
+
 let intellisenseProcess: cp.ChildProcessWithoutNullStreams | undefined = undefined;
 let timeout: any = undefined;
 
@@ -114,54 +132,62 @@ const processIntellisenseErrors = async (output: string, doc: vscode.TextDocumen
 };
 
 const execIntellisense = async (doc: vscode.TextDocument, diagCol: vscode.DiagnosticCollection, context: vscode.ExtensionContext) => {
-    diagCol.clear();
+    try {
+        diagCol.clear();
 
-    const tmpPath = context.storagePath ?? "lilypondTmp";
-
-    /// ensure this dir exists
-    ensureDirectoryExists(tmpPath);
-
-    const tmpFilePath = path.join(tmpPath, 'intellisenseTmp.txt');
-
-    const config = vscode.workspace.getConfiguration(`vslilypond`);
-
-    fs.writeFile(tmpFilePath, doc.getText(), (err) => {
-        if (err) {
-            /// mute here because it is just intellisense
-            logger(err.message, LogLevel.error, true);
-        }
-        else {
-            const additionalArgs: string[] = config.intellisense.additionalCommandLineArguments.trim().split(/\s+/);
-
-            /// to include the current directory of the file as a search path
-            const includeArg = `--include=${path.dirname(doc.uri.fsPath)}`;
-
-            const args = [`-s`].concat(additionalArgs).concat(includeArg).concat(tmpFilePath);
-
-            if (intellisenseProcess) {
-                intellisenseProcess.kill();
-                intellisenseProcess = undefined;
+        const tmpPath = context.storagePath ?? "lilypondTmp";
+    
+        /// ensure this dir exists
+        ensureDirectoryExists(tmpPath);
+    
+        const tmpFilePath = path.join(tmpPath, 'intellisenseTmp.txt');
+    
+        const config = vscode.workspace.getConfiguration(`vslilypond`);
+    
+        fs.writeFile(tmpFilePath, doc.getText(), (err) => {
+            if (err) {
+                /// mute here because it is just intellisense
+                logger(err.message, LogLevel.error, true);
             }
-
-            intellisenseProcess = cp.spawn(binName, args, { cwd: tmpPath });
-
-            intellisenseProcess.stdout.on('data', (data) => {
-                logger(`Intellisense: no errors, ${data}`, LogLevel.info, true);
-            });
-
-            intellisenseProcess.stderr.on('data', (data) => {
-                processIntellisenseErrors(data.toString(), doc, diagCol);
-            });
-
-            intellisenseProcess.on('close', (code) => {
-                logger(`Intellisense process exited with code ${code}`, LogLevel.info, true);
-                intellisenseProcess = undefined;
-            });
-        }
-    });
+            else {
+                const additionalArgs: string[] = config.intellisense.additionalCommandLineArguments.trim().split(/\s+/);
+    
+                /// to include the current directory of the file as a search path
+                const includeArg = `--include=${path.dirname(doc.uri.fsPath)}`;
+    
+                const args = [`-s`].concat(additionalArgs).concat(includeArg).concat(tmpFilePath);
+    
+                if (intellisenseProcess) {
+                    intellisenseProcess.kill();
+                    intellisenseProcess = undefined;
+                }
+    
+                intellisenseProcess = cp.spawn(binName, args, { cwd: tmpPath });
+    
+                intellisenseProcess.stdout.on('data', (data) => {
+                    logger(`Intellisense: no errors, ${data}`, LogLevel.info, true);
+                });
+    
+                intellisenseProcess.stderr.on('data', (data) => {
+                    processIntellisenseErrors(data.toString(), doc, diagCol);
+                });
+    
+                intellisenseProcess.on('close', (code) => {
+                    logger(`Intellisense process exited with code ${code}`, LogLevel.info, true);
+                    intellisenseProcess = undefined;
+                });
+            }
+        });
+    }
+    catch (err) {
+        const errMsg = `Intellisense failed with error ${err.message}`;
+        logger(errMsg, LogLevel.error, true);
+        outputToChannel(errMsg, true);
+    }
 };
 
 export const subscribeIntellisense = (context: vscode.ExtensionContext, diagCol: vscode.DiagnosticCollection) => {
+    initIntellisense();
     if (vscode.window.activeTextEditor && vscode.window.activeTextEditor.document.languageId === langId) {
         triggerIntellisense(vscode.window.activeTextEditor.document, diagCol, context);
     }

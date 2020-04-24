@@ -187,6 +187,7 @@ export namespace MIDIOut {
             clearTimeout(timeout);
         }
         MIDIOutState = initialMIDIOutState;
+        logger(`MIDI Playback reset`, LogLevel.info, false);
         updateMIDIStatusBarItem();
     };
 

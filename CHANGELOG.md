@@ -1,5 +1,10 @@
 # Change Log
 
+## 1.1.3
+- Optimise process spawning by limiting one each for compilation and intellisense
+- Code optimisations
+- Using output channels for failing processes to notify user
+
 ## 1.1.2
 - Fix MIDI Input accepting messages that are not MIDI music messages (e.g. Modulation)
 

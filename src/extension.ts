@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { lilypondExists } from './util';
-import { compile, CompileMode } from './lilypond';
+import { compile, CompileMode, initCompile } from './lilypond';
 import { subscribeIntellisense } from './intellisense';
 import { MIDIOut } from './midiOut';
 import { MIDIIn } from './midiIn';
@@ -18,6 +18,9 @@ export function activate(context: vscode.ExtensionContext) {
 
 
 	/// ===== ===== ===== COMPILATION ===== ===== =====
+	/// init
+	initCompile();
+	
 	/// compile to pdf
 	const compileCmd = vscode.commands.registerCommand('extension.compile', () => {
 		compile();

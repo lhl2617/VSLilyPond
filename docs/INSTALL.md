@@ -6,6 +6,12 @@
 * VSCode PDF previewer (Recommended: [vscode-pdf](https://marketplace.visualstudio.com/items?itemName=tomoki1207.pdf))
 * (Optional) MIDI Devices for MIDI Input and Playback
 
+## [VSLilyPond](https://marketplace.visualstudio.com/items?itemName=lhl2617.vslilypond) Extension Setup Guide
+
+1. Open the Extensions left panel in VSCode (Windows: Ctrl+Shift+X; MacOS: Cmd+Shift+X).
+2. Type in `VsLilyPond` in the search bar.
+3. Install the extension, then reload VSCode.
+
 ## [LilyPond](http://lilypond.org/) Setup Guide
 
 1. Go to the [LilyPond Downloads page](https://lilypond.org/download.html).

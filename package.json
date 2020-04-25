@@ -19,7 +19,8 @@
 		"music"
 	],
 	"extensionDependencies": [
-		"truefire.lilypond"
+		"truefire.lilypond",
+		"lhl2617.lilypond-snippets"
 	],
 	"activationEvents": [
 		"onCommand:extension.playMIDI",

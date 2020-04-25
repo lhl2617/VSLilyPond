@@ -1,7 +1,10 @@
 # Change Log
 
+## 1.1.6
+- Add extension installation instructions
+
 ## 1.1.5
-Correct typo in documentation
+- Correct typo in documentation
 
 ## 1.1.4
 - Added dependency for LilyPond AutoComplete (Commands & Keywords)

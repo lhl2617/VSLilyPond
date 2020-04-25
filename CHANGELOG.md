@@ -1,5 +1,8 @@
 # Change Log
 
+## 1.1.4
+- Added dependency for LilyPond AutoComplete (Commands & Keywords)
+
 ## 1.1.3
 - Optimise process spawning by limiting one each for compilation and intellisense
 - Code optimisations

@@ -1,6 +1,6 @@
 # VSLilyPond
 
-Provides syntax and error highlighting, compilation on save, MIDI (input and playback) support for [LilyPond](http://lilypond.org/) in VSCode. Works with any VSCode supported PDF previewer for PDF preview.
+Provides syntax and error highlighting, IntelliSense and AutoComplete, compilation on save, MIDI (input and playback) support for [LilyPond](http://lilypond.org/) in VSCode. Works with any VSCode supported PDF previewer for PDF preview.
 
 See [docs/INSTALL.md](docs/INSTALL.md) for a setup guide.
 
@@ -8,6 +8,9 @@ See [docs/INSTALL.md](docs/INSTALL.md) for a setup guide.
 
 ### Syntax and error highlighting 📜 
 ![Syntax and error highlighting](./docs/assets/gifs/syntaxHighlighting.gif)
+
+### IntelliSense and AutoComplete 💡
+![IntelliSense and AutoComplete](./docs/assets/gifs/intellisense.gif)
 
 ### Compilation on save 💾
 ![Compilation on save](./docs/assets/gifs/compileSave.gif)
@@ -48,5 +51,8 @@ See the FAQ at [docs/FAQ.md](docs/FAQ.md).
 
 ## Acknowledgements
 Base syntax highlighting depends on [LilyPond extension](https://marketplace.visualstudio.com/items?itemName=truefire.lilypond) by Trudy Firestone, under the Creative Commons Attribution-NonCommercial 3.0 Unported (CC BY-NC 3.0) license (http://creativecommons.org/licenses/by-sa/3.0/). See that repository for additional acknowledgements.
+
+IntelliSense and AutoComplete depends on [LilyPond AutoComplete (Commands & Keywords) extension](https://marketplace.visualstudio.com/items?itemName=lhl2617.lilypond-snippets),
+under the (MIT license)[https://github.com/lhl2617/VSLilyPond-snippets/blob/master/LICENSE].
 
 License: Creative Commons Attribution-NonCommercial 3.0 Unported (CC BY-NC 3.0) license, http://creativecommons.org/licenses/by-sa/3.0/.

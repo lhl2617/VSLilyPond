@@ -135,7 +135,8 @@ const execIntellisense = async (doc: vscode.TextDocument, diagCol: vscode.Diagno
     try {
         diagCol.clear();
 
-        const tmpPath = context.storagePath ?? "lilypondTmp";
+        /// storagePath may be undefined if the workspace is not active
+        const tmpPath = context.storagePath ?? context.globalStoragePath;
     
         /// ensure this dir exists
         ensureDirectoryExists(tmpPath);

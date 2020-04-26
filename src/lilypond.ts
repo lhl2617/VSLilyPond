@@ -39,7 +39,7 @@ export const compile = async (
     compileMode = CompileMode.onCompile,
     mute: boolean = false,
     textDocument: vscode.TextDocument | undefined = undefined,
-    timeout: number = 10000
+    timeout: number = 0
 ) => {
     try {
         if (compileProcess) {

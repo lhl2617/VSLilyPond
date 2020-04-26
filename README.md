@@ -4,6 +4,10 @@ Provides syntax and error highlighting, IntelliSense and AutoComplete, compilati
 
 See [docs/INSTALL.md](docs/INSTALL.md) for a setup guide.
 
+## Note
+
+This extension is currently undergoing active development, whilst every effort has been made to prevent breaking changes, should they exist, please report issues in the [GitHub repository](https://github.com/lhl2617/VSLilyPond).
+
 ## Features
 
 ### Syntax and error highlighting 📜 

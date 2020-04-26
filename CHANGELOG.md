@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.1.8
+- Kill timeout for LilyPond spawns - might expose this as user configurable in the future
+- Add note in README.md about active development
+- Move extension back to preview mode
+- Add warning to Catalina
+
 ## 1.1.7
 - Make explicit minimum VSCode version
 - Fallback storagePath to globalStoragePath for IntelliSense

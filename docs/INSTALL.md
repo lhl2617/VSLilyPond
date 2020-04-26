@@ -18,8 +18,10 @@
 1. Go to the [LilyPond Downloads page](https://lilypond.org/download.html).
 2. Under "For users", choose your OS.
 3. Under "Packages", download the installation package and install LilyPond.
-4. [MacOS X and Windows only] Follow the instructions under "Running on the command-line" to set LilyPond to run on your command line.
+4. [macOS X and Windows only] Follow the instructions under "Running on the command-line" to set LilyPond to run on your command line.
 5. To test your LilyPond installation, make sure you can run LilyPond by typing `lilypond` on any terminal/shell.
+
+Note: macOS Catalina (10.15) (and newer) does not support 32-bit applications--please use the 64-bit download link for LilyPond.
 
 LilyPond Manuals and Guides can be found on [lilypond.org](http://lilypond.org).
 

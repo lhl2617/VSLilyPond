@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.1.7
+- Make explicit minimum VSCode version
+- Fallback storagePath to globalStoragePath for IntelliSense
+
 ## 1.1.6
 - Add extension installation instructions
 

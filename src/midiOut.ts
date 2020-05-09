@@ -1,5 +1,7 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
+import * as filetype from 'file-type';
+import * as path from 'path';
 import { logger, LogLevel, stripFileExtension } from './util';
 import * as JZZ from 'jzz';
 /// no types for jzz-midi-smf
@@ -9,7 +11,6 @@ import { langId } from './consts';
 jzzMidiSmf(JZZ);
 
 export namespace MIDIOut {
-
     let timeout: any = undefined;
     let statusBarItems: Record<string, vscode.StatusBarItem> = {};
 
@@ -82,26 +83,66 @@ export namespace MIDIOut {
         return 0;
     };
 
-    const getMidiFilePathFromWindow = () => {
+
+    /// tries to get the corresponding midi file path from the active text editor
+    /// tries in the sequence: .midi, .mid, content-type matching audio/midi
+    /// NB potentially could cache from baseFilePath to the midiFilePath; however,
+    /// if user changes extension halfway, could cause ambiguities.
+    const getMidiFilePathFromWindow = async () => {
         const activeTextEditor = vscode.window.activeTextEditor;
         if (!activeTextEditor) {
             throw new Error(`No active \`lilypond\`text editor open (Please click inside a \`lilypond\` text document to make it active)`);
         }
-        const midiFileName = stripFileExtension(activeTextEditor.document.uri.fsPath) + `.mid`;
+
+        const existsCheck = (filePath: string): string | undefined => {
+            if (fs.existsSync(filePath)) { return filePath; }
+            return undefined;
+        };
+
+        /// in the same folder, enumerate through the files with same file name but different extensions
+        /// check if their mime type is audio/midi
+        /// return the first matching file path
+        const getFirstMidiTypeFilePath = async (baseFilePath: string) => {
+            const dirname = path.dirname(baseFilePath);
+
+            /// file paths of files with same file name as baseFilePath
+            const filePaths =
+                fs.readdirSync(dirname)
+                    /// add in dirname
+                    .map((p: string) => `${dirname}${path.sep}${p}`)
+                    /// filter by name (this also takes in files with extra chars)
+                    .filter((p: string) => p.substr(0, baseFilePath.length) === baseFilePath);
+
+            /// get the first file that has audio/midi content-type
+            for (const p of filePaths) {
+                const mimeType = (await filetype.fromFile(p))?.mime;
+                if (mimeType === `audio/midi`) {
+                    return p;
+                }
+            }
+            return undefined;
+        };
+
+        const baseFilePath = stripFileExtension(activeTextEditor.document.uri.fsPath);
+
+        /// no existsCheck required for getFirstMidi... part 
+        const midiFileName =
+            existsCheck(`${baseFilePath}.midi`) ??
+            existsCheck(`${baseFilePath}.mid`) ??
+            (await getFirstMidiTypeFilePath(baseFilePath));
+
+        if (!midiFileName) {
+            throw new Error(`Cannot find MIDI file to play - make sure you are outputting a MIDI file`);
+        }
         return midiFileName;
     };
 
     /// loads midi file based on current active text editor into MIDIOutState.player
-    const loadMIDI = () => {
+    const loadMIDI = async () => {
         try {
-            const midiFileName = getMidiFilePathFromWindow();
-            let data: string;
-            try {
-                data = fs.readFileSync(midiFileName, `binary`);
-            }
-            catch (err) {
-                throw new Error(`Cannot find MIDI file to play - make sure you are outputting a MIDI file`);
-            }
+            const midiFileName = await getMidiFilePathFromWindow();
+
+            const data = fs.readFileSync(midiFileName, `binary`);
             /// .SMF is passed to JZZ from jzz-midi-smf
             // @ts-ignore
             const smf = JZZ.MIDI.SMF(data);
@@ -142,7 +183,7 @@ export namespace MIDIOut {
     export const playMIDI = async () => {
         try {
             resetMIDI(true);
-            loadMIDI();
+            await loadMIDI();
 
             if (MIDIOutState.player) {
                 MIDIOutState.player.play();
@@ -162,7 +203,7 @@ export namespace MIDIOut {
     export const playMIDIFrom = async () => {
         try {
             resetMIDI(true);
-            loadMIDI();
+            await loadMIDI();
 
             if (MIDIOutState.player) {
                 /// get the maximum duration and ask user to input the required duration
@@ -292,7 +333,7 @@ export namespace MIDIOut {
 
     /// update status bar item for midi playback
     export const updateMIDIStatusBarItem = async () => {
-        if (shouldShowStatusBarItems()) {
+        if (await shouldShowStatusBarItems()) {
             if (MIDIOutState.playing) {
                 statusBarItems.play.hide();
                 statusBarItems.playFrom.hide();
@@ -323,14 +364,22 @@ export namespace MIDIOut {
         });
     };
 
-    const MIDIFileExists = (): boolean => {
-        const midiFilePath = getMidiFilePathFromWindow();
-        return fs.existsSync(midiFilePath);
+    const MIDIFileExists = async (): Promise<boolean> => {
+        try {
+            const midiFilePath = await getMidiFilePathFromWindow();
+            if (midiFilePath) {
+                return true;
+            }
+        }
+        catch (err) {
+            return false;
+        }
+        return false;
     };
 
-    const shouldShowStatusBarItems = (): boolean => {
+    const shouldShowStatusBarItems = async (): Promise<boolean> => {
         const activeTextEditor = vscode.window.activeTextEditor;
-        if (activeTextEditor && activeTextEditor.document.languageId === langId && MIDIFileExists()) {
+        if (activeTextEditor && activeTextEditor.document.languageId === langId && await MIDIFileExists()) {
             return true;
         }
         return false;

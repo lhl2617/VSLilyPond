@@ -216,7 +216,7 @@
 		"vscode-test": "^1.3.0"
 	},
 	"dependencies": {
-		"jzz-midi-smf": "^1.3.3",
+		"jzz-midi-smf": "^1.3.5",
 		"lodash": "^4.17.15"
 	}
 }

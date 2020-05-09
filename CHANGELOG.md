@@ -1,5 +1,10 @@
 # Change Log
 
+## 1.1.9
+- Fix [\#36](https://github.com/lhl2617/VSLilyPond/issues/36)
+    - Check for midi files by following the sequence: `.midi`, `.mid`, `audio.midi`
+- Update dependencies
+
 ## 1.1.8
 - Kill timeout for LilyPond spawns - might expose this as user configurable in the future
 - Add note in README.md about active development

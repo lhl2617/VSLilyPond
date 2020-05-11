@@ -2,6 +2,7 @@
 
 ## 1.2.0
 - Add icon
+- TODO:- set option for main file and files to compile
 
 ## 1.1.9
 - Fix [\#36](https://github.com/lhl2617/VSLilyPond/issues/36)

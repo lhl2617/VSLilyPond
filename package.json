@@ -7,7 +7,7 @@
 	"description": "Provides syntax and error highlighting, compilation on save, MIDI (input and playback) support for LilyPond in VSCode. ",
 	"version": "1.1.9",
 	"preview": true,
-	"icon": "./assets/icon.png",
+	"icon": "assets/icon.png",
 	"galleryBanner": {
 		"theme": "dark"
 	},

@@ -1,5 +1,8 @@
 # Change Log
 
+## 1.2.0
+- Add icon
+
 ## 1.1.9
 - Fix [\#36](https://github.com/lhl2617/VSLilyPond/issues/36)
     - Check for midi files by following the sequence: `.midi`, `.mid`, `audio.midi`

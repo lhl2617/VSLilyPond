@@ -7,6 +7,10 @@
 	"description": "Provides syntax and error highlighting, compilation on save, MIDI (input and playback) support for LilyPond in VSCode. ",
 	"version": "1.1.9",
 	"preview": true,
+	"icon": "./assets/icon.png",
+	"galleryBanner": {
+		"theme": "dark"
+	},
 	"engines": {
 		"vscode": "^1.44.0"
 	},
@@ -153,13 +157,13 @@
 					"type": "string",
 					"default": "",
 					"group": "MIDI Playback",
-					"description": "MIDI Device used for output. If none specified, first valid device is used. You can use the command `VSLilyPond: MIDI Playback: Set output device` to select a device from a list."
+					"description": "MIDI Device used for output. If none specified, the first valid device is used. You can use the command `VSLilyPond: MIDI Playback: Set output device` to select a device from a list."
 				},
 				"vslilypond.midiInput.input": {
 					"type": "string",
 					"default": "",
 					"group": "MIDI Input",
-					"description": "MIDI Device used for input. If none specified, first valid device is used. You can use the command `VSLilyPond: MIDI Input: Set output device` to select a device from a list."
+					"description": "MIDI Device used for input. If none specified, the first valid device is used. You can use the command `VSLilyPond: MIDI Input: Set output device` to select a device from a list."
 				},
 				"vslilypond.midiInput.chordMode": {
 					"type": "boolean",

@@ -1,6 +1,6 @@
 # FAQ
 
-### How do I set up LilyPond?
+### How do I set up LilyPond / How to fix ``\`lilypond\` is not found in your system?
 See the setup guide [here](INSTALL.md).
 
 ### How to fix ``No active text editor open``?

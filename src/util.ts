@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
-import * as cp from 'child_process';
-import { binName } from './consts';
+import { binPath } from './consts';
 import * as fs from 'fs';
+import * as commandExists from 'command-exists';
 
 export enum LogLevel {
     info,
@@ -25,13 +25,9 @@ export const logger = (msg: string, logLevel: LogLevel, mute: boolean = false) =
 
 /// check whether `lilypond` is available
 export const lilypondExists = (): boolean => {
-    try {
-        cp.execSync(`${binName} -v`);
-    }
-    catch (err) {
-        return false; // does not exist
-    }
-    return true;
+    const exists = commandExists.sync(binPath);
+
+    return exists;
 };
 
 /// ensure directory exists before writing file

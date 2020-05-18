@@ -5,8 +5,9 @@
 	"license": "SEE LICENSE IN README.md",
 	"repository": "https://github.com/lhl2617/VSLilyPond",
 	"description": "Provides syntax and error highlighting, compilation on save, MIDI (input and playback) support for LilyPond in VSCode. ",
-	"version": "1.1.9",
+	"version": "1.1.10",
 	"preview": true,
+	"icon": "assets/icon.png",
 	"engines": {
 		"vscode": "^1.44.0"
 	},
@@ -109,6 +110,12 @@
 		"configuration": {
 			"title": "VSLilyPond",
 			"properties": {
+				"vslilypond.general.pathToLilypond": {
+					"type": "string",
+					"default": "lilypond",
+					"group": "general",
+					"description": "Path to `lilypond` executable. Default (`lilypond`) assumes lilypond is in PATH variables. Reload required."
+				},
 				"vslilypond.intellisense.enabled": {
 					"type": "boolean",
 					"default": true,
@@ -153,13 +160,13 @@
 					"type": "string",
 					"default": "",
 					"group": "MIDI Playback",
-					"description": "MIDI Device used for output. If none specified, first valid device is used. You can use the command `VSLilyPond: MIDI Playback: Set output device` to select a device from a list."
+					"description": "MIDI Device used for output. If none specified, the first valid device is used. You can use the command `VSLilyPond: MIDI Playback: Set output device` to select a device from a list."
 				},
 				"vslilypond.midiInput.input": {
 					"type": "string",
 					"default": "",
 					"group": "MIDI Input",
-					"description": "MIDI Device used for input. If none specified, first valid device is used. You can use the command `VSLilyPond: MIDI Input: Set output device` to select a device from a list."
+					"description": "MIDI Device used for input. If none specified, the first valid device is used. You can use the command `VSLilyPond: MIDI Input: Set output device` to select a device from a list."
 				},
 				"vslilypond.midiInput.chordMode": {
 					"type": "boolean",
@@ -200,6 +207,7 @@
 		"generateDocs": "ts-node ./src/docsGenerator/docsGenerator.ts"
 	},
 	"devDependencies": {
+		"@types/command-exists": "^1.2.0",
 		"@types/glob": "^7.1.1",
 		"@types/lodash": "^4.14.150",
 		"@types/mocha": "^7.0.1",
@@ -216,6 +224,7 @@
 		"vscode-test": "^1.3.0"
 	},
 	"dependencies": {
+		"command-exists": "^1.2.9",
 		"file-type": "^14.3.0",
 		"jzz-midi-smf": "^1.3.5",
 		"lodash": "^4.17.15"

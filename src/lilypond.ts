@@ -1,7 +1,7 @@
 import * as cp from 'child_process';
 import * as vscode from 'vscode';
 import { logger, LogLevel } from './util';
-import { binName, langId } from './consts';
+import { binPath, langId } from './consts';
 import * as path from 'path';
 
 export enum CompileMode {
@@ -74,7 +74,7 @@ export const compile = async (
         logger(`Compiling...`, LogLevel.info, mute);
         compileProcess = {
             compileMode: compileMode,
-            process: cp.spawn(binName, args, { cwd: path.dirname(filePath), timeout: timeout })
+            process: cp.spawn(binPath, args, { cwd: path.dirname(filePath) })
         };
 
         compileProcess.process.stdout.on('data', (data) => {

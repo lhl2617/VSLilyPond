@@ -7,9 +7,9 @@ import { MIDIIn } from './midiIn';
 import { langId } from './consts';
 
 export function activate(context: vscode.ExtensionContext) {
-	/// need to make sure `lilypond` exists in PATH variable, otherwise throw an error and exit
+	/// need to make sure `lilypond` exists
 	if (!lilypondExists()) {
-		vscode.window.showErrorMessage(`\`lilypond\` is not found in your system. Please make sure it is installed and in your PATH variables.`);
+		vscode.window.showErrorMessage(`\`lilypond\` is not found in your system.`);
 		return;
 	}
 

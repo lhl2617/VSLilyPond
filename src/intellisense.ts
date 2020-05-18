@@ -3,7 +3,7 @@ import * as cp from 'child_process';
 import * as path from 'path';
 import * as fs from 'fs';
 import { ensureDirectoryExists, logger, LogLevel, notUndefined } from './util';
-import { langId, binName } from './consts';
+import { langId, binPath } from './consts';
 
 
 // INTELLISENSE
@@ -163,7 +163,7 @@ const execIntellisense = async (doc: vscode.TextDocument, diagCol: vscode.Diagno
                     intellisenseProcess = undefined;
                 }
     
-                intellisenseProcess = cp.spawn(binName, args, { cwd: tmpPath });
+                intellisenseProcess = cp.spawn(binPath, args, { cwd: tmpPath });
     
                 intellisenseProcess.stdout.on('data', (data) => {
                     logger(`Intellisense: no errors, ${data}`, LogLevel.info, true);

@@ -2,6 +2,16 @@
 
 ### Can be accessed via `Settings (JSON)` or `Settings (UI)`
 
+## general
+
+### vslilypond.general.pathToLilypond
+
+Path to `lilypond` executable. Default (`lilypond`) assumes lilypond is in PATH variables. Reload required.
+
+Type: `string`
+
+Default value: `lilypond`
+
 ## Intellisense
 
 ### vslilypond.intellisense.enabled
@@ -50,7 +60,7 @@ Default value: N/A
 
 ### vslilypond.midiPlayback.output
 
-MIDI Device used for output. If none specified, first valid device is used. You can use the command `VSLilyPond: MIDI Playback: Set output device` to select a device from a list.
+MIDI Device used for output. If none specified, the first valid device is used. You can use the command `VSLilyPond: MIDI Playback: Set output device` to select a device from a list.
 
 Type: `string`
 
@@ -60,7 +70,7 @@ Default value: N/A
 
 ### vslilypond.midiInput.input
 
-MIDI Device used for input. If none specified, first valid device is used. You can use the command `VSLilyPond: MIDI Input: Set output device` to select a device from a list.
+MIDI Device used for input. If none specified, the first valid device is used. You can use the command `VSLilyPond: MIDI Input: Set output device` to select a device from a list.
 
 Type: `string`
 

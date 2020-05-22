@@ -1,9 +1,11 @@
 import * as vscode from 'vscode';
 import * as cp from 'child_process';
 import * as path from 'path';
-import * as fs from 'fs';
-import { ensureDirectoryExists, logger, LogLevel, notUndefined } from './util';
+import { logger, LogLevel } from './util';
 import { langId, binPath } from './consts';
+
+// 1.1.11: Overhauled script based on
+// https://github.com/nwhetsell/linter-lilypond/blob/master/lib/linter-lilypond.coffee
 
 
 // INTELLISENSE
@@ -29,156 +31,163 @@ const outputToChannel = async (msg: string, show: boolean = false) => {
 let intellisenseProcess: cp.ChildProcessWithoutNullStreams | undefined = undefined;
 let timeout: any = undefined;
 
-const triggerIntellisense = async (doc: vscode.TextDocument, diagCol: vscode.DiagnosticCollection, context: vscode.ExtensionContext) => {
+const triggerIntellisense = async (doc: vscode.TextDocument, diagCol: vscode.DiagnosticCollection) => {
     if (timeout) {
         clearTimeout(timeout);
         timeout = undefined;
     }
-    timeout = setTimeout(() => execIntellisense(doc, diagCol, context), 500);
+    timeout = setTimeout(() => execIntellisense(doc, diagCol), 500);
 };
 
-export type DiagErrorInfo = {
-    error: string,
-    lineNo: number,
-    charNo: number
+export type DiagnosticInfo = {
+    uri: vscode.Uri;
+    range: vscode.Range;
+    severity: vscode.DiagnosticSeverity;
+    errMsg: string;
 };
 
-/// group errors
-export const groupErrors = (output: string): string[][] => {
-    const errorLines = output.split(`\n`);
-    let errorGroups: string[][] = [];
-    let currErrGroup: string[] = [];
+const errMsgRegex = new RegExp([
+    `([^:\\n\\r]+):`,     // File path: this might not work for networked locations with :
+    `(\\d+):(\\d+):`,     // Line and column
+    ` (error|warning):`,  // Message type
+    ` ([^\\n\\r]+)`       // Message
+].join(``), `gm`);
 
-    /// group the errors
-    for (let i = 0; i < errorLines.length; ++i) {
-        const line = errorLines[i];
-        const errStr = line.match(/[0-9]+:[0-9]+/);
 
-        if (errStr && errStr.length && errStr[0].length) {
-            if (currErrGroup.length) {
-                errorGroups.push(currErrGroup);
-                currErrGroup = [];
-            }
-            currErrGroup.push(line);
-        }
-        else {
-            /// only push if there is an error /[0-9]+:[0-9]+/
-            if (currErrGroup.length) {
-                currErrGroup.push(line);
-            }
-        }
+const getDiagSeverity = (s: string): vscode.DiagnosticSeverity => {
+    switch (s) {
+        case `error`:
+            return vscode.DiagnosticSeverity.Error;
+        case `warning`:
+            return vscode.DiagnosticSeverity.Warning;
+        default:
+            return vscode.DiagnosticSeverity.Error;
     }
-    if (currErrGroup.length) {
-        errorGroups.push(currErrGroup);
-        currErrGroup = [];
-    }
-    return errorGroups;
 };
 
-export const getDiagError = (errGroup: string[]): DiagErrorInfo => {
-    if (errGroup.length === 0) {
-        throw new Error(`Error group is empty!`);
-    }
-    const errStr = errGroup[0].match(/[0-9]+:[0-9]+/);
-    if (!errStr || !errStr.length || !(errStr[0].length)) {
-        throw new Error(`Error group does not match lineNo:charNo format!`);
-    }
-    const errLine = errStr[0];
-    const split = errLine.split(`:`);
-    const lineNo = parseInt(split[0]) - 1;
-    const charNo = parseInt(split[1]);
+const indexOfRegex = (s: string, regexp: RegExp) => {
+    // console.log(s);
+    // console.log(regexp);
+    const m = s.match(regexp);
+    return m ? s.indexOf(m[0]) : -1;
+};
 
-    /// strip away filepath and line info
-    errGroup[0] = errGroup[0].substr(errGroup[0].indexOf(errLine) + errLine.length + 2);
-    const fullErr = errGroup.join(`\n`);
-
-    return {
-        error: fullErr,
-        lineNo: lineNo,
-        charNo: charNo
+const addToDiagCol = (diag: DiagnosticInfo, diagCol: vscode.DiagnosticCollection) => {
+    const { uri, severity, range, errMsg } = diag;
+    const diagnostic: vscode.Diagnostic =
+    {
+        severity: severity,
+        range: range,
+        message: errMsg,
     };
+    const currentDiags = diagCol.get(uri) ?? [];
+
+    const newDiags = currentDiags.concat(diagnostic);
+
+    diagCol.set(uri, newDiags);
+};
+
+/// redline the \include directive
+/// relative path is the actual string used
+const processIncludeError = async (doc: vscode.TextDocument, relativePath: string, diag: DiagnosticInfo) => {
+    const regexedRelativePath = relativePath.replace(/[|\\{}()[\]^$+*?.]/g, '\\\\$&');
+    console.log(regexedRelativePath)
+    const regexp = new RegExp(`\\include[\\s+]"${regexedRelativePath}"`)
+    console.log(JSON.stringify(regexp));
+    const index = indexOfRegex(doc.getText(), regexp);
+    console.log(index);
+
+    if (index >= 0) {
+        const { severity, errMsg } = diag;
+        const pos = doc.positionAt(index);
+        const newDiag: DiagnosticInfo = {
+            uri: doc.uri,
+            range: new vscode.Range(pos, new vscode.Position(pos.line + 1, 0)),
+            severity: severity,
+            errMsg: errMsg
+        }; 
+        return newDiag;
+    }
 };
 
 const processIntellisenseErrors = async (output: string, doc: vscode.TextDocument, diagCol: vscode.DiagnosticCollection) => {
-    const errorGroups = groupErrors(output);
-    const processErrorGroup = (errGroup: string[]): vscode.Diagnostic | undefined => {
+    let errGroup: RegExpExecArray | null = null;
+    while (errGroup = errMsgRegex.exec(output)) {
+        outputToChannel(`REE: ${JSON.stringify(errGroup)}`);
         try {
-            const diagErr = getDiagError(errGroup);
-            const { lineNo, charNo, error } = diagErr;
+            const uri = doc.uri;
+            const lineNo = Number.parseInt(errGroup[2], 10) - 1;
+            const charNo = Number.parseInt(errGroup[3], 10) - 1;
+            const severity = getDiagSeverity(errGroup[4]);
+            const errMsg = errGroup[5];
 
-            const diagnostic: vscode.Diagnostic =
-            {
-                severity: vscode.DiagnosticSeverity.Error,
+            const diag: DiagnosticInfo = {
+                uri: uri,
+                severity: severity,
                 range: new vscode.Range(lineNo, 0, lineNo, charNo),
-                message: error,
+                errMsg: errMsg,
             };
-            return diagnostic;
-        }
-        catch (err) {
-            logger(err.message, LogLevel.warning, true);
-            return undefined;
-        }
-    };
 
-    const gottenDiag: vscode.Diagnostic[] =
-        errorGroups
-            .map(processErrorGroup)
-            .filter(notUndefined);
-
-    const currentDiag = diagCol.get(doc.uri) ?? [];
-
-    const diagnostics = currentDiag.concat(gottenDiag);
-    diagCol.set(doc.uri, diagnostics);
-};
-
-const execIntellisense = async (doc: vscode.TextDocument, diagCol: vscode.DiagnosticCollection, context: vscode.ExtensionContext) => {
-    try {
-        diagCol.clear();
-
-        /// storagePath may be undefined if the workspace is not active
-        const tmpPath = context.storagePath ?? context.globalStoragePath;
-    
-        /// ensure this dir exists
-        ensureDirectoryExists(tmpPath);
-    
-        const tmpFilePath = path.join(tmpPath, 'intellisenseTmp.txt');
-    
-        const config = vscode.workspace.getConfiguration(`vslilypond`);
-    
-        fs.writeFile(tmpFilePath, doc.getText(), (err) => {
-            if (err) {
-                /// mute here because it is just intellisense
-                logger(err.message, LogLevel.error, true);
+            /// need to differentiate between included file and local
+            if (errGroup[1] === `-`) {
+                addToDiagCol(diag, diagCol);
             }
             else {
-                const additionalArgs: string[] = config.intellisense.additionalCommandLineArguments.trim().split(/\s+/);
-    
-                /// to include the current directory of the file as a search path
-                const includeArg = `--include=${path.dirname(doc.uri.fsPath)}`;
-    
-                const args = [`-s`].concat(additionalArgs).concat(includeArg).concat(tmpFilePath);
-    
-                if (intellisenseProcess) {
-                    intellisenseProcess.kill();
-                    intellisenseProcess = undefined;
+                const includeDiag = await processIncludeError(doc, errGroup[1], diag);
+                console.log(JSON.stringify(includeDiag))
+                if (includeDiag) {
+                    addToDiagCol(includeDiag, diagCol);
                 }
-    
-                intellisenseProcess = cp.spawn(binPath, args, { cwd: tmpPath });
-    
-                intellisenseProcess.stdout.on('data', (data) => {
-                    logger(`Intellisense: no errors, ${data}`, LogLevel.info, true);
-                });
-    
-                intellisenseProcess.stderr.on('data', (data) => {
-                    processIntellisenseErrors(data.toString(), doc, diagCol);
-                });
-    
-                intellisenseProcess.on('close', (code) => {
-                    logger(`Intellisense process exited with code ${code}`, LogLevel.info, true);
-                    intellisenseProcess = undefined;
-                });
             }
+
+        }
+        catch (err) {
+            logger(`processIntellisenseErrors error: ${err.message}`, LogLevel.error, true);
+        }
+    }
+};
+
+const execIntellisense = async (doc: vscode.TextDocument, diagCol: vscode.DiagnosticCollection) => {
+    try {
+        diagCol.clear();
+        
+        const config = vscode.workspace.getConfiguration(`vslilypond`);
+
+        const additionalArgs: string[] = config.intellisense.additionalCommandLineArguments.trim().split(/\s+/);
+
+        const intellisenseArgs = [
+            `-s`,                               /// silent mode
+            `--define-default=backend=null`,    /// to not output printed score 
+            `-`                                 /// read input from stdin
+        ];
+
+        const args = additionalArgs.concat(intellisenseArgs);
+
+        if (intellisenseProcess) {
+            intellisenseProcess.kill();
+            intellisenseProcess = undefined;
+        }
+
+        intellisenseProcess = cp.spawn(binPath, args, { cwd: path.dirname(doc.uri.fsPath) });
+
+        intellisenseProcess.stdin.write(doc.getText());
+
+        intellisenseProcess.stdin.end();
+
+        intellisenseProcess.stdout.on('data', (data) => {
+            logger(`Intellisense: no errors, ${data}`, LogLevel.info, true);
         });
+
+        intellisenseProcess.stderr.on('data', (data) => {
+            processIntellisenseErrors(data.toString(), doc, diagCol);
+        });
+
+        intellisenseProcess.on('close', (code) => {
+            logger(`Intellisense process exited with code ${code}`, LogLevel.info, true);
+            intellisenseProcess = undefined;
+        });
+
+
     }
     catch (err) {
         const errMsg = `Intellisense failed with error ${err.message}`;
@@ -190,20 +199,20 @@ const execIntellisense = async (doc: vscode.TextDocument, diagCol: vscode.Diagno
 export const subscribeIntellisense = (context: vscode.ExtensionContext, diagCol: vscode.DiagnosticCollection) => {
     initIntellisense();
     if (vscode.window.activeTextEditor && vscode.window.activeTextEditor.document.languageId === langId) {
-        triggerIntellisense(vscode.window.activeTextEditor.document, diagCol, context);
+        triggerIntellisense(vscode.window.activeTextEditor.document, diagCol);
     }
 
     context.subscriptions.push(
         vscode.window.onDidChangeActiveTextEditor(editor => {
             if (editor && editor.document.languageId === langId) {
-                triggerIntellisense(editor.document, diagCol, context);
+                triggerIntellisense(editor.document, diagCol);
             }
         })
     );
 
     context.subscriptions.push(
         vscode.workspace.onDidChangeTextDocument(e => {
-            if (e.document.languageId === langId) { triggerIntellisense(e.document, diagCol, context); }
+            if (e.document.languageId === langId) { triggerIntellisense(e.document, diagCol); }
         }));
 
     context.subscriptions.push(

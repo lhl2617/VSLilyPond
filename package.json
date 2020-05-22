@@ -113,7 +113,7 @@
 				"vslilypond.general.pathToLilypond": {
 					"type": "string",
 					"default": "lilypond",
-					"group": "general",
+					"group": "General",
 					"description": "Path to `lilypond` executable. Default (`lilypond`) assumes lilypond is in PATH variables. Reload required."
 				},
 				"vslilypond.intellisense.enabled": {
@@ -126,7 +126,7 @@
 					"type": "string",
 					"default": "",
 					"group": "Intellisense",
-					"description": "Additional command line arguments supplied to `lilypond` upon compiling for intellisense. Note that `-s` (silent mode) is predefined. If required, please also supply necessary arguments compilation additional command line arguments."
+					"description": "[TO BE DEPRECATED]: In favour of using `vslilypond.compilation.additionalCommandLineArguments`. Additional command line arguments supplied to `lilypond` upon compiling for intellisense. Note that `-s` (silent mode) is predefined. If required, please also supply necessary arguments compilation additional command line arguments."
 				},
 				"vslilypond.compilation.outputFormat": {
 					"type": "string",
@@ -142,7 +142,7 @@
 						"Generate PostScript files"
 					],
 					"group": "Compilation",
-					"description": "Output format."
+					"description": "[TO BE DEPRECATED]: In favour of supplying additional command arguments (e.g. --pdf)"
 				},
 				"vslilypond.compilation.compileOnSave": {
 					"type": "boolean",

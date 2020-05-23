@@ -10,8 +10,18 @@ import { langId, binPath } from './consts';
 
 // INTELLISENSE
 
-/// make ready an output channel
+export type DiagnosticInfo = {
+    uri: vscode.Uri;
+    range: vscode.Range;
+    severity: vscode.DiagnosticSeverity;
+    errMsg: string;
+};
+
 let intellisenseOutputChannel: vscode.OutputChannel | undefined = undefined;
+let intellisenseProcess: cp.ChildProcessWithoutNullStreams | undefined = undefined;
+let timeout: any = undefined;
+
+/// make ready an output channel
 const initIntellisense = () => {
     intellisenseOutputChannel = vscode.window.createOutputChannel(`VSLilyPond: Intellisense`);
 };
@@ -28,8 +38,6 @@ const outputToChannel = async (msg: string, show: boolean = false) => {
     }
 };
 
-let intellisenseProcess: cp.ChildProcessWithoutNullStreams | undefined = undefined;
-let timeout: any = undefined;
 
 const triggerIntellisense = async (doc: vscode.TextDocument, diagCol: vscode.DiagnosticCollection) => {
     if (timeout) {
@@ -39,14 +47,8 @@ const triggerIntellisense = async (doc: vscode.TextDocument, diagCol: vscode.Dia
     timeout = setTimeout(() => execIntellisense(doc, diagCol), 500);
 };
 
-export type DiagnosticInfo = {
-    uri: vscode.Uri;
-    range: vscode.Range;
-    severity: vscode.DiagnosticSeverity;
-    errMsg: string;
-};
 
-const errMsgRegex = new RegExp([
+export const errMsgRegex = new RegExp([
     `([^:\\n\\r]+):`,     // File path: this might not work for networked locations with :
     `(\\d+):(\\d+):`,     // Line and column
     ` (error|warning):`,  // Message type
@@ -66,8 +68,6 @@ const getDiagSeverity = (s: string): vscode.DiagnosticSeverity => {
 };
 
 const indexOfRegex = (s: string, regexp: RegExp) => {
-    // console.log(s);
-    // console.log(regexp);
     const m = s.match(regexp);
     return m ? s.indexOf(m[0]) : -1;
 };
@@ -90,13 +90,9 @@ const addToDiagCol = (diag: DiagnosticInfo, diagCol: vscode.DiagnosticCollection
 /// redline the \include directive
 /// relative path is the actual string used
 const processIncludeError = async (doc: vscode.TextDocument, relativePath: string, diag: DiagnosticInfo) => {
-    const regexedRelativePath = relativePath.replace(/[|\\{}()[\]^$+*?.]/g, '\\\\$&');
-    console.log(regexedRelativePath)
-    const regexp = new RegExp(`\\include[\\s+]"${regexedRelativePath}"`)
-    console.log(JSON.stringify(regexp));
+    const regexpRaw = `\"${relativePath}\"`.replace(/[|\\\/{}()[\]^$+*?.]/g, '\\$&');
+    const regexp = new RegExp(regexpRaw);
     const index = indexOfRegex(doc.getText(), regexp);
-    console.log(index);
-
     if (index >= 0) {
         const { severity, errMsg } = diag;
         const pos = doc.positionAt(index);
@@ -104,7 +100,7 @@ const processIncludeError = async (doc: vscode.TextDocument, relativePath: strin
             uri: doc.uri,
             range: new vscode.Range(pos, new vscode.Position(pos.line + 1, 0)),
             severity: severity,
-            errMsg: errMsg
+            errMsg: `${relativePath}: ${errMsg}`
         }; 
         return newDiag;
     }
@@ -113,7 +109,6 @@ const processIncludeError = async (doc: vscode.TextDocument, relativePath: strin
 const processIntellisenseErrors = async (output: string, doc: vscode.TextDocument, diagCol: vscode.DiagnosticCollection) => {
     let errGroup: RegExpExecArray | null = null;
     while (errGroup = errMsgRegex.exec(output)) {
-        outputToChannel(`REE: ${JSON.stringify(errGroup)}`);
         try {
             const uri = doc.uri;
             const lineNo = Number.parseInt(errGroup[2], 10) - 1;
@@ -134,7 +129,6 @@ const processIntellisenseErrors = async (output: string, doc: vscode.TextDocumen
             }
             else {
                 const includeDiag = await processIncludeError(doc, errGroup[1], diag);
-                console.log(JSON.stringify(includeDiag))
                 if (includeDiag) {
                     addToDiagCol(includeDiag, diagCol);
                 }

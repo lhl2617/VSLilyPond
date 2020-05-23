@@ -1,5 +1,8 @@
 # Change Log
 
+## 1.3.0
+- Fix bug in which bugs in included files erroneously show in current file
+
 ## 1.2.0
 - Add icon
 - Add configuration to let users set path to lilypond executable.

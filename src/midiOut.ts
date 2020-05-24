@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as filetype from 'file-type';
 import * as path from 'path';
-import { logger, LogLevel, stripFileExtension } from './util';
+import { logger, LogLevel, stripFileExtension, getConfiguration } from './util';
 import * as JZZ from 'jzz';
 /// no types for jzz-midi-smf
 // @ts-ignore
@@ -151,7 +151,7 @@ export namespace MIDIOut {
             MIDIOutState.currMidiFilePath = midiFileName;
             MIDIOutState.player = smf.player();
 
-            const config = vscode.workspace.getConfiguration(`vslilypond`);
+            const config = getConfiguration();
             const midiout = (config.midiPlayback.output.length) ? JZZ().openMidiOut(config.midiPlayback.output) : JZZ().openMidiOut();
             MIDIOutState.player.connect(midiout);
         }
@@ -360,8 +360,8 @@ export namespace MIDIOut {
         const outputs: string[] = JZZ().info().outputs.map((x: any) => x.name);
         vscode.window.showQuickPick(outputs).then((val: string | undefined) => {
             if (val) {
-                const config = vscode.workspace.getConfiguration(`vslilypond`);
-                config.update(`midiPlayback.output`, val, vscode.ConfigurationTarget.Global);
+                const config = getConfiguration();
+                config.update(`midiPlayback.output`, val);
             }
         });
     };

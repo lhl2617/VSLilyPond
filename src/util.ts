@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as commandExists from 'command-exists';
+import { debugMode } from './consts';
 
 export enum LogLevel {
     info,
@@ -9,7 +10,7 @@ export enum LogLevel {
 };
 
 export const getBinPath = () => {
-    const config = vscode.workspace.getConfiguration(`vslilypond`);
+    const config = getConfiguration();
     return config.general.pathToLilypond;
 };
 
@@ -17,11 +18,11 @@ export const logger = (msg: string, logLevel: LogLevel, mute: boolean = false) =
     const getLogger = () => {
         switch (logLevel) {
             case LogLevel.info:
-                return mute ? console.log : vscode.window.showInformationMessage;
+                return mute ? (debugMode ? console.log : () => undefined) : vscode.window.showInformationMessage;
             case LogLevel.warning:
-                return mute ? console.warn : vscode.window.showWarningMessage;
+                return mute ? (debugMode ? console.warn : () => undefined) : vscode.window.showWarningMessage;
             case LogLevel.error:
-                return mute ? console.error : vscode.window.showErrorMessage;
+                return mute ? (debugMode ? console.error : () => undefined) : vscode.window.showErrorMessage;
         }
     };
     getLogger()(msg);
@@ -49,4 +50,25 @@ export const stripFileExtension = (fileName: string): string => {
 
 export const notUndefined = <T>(x: T | undefined): x is T => {
     return x !== undefined;
+};
+
+/// wrapper to get the workspace folder from a document if provided
+export const getConfiguration = (doc: vscode.TextDocument | undefined = undefined) => {
+    /// if a doc is provided use its workspace folder    
+    if (doc) {
+        return vscode.workspace.getConfiguration(`vslilypond`, doc);
+    }
+    /// if not, try the active text editor
+    if (vscode.window.activeTextEditor) {
+        const workspaceFolder = vscode.workspace.getWorkspaceFolder(vscode.window.activeTextEditor.document.uri);
+        if (workspaceFolder) {
+            return vscode.workspace.getConfiguration(`vslilypond`, workspaceFolder);
+        }
+    }
+    /// try the root workspace folder if present
+    if (vscode.workspace.workspaceFolders?.length) {
+        const workspaceFolder = vscode.workspace.workspaceFolders[0];
+        return vscode.workspace.getConfiguration(`vslilypond`, workspaceFolder);
+    }
+    return vscode.workspace.getConfiguration(`vslilypond`);
 };

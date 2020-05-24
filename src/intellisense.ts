@@ -1,8 +1,9 @@
 import * as vscode from 'vscode';
 import * as cp from 'child_process';
 import * as path from 'path';
-import { logger, getBinPath, LogLevel, ensureDirectoryExists } from './util';
+import { logger, getBinPath, LogLevel, ensureDirectoryExists, getConfiguration } from './util';
 import { langId } from './consts';
+import * as fs from 'fs';
 
 // 1.1.11: Overhauled script based on
 // https://github.com/nwhetsell/linter-lilypond/blob/master/lib/linter-lilypond.coffee
@@ -49,7 +50,7 @@ const triggerIntellisense = async (doc: vscode.TextDocument, diagCol: vscode.Dia
 
 
 export const errMsgRegex = new RegExp([
-    `([^:\\n\\r]+):`,     // File path: this might not work for networked locations with :
+    `([^\\n\\r]+):`,     // Absolute file path
     `(\\d+):(\\d+):`,     // Line and column
     ` (error|warning):`,  // Message type
     ` ([^\\n\\r]+)`       // Message
@@ -67,11 +68,6 @@ const getDiagSeverity = (s: string): vscode.DiagnosticSeverity => {
     }
 };
 
-const indexOfRegex = (s: string, regexp: RegExp) => {
-    const m = s.match(regexp);
-    return m ? s.indexOf(m[0]) : -1;
-};
-
 const addToDiagCol = (diag: DiagnosticInfo, diagCol: vscode.DiagnosticCollection) => {
     const { uri, severity, range, errMsg } = diag;
     const diagnostic: vscode.Diagnostic =
@@ -87,30 +83,33 @@ const addToDiagCol = (diag: DiagnosticInfo, diagCol: vscode.DiagnosticCollection
     diagCol.set(uri, newDiags);
 };
 
-/// redline the \include directive
-/// relative path is the actual string used
-const processIncludeError = async (doc: vscode.TextDocument, relativePath: string, diag: DiagnosticInfo) => {
-    const regexpRaw = `\"${relativePath}\"`.replace(/[|\\\/{}()[\]^$+*?.]/g, '\\$&');
-    const regexp = new RegExp(regexpRaw);
-    const index = indexOfRegex(doc.getText(), regexp);
-    if (index >= 0) {
-        const { severity, errMsg } = diag;
-        const pos = doc.positionAt(index);
-        const newDiag: DiagnosticInfo = {
-            uri: doc.uri,
-            range: new vscode.Range(pos, new vscode.Position(pos.line + 1, 0)),
-            severity: severity,
-            errMsg: `${relativePath}: ${errMsg}`
-        };
-        return newDiag;
-    }
-};
-
 const processIntellisenseErrors = async (output: string, doc: vscode.TextDocument, diagCol: vscode.DiagnosticCollection) => {
     let errGroup: RegExpExecArray | null = null;
     while (errGroup = errMsgRegex.exec(output)) {
         try {
-            const uri = doc.uri;
+            /// for some reason, if --output is set, all the include errors are absolute paths
+            /// this means we can trust that errGroup[1] is an absolute path.
+            /// we check anyway
+            const getUri = (gotPath: string) => {
+                /// need to differentiate between included file and local
+                if (gotPath === `-`) {
+                    return doc.uri;
+                }
+                /// got an absolute path
+                else if (path.isAbsolute(gotPath) && fs.existsSync(gotPath)) {
+                    return vscode.Uri.file(gotPath);
+                }
+                /// got a relative path
+                else if (fs.existsSync(path.join(path.dirname(doc.uri.fsPath), gotPath))) {
+                    const absPath = path.join(path.dirname(doc.uri.fsPath), gotPath);
+                    return vscode.Uri.file(absPath);
+                }
+                else {
+                    throw new Error(`Error in \`${gotPath}\``);
+                }
+            };
+
+            const uri = getUri(errGroup[1]);
             const lineNo = Number.parseInt(errGroup[2], 10) - 1;
             const charNo = Number.parseInt(errGroup[3], 10) - 1;
             const severity = getDiagSeverity(errGroup[4]);
@@ -123,20 +122,11 @@ const processIntellisenseErrors = async (output: string, doc: vscode.TextDocumen
                 errMsg: errMsg,
             };
 
-            /// need to differentiate between included file and local
-            if (errGroup[1] === `-`) {
-                addToDiagCol(diag, diagCol);
-            }
-            else {
-                const includeDiag = await processIncludeError(doc, errGroup[1], diag);
-                if (includeDiag) {
-                    addToDiagCol(includeDiag, diagCol);
-                }
-            }
+            addToDiagCol(diag, diagCol);
 
         }
         catch (err) {
-            logger(`processIntellisenseErrors error: ${err.message}`, LogLevel.error, true);
+            outputToChannel(`Intellisense error: ${err.message}, ${output}`, true);
         }
     }
 };
@@ -145,21 +135,16 @@ const execIntellisense = async (doc: vscode.TextDocument, diagCol: vscode.Diagno
     try {
         diagCol.clear();
 
-        const tmpPath = context.storagePath ?? context.globalStoragePath;
-
-        const config = vscode.workspace.getConfiguration(`vslilypond`);
+        const config = getConfiguration(doc);
         const binPath = getBinPath();
-
-        /// ensure this dir exists
-        ensureDirectoryExists(tmpPath);
 
         const additionalArgs: string[] = config.compilation.additionalCommandLineArguments.trim().split(/\s+/);
 
+        /// notice that this produces a midi file titled `-.mid`.
+        /// it is possible to set output to filePath, but then the --include gets broken...
         const intellisenseArgs = [
-            `-s`,                               /// silent mode
+            `--loglevel=WARNING`,               /// Output errors and warnings
             `--define-default=backend=null`,    /// to not output printed score 
-            `-o`,                               /// output any items (e.g. MIDI)
-            tmpPath,                            /// to temporary path
             `-`                                 /// read input from stdin
         ];
 
@@ -180,7 +165,9 @@ const execIntellisense = async (doc: vscode.TextDocument, diagCol: vscode.Diagno
             logger(`Intellisense: no errors, ${data}`, LogLevel.info, true);
         });
 
+
         intellisenseProcess.stderr.on('data', (data) => {
+            // console.error(data.toString())
             processIntellisenseErrors(data.toString(), doc, diagCol);
         });
 

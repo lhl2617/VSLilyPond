@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { lilypondExists } from './util';
+import { lilypondExists, getConfiguration, getBinPath } from './util';
 import { compile, CompileMode, initCompile, killCompilation } from './lilypond';
 import { subscribeIntellisense } from './intellisense';
 import { MIDIOut } from './midiOut';
@@ -9,11 +9,11 @@ import { langId } from './consts';
 export function activate(context: vscode.ExtensionContext) {
 	/// need to make sure `lilypond` exists
 	if (!lilypondExists()) {
-		vscode.window.showErrorMessage(`\`lilypond\` is not found in your system.`);
+		vscode.window.showErrorMessage(`\`lilypond\` (${getBinPath()}) is not found in your system.`);
 		return;
 	}
 
-	const config = vscode.workspace.getConfiguration(`vslilypond`);
+	const config = getConfiguration();
 
 
 

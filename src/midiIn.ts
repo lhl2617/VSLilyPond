@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { logger, LogLevel } from './util';
+import { logger, LogLevel, getConfiguration } from './util';
 import * as JZZ from 'jzz';
 /// no types for jzz-midi-smf
 // @ts-ignore
@@ -32,7 +32,7 @@ export namespace MIDIIn {
     /// function called when a midi msg is received
 
     const getMIDIInputConfig = (): MIDIInputConfig => {
-        const config = vscode.workspace.getConfiguration(`vslilypond`);
+        const config = getConfiguration();
 
         const { accidentals, relativeMode, chordMode } = config.midiInput;
 
@@ -198,7 +198,7 @@ export namespace MIDIIn {
 
     /// start midi input
     export const startMIDIInput = async () => {
-        const config = vscode.workspace.getConfiguration(`vslilypond`);
+        const config = getConfiguration();
         MIDIInState.midiInPort = (config.midiInput.input.length) ? JZZ().openMidiIn(config.midiInput.input) : JZZ().openMidiIn();
 
         MIDIInState.midiInPort.connect(midiInMsgProcessor);
@@ -221,8 +221,8 @@ export namespace MIDIIn {
         const inputs: string[] = JZZ().info().inputs.map((x: any) => x.name);
         vscode.window.showQuickPick(inputs).then((val: string | undefined) => {
             if (val) {
-                const config = vscode.workspace.getConfiguration(`vslilypond`);
-                config.update(`midiInput.input`, val, vscode.ConfigurationTarget.Global);
+                const config = getConfiguration();
+                config.update(`midiInput.input`, val);
             }
         });
     };

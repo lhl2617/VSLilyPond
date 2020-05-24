@@ -1,6 +1,6 @@
 import * as cp from 'child_process';
 import * as vscode from 'vscode';
-import { logger, LogLevel, getBinPath } from './util';
+import { logger, LogLevel, getBinPath, getConfiguration } from './util';
 import { langId } from './consts';
 import * as path from 'path';
 import * as fs from 'fs';
@@ -37,7 +37,7 @@ const outputToChannel = async (msg: string, show: boolean = false) => {
 };
 
 const getCompilationFilePath = (compileMode: CompileMode, activeTextDocument: vscode.TextDocument) => {
-    const config = vscode.workspace.getConfiguration(`vslilypond`);
+    const config = getConfiguration(activeTextDocument);
     /// first, trivially check if the pathToMainCompilationFile is set
     if (config.compilation.pathToMainCompilationFile.trim().length > 0) {
         /// now check if it's onSave and the setting is set to compileMainFileOnSave
@@ -103,7 +103,6 @@ export const compile = async (
             killCompilation(true);
         }
 
-        const config = vscode.workspace.getConfiguration(`vslilypond`);
         const binPath = getBinPath();
 
         const activeTextDocument = textDocument ?? vscode.window.activeTextEditor?.document;
@@ -115,6 +114,7 @@ export const compile = async (
 
         const filePath = getCompilationFilePath(compileMode, activeTextDocument);
 
+        const config = getConfiguration(activeTextDocument);
         const additionalArgs: string[] = config.compilation.additionalCommandLineArguments.trim().split(/\s+/);
 
         const args = [`-s`].concat(additionalArgs).concat(filePath);
@@ -122,21 +122,20 @@ export const compile = async (
         if (compileMode === CompileMode.onSave) {
             outputToChannel(`[SAVED]: ${filePath}`);
         }
-        outputToChannel(`Compiling...`);
+        outputToChannel(`Compiling: ${filePath}`);
         logger(`Compiling...`, LogLevel.info, mute);
         compileProcess = {
             compileMode: compileMode,
             process: cp.spawn(binPath, args, { cwd: path.dirname(filePath) })
         };
 
-        let gotStderr = ``;
-
         compileProcess.process.stdout.on('data', (data) => {
-            logger(`stdout: ${data.toString()}`, LogLevel.info, true);
+            logger(`stdout: ${data}`, LogLevel.info, true);
         });
 
         compileProcess.process.stderr.on('data', (data) => {
-            gotStderr += data.toString();
+            logger(`Compilation Error: ${data}`, LogLevel.error, mute);
+            outputToChannel(`Compilation Error: ${data}`, true);
         });
 
         compileProcess.process.on('close', (code) => {
@@ -146,7 +145,8 @@ export const compile = async (
                 outputToChannel(`Compilation successful`);
             }
             else {
-                throw new Error(`Process exited with code: ${code}. ${gotStderr}.`);
+                logger(`Compilation failed`, LogLevel.error, mute);
+                outputToChannel(`Compilation failed`, true);
             }
             compileProcess = undefined;
         });

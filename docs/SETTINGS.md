@@ -16,7 +16,7 @@ Deprecated in favour of supplying additional command arguments (e.g. --pdf) in `
 
 ### vslilypond.general.pathToLilypond
 
-Path to `lilypond` executable. Default (`lilypond`) assumes lilypond is in PATH variables. Reload required.
+Path to `lilypond` executable. Default (`lilypond`) assumes lilypond is in PATH variables.
 
 Type: `string`
 
@@ -42,9 +42,25 @@ Type: `boolean`
 
 Default value: `true`
 
+### vslilypond.compilation.compileMainFileOnSave
+
+If true, compiles main file set in `Vslilypond › Compilation › Path To Main Compilation File`, else, compiles the currently active file.
+
+Type: `boolean`
+
+Default value: `true`
+
 ### vslilypond.compilation.additionalCommandLineArguments
 
-Additional command line arguments supplied to `lilypond` upon compilation. Note that `-s` (silent mode) is predefined. Intellisense also uses these arguments.
+Additional command line arguments supplied to `lilypond` upon compilation. Note that `--loglevel=WARNING` is predefined. Intellisense also uses these arguments.
+
+Type: `string`
+
+Default value: N/A
+
+### vslilypond.compilation.pathToMainCompilationFile
+
+Relative path (from workspace folder root) of the file to compile when a document in a folder/workspace is saved. If none specified, the current active file is compiled.
 
 Type: `string`
 
@@ -93,13 +109,3 @@ Set accidentals as sharps/flats.
 Type: `string`
 
 Default value: `sharps`
-
-## Project
-
-### vslilypond.project.pathToMainCompilationFile
-
-File to compile when a document is saved. If none specified, current file is saved.
-
-Type: `string`
-
-Default value: N/A

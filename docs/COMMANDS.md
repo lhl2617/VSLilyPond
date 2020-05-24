@@ -30,7 +30,7 @@ Reset MIDI playback state.
 
 ### VSLilyPond: MIDI Playback: Set output device
 
-Set MIDI output device for playback. You can also change this manually in settings under `Vslilypond › Midi Playback: Output`.
+Set workspace-folder specific MIDI output device for playback. You can also change this manually (for more scopes) in settings under `Vslilypond › Midi Playback: Output`.
 
 ## MIDI Input
 
@@ -44,16 +44,18 @@ Stop MIDI Input. You can also use the `Stop MIDI Input` button on the right of t
 
 ### VSLilyPond: MIDI Input: Set input device
 
-Set MIDI input device for input. You can also change this manually in settings under `Vslilypond › Midi Input: Input`.
+Set workspace-folder specific MIDI input device for input. You can also change this manually (for more scopes) in settings under `Vslilypond › Midi Input: Input`.
 
 ## Compilation
 
 ### VSLilyPond: Compile
 
-Invoke the `lilypond` command to compile the file. See settings under `Vslilypond › Compilation` for additional settings like arguments.
+Compiles a main lilypond file (if specified in settings). Otherwise, compiles the currently active lilypond file. (Use VSLilyPond: Compile this specific file` to compile the currently active file). See settings under `Vslilypond › Compilation` for additional settings.
 
-## Project
+### VSLilyPond: Compile this specific file
 
-### VSLilyPond: Init Project
+Compiles the currently active lilypond file. Use `VSLilyPond: Compile` to compile a main file if specified in settings.
 
-Creates a VSLilyPond project file for finer (folder-level) configuration.
+### VSLilyPond: Kill Compilation Process
+
+Kill the compilation process.

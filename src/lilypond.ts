@@ -1,6 +1,6 @@
 import * as cp from 'child_process';
 import * as vscode from 'vscode';
-import { logger, LogLevel, getBinPath, getConfiguration } from './util';
+import { logger, LogLevel, getBinPath, getConfiguration, errMsgRegex } from './util';
 import { langId } from './consts';
 import * as path from 'path';
 import * as fs from 'fs';
@@ -78,6 +78,15 @@ export const killCompilation = async (mute: boolean = false) => {
     }
 };
 
+/// process and show the error
+export const processStderr = async (output: string) => {
+    let errGroup: RegExpExecArray | null = null;
+    while (errGroup = errMsgRegex.exec(output)) {
+        const channelOutput = `${errGroup[4].toLocaleUpperCase()}: ${errGroup[0]}`;
+        outputToChannel(channelOutput, errGroup[4] === `error`);
+    }
+};
+
 /// compile
 export const compile = async (
     compileMode = CompileMode.onCompile,
@@ -117,10 +126,10 @@ export const compile = async (
         const config = getConfiguration(activeTextDocument);
         const additionalArgs: string[] = config.compilation.additionalCommandLineArguments.trim().split(/\s+/);
 
-        const args = [`-s`].concat(additionalArgs).concat(filePath);
+        const args = [`--loglevel=WARNING`].concat(additionalArgs).concat(filePath);
 
         if (compileMode === CompileMode.onSave) {
-            outputToChannel(`[SAVED]: ${filePath}`);
+            outputToChannel(`[SAVED]: ${textDocument?.uri.fsPath}`);
         }
         outputToChannel(`Compiling: ${filePath}`);
         logger(`Compiling...`, LogLevel.info, mute);
@@ -134,8 +143,9 @@ export const compile = async (
         });
 
         compileProcess.process.stderr.on('data', (data) => {
-            logger(`Compilation Error: ${data}`, LogLevel.error, mute);
-            outputToChannel(`Compilation Error: ${data}`, true);
+            // logger(`Compilation Error: ${data}`, LogLevel.error, mute);
+            // outputToChannel(`Compilation Error: ${data}`, true);
+            processStderr(data.toString());            
         });
 
         compileProcess.process.on('close', (code) => {

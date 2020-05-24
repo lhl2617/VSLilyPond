@@ -2,6 +2,8 @@
 
 ## 1.3.0
 - Fix bug in which bugs in included files erroneously show in current file
+- Enable settings to up to folder level
+- Add feature to allow main file compilation
 
 ## 1.2.0
 - Add icon

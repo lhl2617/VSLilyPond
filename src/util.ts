@@ -72,3 +72,10 @@ export const getConfiguration = (doc: vscode.TextDocument | undefined = undefine
     }
     return vscode.workspace.getConfiguration(`vslilypond`);
 };
+
+export const errMsgRegex = new RegExp([
+    `([^\\n\\r]+):`,      // Absolute file path
+    `(\\d+):(\\d+):`,     // Line and column
+    ` (error|warning):`,  // Message type
+    ` ([^\\n\\r]+)`       // Message
+].join(``), `gm`);

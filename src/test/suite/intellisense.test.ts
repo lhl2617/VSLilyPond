@@ -1,7 +1,7 @@
 import * as assert from 'assert';
 
 import * as vscode from 'vscode';
-import { errMsgRegex } from '../../intellisense';
+import { errMsgRegex } from '../../util';
 
 suite(`Intellisense Test Suite`, () => {
     vscode.window.showInformationMessage('Start intellisense tests.');

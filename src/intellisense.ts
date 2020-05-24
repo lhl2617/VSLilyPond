@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import * as cp from 'child_process';
 import * as path from 'path';
-import { logger, getBinPath, LogLevel, ensureDirectoryExists, getConfiguration } from './util';
+import { logger, getBinPath, LogLevel, getConfiguration, errMsgRegex } from './util';
 import { langId } from './consts';
 import * as fs from 'fs';
 
@@ -47,14 +47,6 @@ const triggerIntellisense = async (doc: vscode.TextDocument, diagCol: vscode.Dia
     }
     timeout = setTimeout(() => execIntellisense(doc, diagCol, context), 500);
 };
-
-
-export const errMsgRegex = new RegExp([
-    `([^\\n\\r]+):`,     // Absolute file path
-    `(\\d+):(\\d+):`,     // Line and column
-    ` (error|warning):`,  // Message type
-    ` ([^\\n\\r]+)`       // Message
-].join(``), `gm`);
 
 
 const getDiagSeverity = (s: string): vscode.DiagnosticSeverity => {
@@ -151,7 +143,7 @@ const execIntellisense = async (doc: vscode.TextDocument, diagCol: vscode.Diagno
         const args = additionalArgs.concat(intellisenseArgs); /// intellisense args must come after as they overwrite prior args
 
         if (intellisenseProcess) {
-            intellisenseProcess.kill();
+            intellisenseProcess.kill(`SIGKILL`);
             intellisenseProcess = undefined;
         }
 
@@ -167,7 +159,6 @@ const execIntellisense = async (doc: vscode.TextDocument, diagCol: vscode.Diagno
 
 
         intellisenseProcess.stderr.on('data', (data) => {
-            // console.error(data.toString())
             processIntellisenseErrors(data.toString(), doc, diagCol);
         });
 

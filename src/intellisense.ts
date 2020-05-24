@@ -1,8 +1,8 @@
 import * as vscode from 'vscode';
 import * as cp from 'child_process';
 import * as path from 'path';
-import { logger, LogLevel } from './util';
-import { langId, binPath } from './consts';
+import { logger, getBinPath, LogLevel, ensureDirectoryExists } from './util';
+import { langId } from './consts';
 
 // 1.1.11: Overhauled script based on
 // https://github.com/nwhetsell/linter-lilypond/blob/master/lib/linter-lilypond.coffee
@@ -39,12 +39,12 @@ const outputToChannel = async (msg: string, show: boolean = false) => {
 };
 
 
-const triggerIntellisense = async (doc: vscode.TextDocument, diagCol: vscode.DiagnosticCollection) => {
+const triggerIntellisense = async (doc: vscode.TextDocument, diagCol: vscode.DiagnosticCollection, context: vscode.ExtensionContext) => {
     if (timeout) {
         clearTimeout(timeout);
         timeout = undefined;
     }
-    timeout = setTimeout(() => execIntellisense(doc, diagCol), 500);
+    timeout = setTimeout(() => execIntellisense(doc, diagCol, context), 500);
 };
 
 
@@ -101,7 +101,7 @@ const processIncludeError = async (doc: vscode.TextDocument, relativePath: strin
             range: new vscode.Range(pos, new vscode.Position(pos.line + 1, 0)),
             severity: severity,
             errMsg: `${relativePath}: ${errMsg}`
-        }; 
+        };
         return newDiag;
     }
 };
@@ -141,21 +141,29 @@ const processIntellisenseErrors = async (output: string, doc: vscode.TextDocumen
     }
 };
 
-const execIntellisense = async (doc: vscode.TextDocument, diagCol: vscode.DiagnosticCollection) => {
+const execIntellisense = async (doc: vscode.TextDocument, diagCol: vscode.DiagnosticCollection, context: vscode.ExtensionContext) => {
     try {
         diagCol.clear();
-        
-        const config = vscode.workspace.getConfiguration(`vslilypond`);
 
-        const additionalArgs: string[] = config.intellisense.additionalCommandLineArguments.trim().split(/\s+/);
+        const tmpPath = context.storagePath ?? context.globalStoragePath;
+
+        const config = vscode.workspace.getConfiguration(`vslilypond`);
+        const binPath = getBinPath();
+
+        /// ensure this dir exists
+        ensureDirectoryExists(tmpPath);
+
+        const additionalArgs: string[] = config.compilation.additionalCommandLineArguments.trim().split(/\s+/);
 
         const intellisenseArgs = [
             `-s`,                               /// silent mode
             `--define-default=backend=null`,    /// to not output printed score 
+            `-o`,                               /// output any items (e.g. MIDI)
+            tmpPath,                            /// to temporary path
             `-`                                 /// read input from stdin
         ];
 
-        const args = additionalArgs.concat(intellisenseArgs);
+        const args = additionalArgs.concat(intellisenseArgs); /// intellisense args must come after as they overwrite prior args
 
         if (intellisenseProcess) {
             intellisenseProcess.kill();
@@ -193,20 +201,20 @@ const execIntellisense = async (doc: vscode.TextDocument, diagCol: vscode.Diagno
 export const subscribeIntellisense = (context: vscode.ExtensionContext, diagCol: vscode.DiagnosticCollection) => {
     initIntellisense();
     if (vscode.window.activeTextEditor && vscode.window.activeTextEditor.document.languageId === langId) {
-        triggerIntellisense(vscode.window.activeTextEditor.document, diagCol);
+        triggerIntellisense(vscode.window.activeTextEditor.document, diagCol, context);
     }
 
     context.subscriptions.push(
         vscode.window.onDidChangeActiveTextEditor(editor => {
             if (editor && editor.document.languageId === langId) {
-                triggerIntellisense(editor.document, diagCol);
+                triggerIntellisense(editor.document, diagCol, context);
             }
         })
     );
 
     context.subscriptions.push(
         vscode.workspace.onDidChangeTextDocument(e => {
-            if (e.document.languageId === langId) { triggerIntellisense(e.document, diagCol); }
+            if (e.document.languageId === langId) { triggerIntellisense(e.document, diagCol, context); }
         }));
 
     context.subscriptions.push(

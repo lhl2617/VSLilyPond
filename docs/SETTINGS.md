@@ -2,7 +2,17 @@
 
 ### Can be accessed via `Settings (JSON)` or `Settings (UI)`
 
-## general
+## :heavy_exclamation_mark: DEPRECATION NOTICE (1.3.0) :heavy_exclamation_mark:
+
+### :x: vslilypond.intellisense.additionalCommandLineArguments
+
+Deprecated in favour of using `vslilypond.compilation.additionalCommandLineArguments`
+
+### :x: vslilypond.compilation.outputFormat
+
+Deprecated in favour of supplying additional command arguments (e.g. --pdf) in `vslilypond.compilation.additionalCommandLineArguments`
+
+## General
 
 ### vslilypond.general.pathToLilypond
 
@@ -16,29 +26,13 @@ Default value: `lilypond`
 
 ### vslilypond.intellisense.enabled
 
-Displays errors with red underlines as you type. Disable to improve performance. Reload required.
+Displays errors as you type. Disable to improve performance. Reload required.
 
 Type: `boolean`
 
 Default value: `true`
 
-### vslilypond.intellisense.additionalCommandLineArguments
-
-Additional command line arguments supplied to `lilypond` upon compiling for intellisense. Note that `-s` (silent mode) is predefined. If required, please also supply necessary arguments compilation additional command line arguments.
-
-Type: `string`
-
-Default value: N/A
-
 ## Compilation
-
-### vslilypond.compilation.outputFormat
-
-Output format.
-
-Type: `string`
-
-Default value: `pdf`
 
 ### vslilypond.compilation.compileOnSave
 
@@ -50,7 +44,7 @@ Default value: `true`
 
 ### vslilypond.compilation.additionalCommandLineArguments
 
-Additional command line arguments supplied to `lilypond` upon compilation. Note that `-s` (silent mode) is predefined. If you use intellisense, please also supply necessary arguments to the corresponding additional command line arguments.
+Additional command line arguments supplied to `lilypond` upon compilation. Note that `-s` (silent mode) is predefined. Intellisense also uses these arguments.
 
 Type: `string`
 
@@ -94,8 +88,18 @@ Default value: `false`
 
 ### vslilypond.midiInput.accidentals
 
-Set accidentals as sharp/flat.
+Set accidentals as sharps/flats.
 
 Type: `string`
 
 Default value: `sharps`
+
+## Project
+
+### vslilypond.project.pathToMainCompilationFile
+
+File to compile when a document is saved. If none specified, current file is saved.
+
+Type: `string`
+
+Default value: N/A

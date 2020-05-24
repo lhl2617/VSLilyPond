@@ -1,12 +1,14 @@
 import * as cp from 'child_process';
 import * as vscode from 'vscode';
-import { logger, LogLevel } from './util';
-import { binPath, langId } from './consts';
+import { logger, LogLevel, getBinPath } from './util';
+import { langId } from './consts';
 import * as path from 'path';
+import * as fs from 'fs';
 
 export enum CompileMode {
     onSave, // compile on save
-    onCompile // compile on command
+    onCompile, // compile on command (extension.compile)
+    onCompileSpecific // compile on command to compile specific file
 };
 
 type CompilerProcessType = {
@@ -34,25 +36,75 @@ const outputToChannel = async (msg: string, show: boolean = false) => {
     }
 };
 
+const getCompilationFilePath = (compileMode: CompileMode, activeTextDocument: vscode.TextDocument) => {
+    const config = vscode.workspace.getConfiguration(`vslilypond`);
+    /// first, trivially check if the pathToMainCompilationFile is set
+    if (config.compilation.pathToMainCompilationFile.trim().length > 0) {
+        /// now check if it's onSave and the setting is set to compileMainFileOnSave
+        /// or, if it's onCompile
+        if ((compileMode === CompileMode.onSave && config.compilation.compileMainFileOnSave) ||
+            compileMode === CompileMode.onCompile) {
+
+            /// get the "root" folder path of the current file       
+            const workspaceFolderPath = vscode.workspace.getWorkspaceFolder(activeTextDocument.uri)?.uri.fsPath;
+            if (workspaceFolderPath) {
+                const compileFilePath = path.join(workspaceFolderPath, config.compilation.pathToMainCompilationFile.trim());
+                if (fs.existsSync(compileFilePath)) {
+                    return compileFilePath;
+                }
+                else {
+                    throw new Error(`Unable to find main file to compile: file does not exist (${compileFilePath})`);
+                }
+            }
+            else {
+                throw new Error(`Unable to find main file to compile: unable to get workspace folder path of the currently active text document`);
+            }
+        }
+    }
+
+    /// active document
+    return activeTextDocument.uri.fsPath;
+};
+
+/// kill the compilation process
+export const killCompilation = async (mute: boolean = false) => {
+    if (compileProcess) {
+        compileProcess.process.kill(`SIGKILL`);
+        compileProcess = undefined;
+        logger(`Compilation process killed`, LogLevel.info, mute);
+    }
+    else {
+        logger(`No active compilation process running`, LogLevel.info, mute);
+    }
+};
+
 /// compile
 export const compile = async (
     compileMode = CompileMode.onCompile,
     mute: boolean = false,
-    textDocument: vscode.TextDocument | undefined = undefined,
-    timeout: number = 0
+    textDocument: vscode.TextDocument | undefined = undefined
 ) => {
     try {
         if (compileProcess) {
-            /// basically, onSave compile cannot override onCompile compile
-            if (compileProcess.compileMode === CompileMode.onCompile && compileMode === CompileMode.onSave) {
+            /// basically, onSave compile cannot override onCompile/onCompileSpecific compile
+            if (compileMode === CompileMode.onSave &&
+                (compileProcess.compileMode === CompileMode.onCompile || compileProcess.compileMode === CompileMode.onCompileSpecific)) {
                 /// currently running compile process is onCompile and the current caller is onSave
                 /// return and do nothing
                 return;
             }
-            compileProcess.process.kill();
-            compileProcess = undefined;
+
+            /// do not let onCompile/onCompileSpecific override each other
+            if (compileProcess.compileMode === CompileMode.onCompile || compileProcess.compileMode === CompileMode.onCompileSpecific) {
+                logger(`Cannot compile - there is an existing compilation, please wait for that to finish.`, LogLevel.error, false);
+                return;
+            }
+
+            killCompilation(true);
         }
+
         const config = vscode.workspace.getConfiguration(`vslilypond`);
+        const binPath = getBinPath();
 
         const activeTextDocument = textDocument ?? vscode.window.activeTextEditor?.document;
         if (!activeTextDocument) { throw new Error(`No active text editor open`); }
@@ -60,12 +112,12 @@ export const compile = async (
         const docLangId = activeTextDocument.languageId;
         if (docLangId !== langId) { throw new Error(`Only Lilypond files are supported`); }
 
-        const filePath = activeTextDocument.uri.fsPath;
 
-        const formatArg = `--${config.compilation.outputFormat}`;
+        const filePath = getCompilationFilePath(compileMode, activeTextDocument);
+
         const additionalArgs: string[] = config.compilation.additionalCommandLineArguments.trim().split(/\s+/);
 
-        const args = [`-s`, formatArg].concat(additionalArgs).concat(filePath);
+        const args = [`-s`].concat(additionalArgs).concat(filePath);
 
         if (compileMode === CompileMode.onSave) {
             outputToChannel(`[SAVED]: ${filePath}`);
@@ -77,13 +129,14 @@ export const compile = async (
             process: cp.spawn(binPath, args, { cwd: path.dirname(filePath) })
         };
 
+        let gotStderr = ``;
+
         compileProcess.process.stdout.on('data', (data) => {
-            logger(`stdout: ${data}`, LogLevel.info, true);
+            logger(`stdout: ${data.toString()}`, LogLevel.info, true);
         });
 
         compileProcess.process.stderr.on('data', (data) => {
-            logger(`Compilation Error: ${data}`, LogLevel.error, mute);
-            outputToChannel(`Compilation Error: ${data}`, true);
+            gotStderr += data.toString();
         });
 
         compileProcess.process.on('close', (code) => {
@@ -93,14 +146,13 @@ export const compile = async (
                 outputToChannel(`Compilation successful`);
             }
             else {
-                logger(`Compilation failed`, LogLevel.error, mute);
-                outputToChannel(`Compilation failed`, true);
+                throw new Error(`Process exited with code: ${code}. ${gotStderr}.`);
             }
             compileProcess = undefined;
         });
     }
     catch (err) {
         logger(err.message, LogLevel.error, mute);
-        outputToChannel(`Compilation failed with: ${err.message}`, true);
+        outputToChannel(`Compilation failed: ${err.message}`, true);
     }
 };

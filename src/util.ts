@@ -1,5 +1,4 @@
 import * as vscode from 'vscode';
-import { binPath } from './consts';
 import * as fs from 'fs';
 import * as commandExists from 'command-exists';
 
@@ -7,6 +6,11 @@ export enum LogLevel {
     info,
     warning,
     error
+};
+
+export const getBinPath = () => {
+    const config = vscode.workspace.getConfiguration(`vslilypond`);
+    return config.general.pathToLilypond;
 };
 
 export const logger = (msg: string, logLevel: LogLevel, mute: boolean = false) => {
@@ -25,6 +29,8 @@ export const logger = (msg: string, logLevel: LogLevel, mute: boolean = false) =
 
 /// check whether `lilypond` is available
 export const lilypondExists = (): boolean => {
+    const binPath = getBinPath();
+
     const exists = commandExists.sync(binPath);
 
     return exists;
@@ -38,7 +44,7 @@ export const ensureDirectoryExists = (dirName: string) => {
 };
 
 export const stripFileExtension = (fileName: string): string => {
-	return fileName.substring(0, fileName.lastIndexOf('.')) || fileName;
+    return fileName.substring(0, fileName.lastIndexOf('.')) || fileName;
 };
 
 export const notUndefined = <T>(x: T | undefined): x is T => {

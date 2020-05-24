@@ -26,6 +26,7 @@
 	],
 	"activationEvents": [
 		"onCommand:extension.playMIDI",
+		"onCommand:extension.playMIDIFrom",
 		"onCommand:extension.stopMIDI",
 		"onCommand:extension.pauseMIDI",
 		"onCommand:extension.resumeMIDI",
@@ -35,6 +36,8 @@
 		"onCommand:extension.stopMIDIInput",
 		"onCommand:extension.setInputMIDIDevice",
 		"onCommand:extension.compile",
+		"onCommand:extension.compileThisSpecificFile",
+		"onCommand:extension.killCompilationProcess",
 		"onLanguage:lilypond"
 	],
 	"main": "./out/extension.js",
@@ -104,7 +107,19 @@
 				"command": "extension.compile",
 				"title": "VSLilyPond: Compile",
 				"group": "Compilation",
-				"description": "Invoke the `lilypond` command to compile the file. See settings under `Vslilypond › Compilation` for additional settings like arguments."
+				"description": "Compiles a main lilypond file (if specified in settings). Otherwise, compiles the currently active lilypond file. (Use VSLilyPond: Compile this specific file` to compile the currently active file). See settings under `Vslilypond › Compilation` for additional settings."
+			},
+			{
+				"command": "extension.compileThisSpecificFile",
+				"title": "VSLilyPond: Compile this specific file",
+				"group": "Compilation",
+				"description": "Compiles the currently active lilypond file. Use `VSLilyPond: Compile` to compile a main file if specified in settings."
+			},
+			{
+				"command": "extension.killCompilationProcess",
+				"title": "VSLilyPond: Kill Compilation Process",
+				"group": "Compilation",
+				"description": "Kill the compilation process."
 			}
 		],
 		"configuration": {
@@ -114,35 +129,13 @@
 					"type": "string",
 					"default": "lilypond",
 					"group": "General",
-					"description": "Path to `lilypond` executable. Default (`lilypond`) assumes lilypond is in PATH variables. Reload required."
+					"description": "Path to `lilypond` executable. Default (`lilypond`) assumes lilypond is in PATH variables."
 				},
 				"vslilypond.intellisense.enabled": {
 					"type": "boolean",
 					"default": true,
 					"group": "Intellisense",
-					"description": "Displays errors with red underlines as you type. Disable to improve performance. Reload required."
-				},
-				"vslilypond.intellisense.additionalCommandLineArguments": {
-					"type": "string",
-					"default": "",
-					"group": "Intellisense",
-					"description": "[TO BE DEPRECATED]: In favour of using `vslilypond.compilation.additionalCommandLineArguments`. Additional command line arguments supplied to `lilypond` upon compiling for intellisense. Note that `-s` (silent mode) is predefined. If required, please also supply necessary arguments compilation additional command line arguments."
-				},
-				"vslilypond.compilation.outputFormat": {
-					"type": "string",
-					"default": "pdf",
-					"enum": [
-						"pdf",
-						"png",
-						"ps"
-					],
-					"enumDescriptions": [
-						"Generate PDF files",
-						"Generate PNG files",
-						"Generate PostScript files"
-					],
-					"group": "Compilation",
-					"description": "[TO BE DEPRECATED]: In favour of supplying additional command arguments (e.g. --pdf)"
+					"description": "Displays errors as you type. Disable to improve performance. Reload required."
 				},
 				"vslilypond.compilation.compileOnSave": {
 					"type": "boolean",
@@ -150,11 +143,23 @@
 					"group": "Compilation",
 					"description": "Compiles file upon saving. Disable to improve performance. Reload required."
 				},
+				"vslilypond.compilation.compileMainFileOnSave": {
+					"type": "boolean",
+					"default": true,
+					"group": "Compilation",
+					"description": "If true, compiles main file set in `Vslilypond › Compilation › Path To Main Compilation File`, else, compiles the currently active file."
+				},
 				"vslilypond.compilation.additionalCommandLineArguments": {
 					"type": "string",
 					"default": "",
 					"group": "Compilation",
-					"description": "Additional command line arguments supplied to `lilypond` upon compilation. Note that `-s` (silent mode) is predefined. If you use intellisense, please also supply necessary arguments to the corresponding additional command line arguments."
+					"description": "Additional command line arguments supplied to `lilypond` upon compilation. Note that `-s` (silent mode) is predefined. Intellisense also uses these arguments."
+				},
+				"vslilypond.compilation.pathToMainCompilationFile": {
+					"type": "string",
+					"default": "",
+					"group": "Compilation",
+					"description": "Relative path (from workspace folder root) of the file to compile when a document in a folder/workspace is saved. If none specified, the current active file is compiled."
 				},
 				"vslilypond.midiPlayback.output": {
 					"type": "string",
@@ -192,7 +197,7 @@
 						"Treat accidentals as flats."
 					],
 					"group": "MIDI Input",
-					"description": "Set accidentals as sharp/flat."
+					"description": "Set accidentals as sharps/flats."
 				}
 			}
 		}

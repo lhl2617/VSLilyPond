@@ -111,7 +111,9 @@ export namespace MIDIOut {
                     /// add in dirname
                     .map((p: string) => `${dirname}${path.sep}${p}`)
                     /// filter by name (this also takes in files with extra chars)
-                    .filter((p: string) => p.substr(0, baseFilePath.length) === baseFilePath);
+                    .filter((p: string) => p.substr(0, baseFilePath.length) === baseFilePath)
+                    /// sort by shortest baseFilePath, this is to give priority to test-1 instead of test-1-1
+                    .sort((a, b) => a.length - b.length);
 
             /// get the first file that has audio/midi content-type
             for (const p of filePaths) {

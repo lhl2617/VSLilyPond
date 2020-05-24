@@ -51,3 +51,9 @@ Set MIDI input device for input. You can also change this manually in settings u
 ### VSLilyPond: Compile
 
 Invoke the `lilypond` command to compile the file. See settings under `Vslilypond › Compilation` for additional settings like arguments.
+
+## Project
+
+### VSLilyPond: Init Project
+
+Creates a VSLilyPond project file for finer (folder-level) configuration.

@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
-import { lilypondExists } from './util';
-import { compile, CompileMode, initCompile } from './lilypond';
+import { lilypondExists, getConfiguration, getBinPath } from './util';
+import { compile, CompileMode, initCompile, killCompilation } from './lilypond';
 import { subscribeIntellisense } from './intellisense';
 import { MIDIOut } from './midiOut';
 import { MIDIIn } from './midiIn';
@@ -9,11 +9,11 @@ import { langId } from './consts';
 export function activate(context: vscode.ExtensionContext) {
 	/// need to make sure `lilypond` exists
 	if (!lilypondExists()) {
-		vscode.window.showErrorMessage(`\`lilypond\` is not found in your system.`);
+		vscode.window.showErrorMessage(`\`lilypond\` (${getBinPath()}) is not found in your system.`);
 		return;
 	}
 
-	const config = vscode.workspace.getConfiguration(`vslilypond`);
+	const config = getConfiguration();
 
 
 
@@ -22,17 +22,29 @@ export function activate(context: vscode.ExtensionContext) {
 	/// init
 	initCompile();
 
-	/// compile to pdf
+	/// compile main file if exists, else compiles active file
 	const compileCmd = vscode.commands.registerCommand('extension.compile', () => {
 		compile();
 	});
 	context.subscriptions.push(compileCmd);
 
+	/// compile to pdf
+	const compileThisSpecificFileCmd = vscode.commands.registerCommand('extension.compileThisSpecificFile', () => {
+		compile(CompileMode.onCompileSpecific);
+	});
+	context.subscriptions.push(compileThisSpecificFileCmd);
+
+	const killCompilationCmd = vscode.commands.registerCommand('extension.killCompilationProcess', () => {
+		killCompilation(false);
+	});
+	context.subscriptions.push(killCompilationCmd);
+
+
 	/// compile upon saving
 	if (config.compilation.compileOnSave) {
 		vscode.workspace.onDidSaveTextDocument((textDoc: vscode.TextDocument) => {
 			if (textDoc.languageId === langId) {
-				compile(CompileMode.onSave, true, textDoc, 1000);
+				compile(CompileMode.onSave, true, textDoc);
 			}
 		});
 	}
@@ -126,7 +138,6 @@ export function activate(context: vscode.ExtensionContext) {
 
 
 
-	
 	/// ===== ===== ===== LISTENERS ===== ===== =====
 	/// we need to update status bar when active text editor changes
 	vscode.window.onDidChangeActiveTextEditor((_) => {

@@ -72,6 +72,16 @@ let settingFileContent = [
     `### Can be accessed via \`Settings (JSON)\` or \`Settings (UI)\``
 ];
 
+const deprecationNotice = [
+    `## :heavy_exclamation_mark: DEPRECATION NOTICE (1.3.0) :heavy_exclamation_mark:`,
+    `### :x: vslilypond.intellisense.additionalCommandLineArguments`,
+    `Deprecated in favour of using \`vslilypond.compilation.additionalCommandLineArguments\``,
+
+    `### :x: vslilypond.compilation.outputFormat`,
+    `Deprecated in favour of supplying additional command arguments (e.g. --pdf) in \`vslilypond.compilation.additionalCommandLineArguments\``    
+];
+
+settingFileContent = settingFileContent.concat(deprecationNotice);
 
 Object.entries(groupedSettings).forEach(([groupName, settings]) => {
     settingFileContent.push(`## ${groupName}`);
@@ -85,6 +95,7 @@ Object.entries(groupedSettings).forEach(([groupName, settings]) => {
         ]);
     });
 });
+
 
 fs.writeFileSync(`./docs/SETTINGS.md`, settingFileContent.join(`\n\n`));
 

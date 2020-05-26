@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as filetype from 'file-type';
 import * as path from 'path';
-import { logger, LogLevel, stripFileExtension } from './util';
+import { logger, LogLevel, stripFileExtension, getConfiguration } from './util';
 import * as JZZ from 'jzz';
 /// no types for jzz-midi-smf
 // @ts-ignore
@@ -111,7 +111,9 @@ export namespace MIDIOut {
                     /// add in dirname
                     .map((p: string) => `${dirname}${path.sep}${p}`)
                     /// filter by name (this also takes in files with extra chars)
-                    .filter((p: string) => p.substr(0, baseFilePath.length) === baseFilePath);
+                    .filter((p: string) => p.substr(0, baseFilePath.length) === baseFilePath)
+                    /// sort by shortest baseFilePath, this is to give priority to test-1 instead of test-1-1
+                    .sort((a, b) => a.length - b.length);
 
             /// get the first file that has audio/midi content-type
             for (const p of filePaths) {
@@ -149,7 +151,7 @@ export namespace MIDIOut {
             MIDIOutState.currMidiFilePath = midiFileName;
             MIDIOutState.player = smf.player();
 
-            const config = vscode.workspace.getConfiguration(`vslilypond`);
+            const config = getConfiguration();
             const midiout = (config.midiPlayback.output.length) ? JZZ().openMidiOut(config.midiPlayback.output) : JZZ().openMidiOut();
             MIDIOutState.player.connect(midiout);
         }
@@ -358,8 +360,8 @@ export namespace MIDIOut {
         const outputs: string[] = JZZ().info().outputs.map((x: any) => x.name);
         vscode.window.showQuickPick(outputs).then((val: string | undefined) => {
             if (val) {
-                const config = vscode.workspace.getConfiguration(`vslilypond`);
-                config.update(`midiPlayback.output`, val, vscode.ConfigurationTarget.Global);
+                const config = getConfiguration();
+                config.update(`midiPlayback.output`, val);
             }
         });
     };

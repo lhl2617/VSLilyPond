@@ -1,5 +1,12 @@
 # Change Log
 
+## 1.3.0
+- :heavy_exclamation_mark: Deprecated redundant commands, see [COMMANDS.md](./docs/COMMANDS.md).
+- Fix bug in which bugs in included files erroneously show in current file
+- Include warnings from lilypond
+- Enable settings to up to folder level
+- Add feature to allow main file compilation
+
 ## 1.2.0
 - Add icon
 - Add configuration to let users set path to lilypond executable.

@@ -79,9 +79,7 @@ const processIntellisenseErrors = async (output: string, doc: vscode.TextDocumen
     let errGroup: RegExpExecArray | null = null;
     while (errGroup = errMsgRegex.exec(output)) {
         try {
-            /// for some reason, if --output is set, all the include errors are absolute paths
-            /// this means we can trust that errGroup[1] is an absolute path.
-            /// we check anyway
+            /// send the diagnostics to the correct file
             const getUri = (gotPath: string) => {
                 /// need to differentiate between included file and local
                 if (gotPath === `-`) {

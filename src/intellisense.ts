@@ -123,6 +123,17 @@ const processIntellisenseErrors = async (output: string, doc: vscode.TextDocumen
     }
 };
 
+/// intellisense produces a midi file `-.tmp`. Delete this if exists
+const clearTmpMidiFile = async (dirName: string) => {
+    const midiFilePath = path.join(dirName, `-.tmp`);
+
+    if (fs.existsSync(midiFilePath)) {
+        fs.unlinkSync(midiFilePath);
+        // logger(`Removed tmp midi file`, LogLevel.info, true);
+    }
+};
+
+
 const execIntellisense = async (doc: vscode.TextDocument, diagCol: vscode.DiagnosticCollection, context: vscode.ExtensionContext) => {
     try {
         diagCol.clear();
@@ -137,6 +148,7 @@ const execIntellisense = async (doc: vscode.TextDocument, diagCol: vscode.Diagno
         const intellisenseArgs = [
             `--loglevel=WARNING`,               /// Output errors and warnings
             `--define-default=backend=null`,    /// to not output printed score 
+            `-dmidi-extension=tmp`,             /// show midi output as -.tmp
             `-`                                 /// read input from stdin
         ];
 
@@ -165,6 +177,9 @@ const execIntellisense = async (doc: vscode.TextDocument, diagCol: vscode.Diagno
         intellisenseProcess.on('close', (code) => {
             logger(`Intellisense process exited with code ${code}`, LogLevel.info, true);
             intellisenseProcess = undefined;
+               
+            clearTmpMidiFile(path.dirname(doc.uri.fsPath));
+
         });
 
 

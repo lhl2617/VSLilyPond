@@ -107,7 +107,7 @@
 				"command": "extension.compile",
 				"title": "VSLilyPond: Compile",
 				"group": "Compilation",
-				"description": "Compiles a main lilypond file (if specified in settings). Otherwise, compiles the currently active lilypond file. (Use VSLilyPond: Compile this specific file` to compile the currently active file). See settings under `Vslilypond › Compilation` for additional settings."
+				"description": "Compiles a main lilypond file (if specified in settings). Otherwise, compiles the currently active lilypond file. (Use `VSLilyPond: Compile this specific file` to compile the currently active file). See settings under `Vslilypond › Compilation` for additional settings."
 			},
 			{
 				"command": "extension.compileThisSpecificFile",

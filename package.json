@@ -129,7 +129,7 @@
 					"type": "string",
 					"default": "lilypond",
 					"group": "General",
-					"description": "Path to `lilypond` executable. Default (`lilypond`) assumes lilypond is in PATH variables.",
+					"description": "Path to `lilypond` executable. Default (`lilypond`) assumes lilypond is in PATH variables. Reload required.",
 					"scope": "resource"
 				},
 				"vslilypond.intellisense.enabled": {

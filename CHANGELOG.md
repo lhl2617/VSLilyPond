@@ -2,7 +2,7 @@
 
 ## 1.3.0
 - :heavy_exclamation_mark: Deprecated redundant commands, see [COMMANDS.md](./docs/COMMANDS.md).
-- Fix bug in which bugs in included files erroneously show in current file
+- Fix bug in which warnings/errors in included files erroneously show in current file
 - Include warnings from lilypond
 - Enable settings to up to folder level
 - Add feature to allow main file compilation

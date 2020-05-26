@@ -50,7 +50,7 @@ Set workspace-folder specific MIDI input device for input. You can also change t
 
 ### VSLilyPond: Compile
 
-Compiles a main lilypond file (if specified in settings). Otherwise, compiles the currently active lilypond file. (Use VSLilyPond: Compile this specific file` to compile the currently active file). See settings under `Vslilypond › Compilation` for additional settings.
+Compiles a main lilypond file (if specified in settings). Otherwise, compiles the currently active lilypond file. (Use `VSLilyPond: Compile this specific file` to compile the currently active file). See settings under `Vslilypond › Compilation` for additional settings.
 
 ### VSLilyPond: Compile this specific file
 

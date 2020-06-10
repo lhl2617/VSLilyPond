@@ -236,7 +236,7 @@
 		"mocha": "^7.2.0",
 		"ts-loader": "^7.0.5",
 		"ts-node": "^8.10.2",
-		"typescript": "^3.9.3",
+		"typescript": "^3.9.5",
 		"vscode-test": "^1.4.0"
 	},
 	"dependencies": {

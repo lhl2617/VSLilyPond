@@ -225,7 +225,7 @@
 	"devDependencies": {
 		"@types/command-exists": "^1.2.0",
 		"@types/glob": "^7.1.2",
-		"@types/lodash": "^4.14.156",
+		"@types/lodash": "^4.14.157",
 		"@types/mocha": "^7.0.1",
 		"@types/node": "^14.0.14",
 		"@types/vscode": "^1.46.0",

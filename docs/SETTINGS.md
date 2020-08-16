@@ -16,7 +16,7 @@ Deprecated in favour of supplying additional command arguments (e.g. --pdf) in `
 
 ### vslilypond.general.pathToLilypond
 
-Path to `lilypond` executable. Default (`lilypond`) assumes lilypond is in PATH variables.
+Path to `lilypond` executable. Default (`lilypond`) assumes lilypond is in PATH variables. Reload required.
 
 Type: `string`
 

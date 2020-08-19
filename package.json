@@ -243,6 +243,6 @@
 		"command-exists": "^1.2.9",
 		"file-type": "^14.7.1",
 		"jzz-midi-smf": "^1.3.9",
-		"lodash": "^4.17.19"
+		"lodash": "^4.17.20"
 	}
 }

@@ -241,7 +241,7 @@
 	},
 	"dependencies": {
 		"command-exists": "^1.2.9",
-		"file-type": "^16.0.0",
+		"file-type": "^16.0.1",
 		"jzz-midi-smf": "^1.4.0",
 		"lodash": "^4.17.20"
 	}

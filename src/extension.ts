@@ -23,18 +23,18 @@ export function activate(context: vscode.ExtensionContext) {
 	initCompile();
 
 	/// compile main file if exists, else compiles active file
-	const compileCmd = vscode.commands.registerCommand('extension.compile', () => {
+	const compileCmd = vscode.commands.registerCommand('vslilypond.compile', () => {
 		compile();
 	});
 	context.subscriptions.push(compileCmd);
 
 	/// compile to pdf
-	const compileThisSpecificFileCmd = vscode.commands.registerCommand('extension.compileThisSpecificFile', () => {
+	const compileThisSpecificFileCmd = vscode.commands.registerCommand('vslilypond.compileThisSpecificFile', () => {
 		compile(CompileMode.onCompileSpecific);
 	});
 	context.subscriptions.push(compileThisSpecificFileCmd);
 
-	const killCompilationCmd = vscode.commands.registerCommand('extension.killCompilationProcess', () => {
+	const killCompilationCmd = vscode.commands.registerCommand('vslilypond.killCompilationProcess', () => {
 		killCompilation(false);
 	});
 	context.subscriptions.push(killCompilationCmd);
@@ -66,43 +66,43 @@ export function activate(context: vscode.ExtensionContext) {
 
 	/// ===== ===== ===== MIDI PLAYBACK ===== ===== =====
 	/// play midi
-	const playMidiCmd = vscode.commands.registerCommand('extension.playMIDI', () => {
+	const playMidiCmd = vscode.commands.registerCommand('vslilypond.playMIDI', () => {
 		MIDIOut.playMIDI();
 	});
 	context.subscriptions.push(playMidiCmd);
 
 	/// play midi from
-	const playMidiFromCmd = vscode.commands.registerCommand('extension.playMIDIFrom', () => {
+	const playMidiFromCmd = vscode.commands.registerCommand('vslilypond.playMIDIFrom', () => {
 		MIDIOut.playMIDIFrom();
 	});
 	context.subscriptions.push(playMidiFromCmd);
 
 	/// stop midi 
-	const stopMidiCmd = vscode.commands.registerCommand('extension.stopMIDI', () => {
+	const stopMidiCmd = vscode.commands.registerCommand('vslilypond.stopMIDI', () => {
 		MIDIOut.stopMIDI();
 	});
 	context.subscriptions.push(stopMidiCmd);
 
 	/// pause midi 
-	const pauseMidiCmd = vscode.commands.registerCommand('extension.pauseMIDI', () => {
+	const pauseMidiCmd = vscode.commands.registerCommand('vslilypond.pauseMIDI', () => {
 		MIDIOut.pauseMIDI();
 	});
 	context.subscriptions.push(pauseMidiCmd);
 
 	/// resume midi 
-	const resumeMidiCmd = vscode.commands.registerCommand('extension.resumeMIDI', () => {
+	const resumeMidiCmd = vscode.commands.registerCommand('vslilypond.resumeMIDI', () => {
 		MIDIOut.resumeMIDI();
 	});
 	context.subscriptions.push(resumeMidiCmd);
 
 	/// reset midi 
-	const resetMidiCmd = vscode.commands.registerCommand('extension.resetMIDI', () => {
+	const resetMidiCmd = vscode.commands.registerCommand('vslilypond.resetMIDI', () => {
 		MIDIOut.resetMIDI();
 	});
 	context.subscriptions.push(resetMidiCmd);
 
 	/// set midi output device
-	const setOutputMidiDeviceCmd = vscode.commands.registerCommand('extension.setOutputMIDIDevice', () => {
+	const setOutputMidiDeviceCmd = vscode.commands.registerCommand('vslilypond.setOutputMIDIDevice', () => {
 		MIDIOut.setOutputMIDIDevice();
 	});
 	context.subscriptions.push(setOutputMidiDeviceCmd);
@@ -116,19 +116,19 @@ export function activate(context: vscode.ExtensionContext) {
 
 	/// ===== ===== ===== MIDI INPUT ===== ===== =====
 	/// start midi input
-	const startInputMidiCmd = vscode.commands.registerCommand('extension.startMIDIInput', () => {
+	const startInputMidiCmd = vscode.commands.registerCommand('vslilypond.startMIDIInput', () => {
 		MIDIIn.startMIDIInput();
 	});
 	context.subscriptions.push(startInputMidiCmd);
 
 	/// start midi input
-	const stopInputMidiCmd = vscode.commands.registerCommand('extension.stopMIDIInput', () => {
+	const stopInputMidiCmd = vscode.commands.registerCommand('vslilypond.stopMIDIInput', () => {
 		MIDIIn.stopMIDIInput();
 	});
 	context.subscriptions.push(stopInputMidiCmd);
 
 	/// set midi output device
-	const setInputMidiDeviceCmd = vscode.commands.registerCommand('extension.setInputMIDIDevice', () => {
+	const setInputMidiDeviceCmd = vscode.commands.registerCommand('vslilypond.setInputMIDIDevice', () => {
 		MIDIIn.setInputMIDIDevice();
 	});
 	context.subscriptions.push(setInputMidiDeviceCmd);

@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.3.2
+- Update dependencies
+- Change namespace of extension commands to prevent clashing.
+## 1.3.1
+- Update dependencies
+
 ## 1.3.0
 - :heavy_exclamation_mark: Deprecated redundant commands, see [COMMANDS.md](./docs/COMMANDS.md).
 - Fix bug in which warnings/errors in included files erroneously show in current file

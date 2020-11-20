@@ -25,98 +25,98 @@
 		"lhl2617.lilypond-snippets"
 	],
 	"activationEvents": [
-		"onCommand:extension.playMIDI",
-		"onCommand:extension.playMIDIFrom",
-		"onCommand:extension.stopMIDI",
-		"onCommand:extension.pauseMIDI",
-		"onCommand:extension.resumeMIDI",
-		"onCommand:extension.resetMIDI",
-		"onCommand:extension.setOutputMIDIDevice",
-		"onCommand:extension.startMIDIInput",
-		"onCommand:extension.stopMIDIInput",
-		"onCommand:extension.setInputMIDIDevice",
-		"onCommand:extension.compile",
-		"onCommand:extension.compileThisSpecificFile",
-		"onCommand:extension.killCompilationProcess",
+		"onCommand:vslilypond.playMIDI",
+		"onCommand:vslilypond.playMIDIFrom",
+		"onCommand:vslilypond.stopMIDI",
+		"onCommand:vslilypond.pauseMIDI",
+		"onCommand:vslilypond.resumeMIDI",
+		"onCommand:vslilypond.resetMIDI",
+		"onCommand:vslilypond.setOutputMIDIDevice",
+		"onCommand:vslilypond.startMIDIInput",
+		"onCommand:vslilypond.stopMIDIInput",
+		"onCommand:vslilypond.setInputMIDIDevice",
+		"onCommand:vslilypond.compile",
+		"onCommand:vslilypond.compileThisSpecificFile",
+		"onCommand:vslilypond.killCompilationProcess",
 		"onLanguage:lilypond"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
 		"commands": [
 			{
-				"command": "extension.playMIDI",
+				"command": "vslilypond.playMIDI",
 				"title": "VSLilyPond: MIDI Playback: Play (from start)",
 				"group": "MIDI Playback",
 				"description": "Play MIDI from the start. You can also use the `Play MIDI` button on the left of the status bar. MIDI Playback device is set using `VSLilyPond: MIDI Playback: Set output device` command."
 			},
 			{
-				"command": "extension.playMIDIFrom",
+				"command": "vslilypond.playMIDIFrom",
 				"title": "VSLilyPond: MIDI Playback: Play from...",
 				"group": "MIDI Playback",
 				"description": "Play MIDI from a user-input timestamp. You can also use the `Play MIDI from...` button on the left of the status bar."
 			},
 			{
-				"command": "extension.stopMIDI",
+				"command": "vslilypond.stopMIDI",
 				"title": "VSLilyPond: MIDI Playback: Stop",
 				"group": "MIDI Playback",
 				"description": "Stop MIDI playback. You can also use the `Stop MIDI` button on the left of the status bar."
 			},
 			{
-				"command": "extension.pauseMIDI",
+				"command": "vslilypond.pauseMIDI",
 				"title": "VSLilyPond: MIDI Playback: Pause",
 				"group": "MIDI Playback",
 				"description": "Pause MIDI playback. You can also use the `Pause MIDI` button on the left of the status bar."
 			},
 			{
-				"command": "extension.resumeMIDI",
+				"command": "vslilypond.resumeMIDI",
 				"title": "VSLilyPond: MIDI Playback: Resume",
 				"group": "MIDI Playback",
 				"description": "Resume MIDI playback. You can also use the `Play MIDI` button on the left of the status bar."
 			},
 			{
-				"command": "extension.resetMIDI",
+				"command": "vslilypond.resetMIDI",
 				"title": "VSLilyPond: MIDI Playback: Reset",
 				"group": "MIDI Playback",
 				"description": "Reset MIDI playback state."
 			},
 			{
-				"command": "extension.setOutputMIDIDevice",
+				"command": "vslilypond.setOutputMIDIDevice",
 				"title": "VSLilyPond: MIDI Playback: Set output device",
 				"group": "MIDI Playback",
 				"description": "Set workspace-folder specific MIDI output device for playback. You can also change this manually (for more scopes) in settings under `Vslilypond › Midi Playback: Output`."
 			},
 			{
-				"command": "extension.startMIDIInput",
+				"command": "vslilypond.startMIDIInput",
 				"title": "VSLilyPond: MIDI Input: Start MIDI input",
 				"group": "MIDI Input",
 				"description": "Start MIDI Input. You can also use the `Start MIDI Input` button on the right of the status bar. MIDI input device is set using `VSLilyPond: MIDI Playback: Set input device` command.`"
 			},
 			{
-				"command": "extension.stopMIDIInput",
+				"command": "vslilypond.stopMIDIInput",
 				"title": "VSLilyPond: MIDI Input: Stop MIDI input",
 				"group": "MIDI Input",
 				"description": "Stop MIDI Input. You can also use the `Stop MIDI Input` button on the right of the status bar."
 			},
 			{
-				"command": "extension.setInputMIDIDevice",
+				"command": "vslilypond.setInputMIDIDevice",
 				"title": "VSLilyPond: MIDI Input: Set input device",
 				"group": "MIDI Input",
 				"description": "Set workspace-folder specific MIDI input device for input. You can also change this manually (for more scopes) in settings under `Vslilypond › Midi Input: Input`."
 			},
 			{
-				"command": "extension.compile",
+				"command": "vslilypond.compile",
 				"title": "VSLilyPond: Compile",
 				"group": "Compilation",
 				"description": "Compiles a main lilypond file (if specified in settings). Otherwise, compiles the currently active lilypond file. (Use `VSLilyPond: Compile this specific file` to compile the currently active file). See settings under `Vslilypond › Compilation` for additional settings."
 			},
 			{
-				"command": "extension.compileThisSpecificFile",
+				"command": "vslilypond.compileThisSpecificFile",
 				"title": "VSLilyPond: Compile this specific file",
 				"group": "Compilation",
 				"description": "Compiles the currently active lilypond file. Use `VSLilyPond: Compile` to compile a main file if specified in settings."
 			},
 			{
-				"command": "extension.killCompilationProcess",
+				"command": "vslilypond.killCompilationProcess",
 				"title": "VSLilyPond: Kill Compilation Process",
 				"group": "Compilation",
 				"description": "Kill the compilation process."
@@ -228,7 +228,7 @@
 		"@types/lodash": "^4.14.165",
 		"@types/mocha": "^8.0.4",
 		"@types/node": "^14.14.7",
-		"@types/vscode": "^1.51.0",
+		"@types/vscode": "^1.44.0",
 		"@typescript-eslint/eslint-plugin": "^2.34.0",
 		"@typescript-eslint/parser": "^2.34.0",
 		"eslint": "^6.8.0",

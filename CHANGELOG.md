@@ -3,8 +3,11 @@
 ## 1.3.2
 - Update dependencies
 - Change namespace of extension commands to prevent clashing.
+
 ## 1.3.1
-- Update dependencies
+- Minify images
+- Bumped dependency versions
+- Update icon
 
 ## 1.3.0
 - :heavy_exclamation_mark: Deprecated redundant commands, see [COMMANDS.md](./docs/COMMANDS.md).

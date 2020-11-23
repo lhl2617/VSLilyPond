@@ -38,7 +38,7 @@ See [docs/INSTALL.md](docs/INSTALL.md) for a setup guide.
 * Settings: See [docs/SETTINGS.md](docs/SETTINGS.md)
 * Status Bar interface: See [docs/STATUSBAR.md](docs/STATUSBAR.md)
 
-## Known Issues & FAQ
+## Issues & FAQ
 
 Please submit issues in the [GitHub repository](https://github.com/lhl2617/VSLilyPond).
 

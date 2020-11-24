@@ -29,6 +29,11 @@ Note: macOS Catalina (10.15) (and newer) does not support 32-bit applications--p
 
 LilyPond Manuals and Guides can be found on [lilypond.org](http://lilypond.org).
 
+## python-ly Setup Guide (Required for formatting)
+
+1. Run `python -m pip install python-ly`, where `python` is your Python 3 installation.
+Note: more information [here](https://marketplace.visualstudio.com/items?itemName=lhl2617.lilypond-formatter), including if your Python 3 installation is different.
+
 ## VSCode PDF previewer Setup & Usage Guide
 
 1. Install the [vscode-pdf](https://marketplace.visualstudio.com/items?itemName=tomoki1207.pdf) extension via the link.

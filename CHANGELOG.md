@@ -1,5 +1,8 @@
 # Change Log
 
+## 1.4.0
+- Update dependencies
+- Add [formatter](https://marketplace.visualstudio.com/items?itemName=lhl2617.lilypond-formatter)
 ## 1.3.2
 - Update dependencies
 - Change namespace of extension commands to prevent clashing.

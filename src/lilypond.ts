@@ -7,7 +7,7 @@ import * as fs from 'fs';
 
 export enum CompileMode {
     onSave, // compile on save
-    onCompile, // compile on command (extension.compile)
+    onCompile, // compile on command (vslilypond.compile)
     onCompileSpecific // compile on command to compile specific file
 };
 

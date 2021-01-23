@@ -230,14 +230,14 @@ export namespace MIDIIn {
     export const initMIDIStatusBarItems = () => {
         {
             let startBtn = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 0);
-            startBtn.command = `extension.startMIDIInput`;
+            startBtn.command = `vslilypond.startMIDIInput`;
             startBtn.text = `$(circle-filled) Start MIDI Input`;
             startBtn.tooltip = `Start MIDI Input`;
             statusBarItems.start = startBtn;
         }
         {
             let stopBtn = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 0);
-            stopBtn.command = `extension.stopMIDIInput`;
+            stopBtn.command = `vslilypond.stopMIDIInput`;
             stopBtn.text = `$(debug-stop) Stop MIDI Input`;
             stopBtn.tooltip = `Stop MIDI Input`;
             statusBarItems.stop = stopBtn;

@@ -57,7 +57,7 @@ Base syntax highlighting depends on the [LilyPond extension](https://marketplace
 IntelliSense and AutoComplete depends on the [LilyPond AutoComplete (Commands & Keywords) extension](https://marketplace.visualstudio.com/items?itemName=lhl2617.lilypond-snippets),
 under the [MIT license](https://github.com/lhl2617/VSLilyPond-snippets/blob/master/LICENSE).
 
-IntelliSense and AutoComplete depends on the [LilyPond Formatter extension](https://marketplace.visualstudio.com/items?itemName=lhl2617.lilypond-formatter),
+Formatting depends on the [LilyPond Formatter extension](https://marketplace.visualstudio.com/items?itemName=lhl2617.lilypond-formatter),
 under the [MIT license](https://github.com/lhl2617/VSLilyPond-formatter/blob/main/LICENSE).
 
 License: Creative Commons Attribution-NonCommercial 3.0 Unported (CC BY-NC 3.0) license, http://creativecommons.org/licenses/by-sa/3.0/.

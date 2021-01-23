@@ -304,28 +304,28 @@ export namespace MIDIOut {
     export const initMIDIStatusBarItems = () => {
         {
             let playBtn = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
-            playBtn.command = `extension.resumeMIDI`;
+            playBtn.command = `vslilypond.resumeMIDI`;
             playBtn.text = `$(debug-start) Play MIDI`;
             playBtn.tooltip = `Play MIDI output file (Resumes if paused)`;
             statusBarItems.play = playBtn;
         }
         {
             let playFromBtn = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 99);
-            playFromBtn.command = `extension.playMIDIFrom`;
+            playFromBtn.command = `vslilypond.playMIDIFrom`;
             playFromBtn.text = `$(debug-continue) Play MIDI From...`;
             playFromBtn.tooltip = `Play MIDI output file from a certain timesatmp`;
             statusBarItems.playFrom = playFromBtn;
         }
         {
             let pauseBtn = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 98);
-            pauseBtn.command = `extension.pauseMIDI`;
+            pauseBtn.command = `vslilypond.pauseMIDI`;
             pauseBtn.text = `$(debug-pause) Pause MIDI`;
             pauseBtn.tooltip = `Pause MIDI playback`;
             statusBarItems.pause = pauseBtn;
         }
         {
             let stopBtn = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 97);
-            stopBtn.command = `extension.stopMIDI`;
+            stopBtn.command = `vslilypond.stopMIDI`;
             stopBtn.text = `$(debug-stop) Stop MIDI`;
             stopBtn.tooltip = `Stop MIDI playback`;
             statusBarItems.stop = stopBtn;

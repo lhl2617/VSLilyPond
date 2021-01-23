@@ -1,6 +1,6 @@
 # Change Log
 
-## 1.4.1
+## 1.4.2
 - Update dependencies
 - Fix #168: status bar was not working due to missed items when the extension namespace was changed.
 ## 1.4.0

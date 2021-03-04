@@ -2,6 +2,7 @@ import * as assert from 'assert';
 
 import * as vscode from 'vscode';
 import { MIDIIn } from '../../midiIn';
+import { Accidentals } from '../../util';
 
 type MIDINote = {
     MIDINoteNumber: number,
@@ -13,7 +14,7 @@ const eqSet = (a: Set<any>, b: Set<any>) => a.size === b.size && [...a].every(va
 suite(`MIDIIn test suite`, () => {
 	vscode.window.showInformationMessage('Start MIDIIn tests.');
     test(`getNoteChar - exception number below 0`, () => {
-        const accidentals: `sharps` | `flats` = `sharps`;
+        const accidentals: Accidentals = `sharps`;
         const noteNum = -1;
 
         const expectThrow = () => MIDIIn.getNoteChar(accidentals, noteNum);
@@ -22,7 +23,7 @@ suite(`MIDIIn test suite`, () => {
     });
 
     test(`getNoteChar - exception number above 11`, () => {
-        const accidentals: `sharps` | `flats` = `sharps`;
+        const accidentals: Accidentals = `sharps`;
         const noteNum = 12;
 
         const expectThrow = () => MIDIIn.getNoteChar(accidentals, noteNum);
@@ -31,7 +32,7 @@ suite(`MIDIIn test suite`, () => {
     });
 
     test(`getNoteChar - exception number is float`, () => {
-        const accidentals: `sharps` | `flats` = `sharps`;
+        const accidentals: Accidentals = `sharps`;
         const noteNum = 4.23;
 
         const expectThrow = () => MIDIIn.getNoteChar(accidentals, noteNum);
@@ -40,7 +41,7 @@ suite(`MIDIIn test suite`, () => {
     });
 
     test(`getNoteChar - valid C`, () => {
-        const accidentals: `sharps` | `flats` = `sharps`;
+        const accidentals: Accidentals = `sharps`;
         const noteNum = 0;
 
         const got = MIDIIn.getNoteChar(accidentals, noteNum);
@@ -50,7 +51,7 @@ suite(`MIDIIn test suite`, () => {
     });
 
     test(`getNoteChar - valid C, agnostic to accidentals`, () => {
-        const accidentals: `sharps` | `flats` = `flats`;
+        const accidentals: Accidentals = `flats`;
         const noteNum = 0;
 
         const got = MIDIIn.getNoteChar(accidentals, noteNum);
@@ -60,7 +61,7 @@ suite(`MIDIIn test suite`, () => {
     });
 
     test(`getNoteChar - 10 sharp`, () => {
-        const accidentals: `sharps` | `flats` = `sharps`;
+        const accidentals: Accidentals = `sharps`;
         const noteNum = 10;
 
         const got = MIDIIn.getNoteChar(accidentals, noteNum);
@@ -70,7 +71,7 @@ suite(`MIDIIn test suite`, () => {
     });
 
     test(`getNoteChar - 10 flat`, () => {
-        const accidentals: `sharps` | `flats` = `flats`;
+        const accidentals: Accidentals = `flats`;
         const noteNum = 10;
 
         const got = MIDIIn.getNoteChar(accidentals, noteNum);
@@ -133,7 +134,7 @@ suite(`MIDIIn test suite`, () => {
 
     test(`midiNumberToNoteName - exception below 12`, () => {
         const note = 11;
-        const accidentals: `sharps` | `flats` = `sharps`;
+        const accidentals: Accidentals = `sharps`;
         const relativeMode = false;
 
         const expectThrow = () => MIDIIn.midiNumberToNoteName(note, accidentals, relativeMode);
@@ -143,7 +144,7 @@ suite(`MIDIIn test suite`, () => {
 
     test(`midiNumberToNoteName - exception above 127`, () => {
         const note = 128;
-        const accidentals: `sharps` | `flats` = `sharps`;
+        const accidentals: Accidentals = `sharps`;
         const relativeMode = false;
 
         const expectThrow = () => MIDIIn.midiNumberToNoteName(note, accidentals, relativeMode);
@@ -153,7 +154,7 @@ suite(`MIDIIn test suite`, () => {
 
     test(`midiNumberToNoteName - exception not integer`, () => {
         const note = 69.42;
-        const accidentals: `sharps` | `flats` = `sharps`;
+        const accidentals: Accidentals = `sharps`;
         const relativeMode = false;
 
         const expectThrow = () => MIDIIn.midiNumberToNoteName(note, accidentals, relativeMode);
@@ -163,7 +164,7 @@ suite(`MIDIIn test suite`, () => {
 
     test(`midiNumberToNoteName - normal test 1`, () => {
         const note = 48;
-        const accidentals: `sharps` | `flats` = `sharps`;
+        const accidentals: Accidentals = `sharps`;
         const relativeMode = false;
 
         const got = MIDIIn.midiNumberToNoteName(note, accidentals, relativeMode);
@@ -174,7 +175,7 @@ suite(`MIDIIn test suite`, () => {
 
     test(`midiNumberToNoteName - normal (sharp)`, () => {
         const note = 49;
-        const accidentals: `sharps` | `flats` = `sharps`;
+        const accidentals: Accidentals = `sharps`;
         const relativeMode = false;
 
         const got = MIDIIn.midiNumberToNoteName(note, accidentals, relativeMode);
@@ -185,7 +186,7 @@ suite(`MIDIIn test suite`, () => {
 
     test(`midiNumberToNoteName - normal (flat)`, () => {
         const note = 49;
-        const accidentals: `sharps` | `flats` = `flats`;
+        const accidentals: Accidentals = `flats`;
         const relativeMode = false;
 
         const got = MIDIIn.midiNumberToNoteName(note, accidentals, relativeMode);
@@ -196,7 +197,7 @@ suite(`MIDIIn test suite`, () => {
 
     test(`midiNumberToNoteName - normal (relative mode)`, () => {
         const note = 60;
-        const accidentals: `sharps` | `flats` = `sharps`;
+        const accidentals: Accidentals = `sharps`;
         const relativeMode = true;
 
         const got = MIDIIn.midiNumberToNoteName(note, accidentals, relativeMode);
@@ -207,7 +208,7 @@ suite(`MIDIIn test suite`, () => {
 
     test(`midiNumberToNoteName - normal (non-relative mode)`, () => {
         const note = 60;
-        const accidentals: `sharps` | `flats` = `sharps`;
+        const accidentals: Accidentals = `sharps`;
         const relativeMode = false;
 
         const got = MIDIIn.midiNumberToNoteName(note, accidentals, relativeMode);
@@ -218,7 +219,7 @@ suite(`MIDIIn test suite`, () => {
 
     test(`notesToString - no notes`, () => {
         const notes: Set<number> = new Set();
-        const accidentals: `sharps` | `flats` = `sharps`;
+        const accidentals: Accidentals = `sharps`;
         const relativeMode = false;
 
         const got = MIDIIn.notesToString(notes, accidentals, relativeMode);
@@ -230,7 +231,7 @@ suite(`MIDIIn test suite`, () => {
 
     test(`notesToString - one note`, () => {
         let notes: Set<number> = new Set();
-        const accidentals: `sharps` | `flats` = `sharps`;
+        const accidentals: Accidentals = `sharps`;
         const relativeMode = false;
 
         notes.add(48);
@@ -243,7 +244,7 @@ suite(`MIDIIn test suite`, () => {
 
     test(`notesToString - 2 notes`, () => {
         let notes: Set<number> = new Set();
-        const accidentals: `sharps` | `flats` = `sharps`;
+        const accidentals: Accidentals = `sharps`;
         const relativeMode = false;
 
         notes.add(48);

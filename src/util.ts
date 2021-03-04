@@ -9,6 +9,8 @@ export enum LogLevel {
     error
 };
 
+export type Accidentals = `sharps` | `flats`;
+
 export const getBinPath = () => {
     const config = getConfiguration();
     return config.general.pathToLilypond;

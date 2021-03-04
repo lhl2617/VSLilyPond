@@ -215,7 +215,7 @@
 		}
 	},
 	"scripts": {
-		"vscode:prepublish": "npm run test && npm run compile && npm run lint && npm run generateDocs",
+		"vscode:prepublish": "npm run test && npm run generateDocs",
 		"compile": "tsc -p ./",
 		"lint": "eslint src --ext ts",
 		"watch": "tsc -watch -p ./",

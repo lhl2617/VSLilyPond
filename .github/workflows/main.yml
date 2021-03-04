@@ -31,6 +31,8 @@ jobs:
         if: steps.npm-cache.outputs.cache-hit != 'true'
         run: npm i     
       - name: Run Test
-        run: npm run test
+        uses: GabrielBB/xvfb-action@v1
+        with:
+          run: npm test
       - name: Test generateDocs
         run: npm run generateDocs

@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { logger, LogLevel, getConfiguration } from './util';
+import { logger, LogLevel, getConfiguration, Accidentals } from './util';
 import * as JZZ from 'jzz';
 /// no types for jzz-midi-smf
 // @ts-ignore
@@ -13,7 +13,7 @@ export namespace MIDIIn {
         active: boolean
     };
 
-    export type MIDIInputConfig = { accidentals: `sharps` | `flats`; relativeMode: boolean; chordMode: boolean };
+    export type MIDIInputConfig = { accidentals: Accidentals; relativeMode: boolean; chordMode: boolean };
 
     const initialMidiInState: MIDIInStateType = {
         midiInPort: undefined,
@@ -56,7 +56,7 @@ export namespace MIDIIn {
     };
 
     /// maps midi numbers from 0-11 to the name based on the sharps/flat mode
-    export const getNoteChar = (accidentals: `sharps` | `flats`, noteNum: number): string => {
+    export const getNoteChar = (accidentals: Accidentals, noteNum: number): string => {
         const isSharp = accidentals === `sharps`;
         const map: Record<number, string> = {
             0: `c`,
@@ -80,7 +80,7 @@ export namespace MIDIIn {
     };
 
 
-    export const midiNumberToNoteName = (note: number, accidentals: `sharps` | `flats`, relativeMode: boolean): string => {
+    export const midiNumberToNoteName = (note: number, accidentals: Accidentals, relativeMode: boolean): string => {
         if (!(Number.isInteger(note)) || note < 12 || note > 127) {
             throw new Error(`MIDI Note should be an integer within [12, 127], got ${note}`);
         }
@@ -94,7 +94,7 @@ export namespace MIDIIn {
         return fullNoteStr;
     };
 
-    export const notesToString = (notes: Set<number>, accidentals: `sharps` | `flats`, relativeMode: boolean): string => {
+    export const notesToString = (notes: Set<number>, accidentals: Accidentals, relativeMode: boolean): string => {
         try {
             if (notes.size === 1) {
                 /// one note
@@ -119,7 +119,7 @@ export namespace MIDIIn {
     export type OutputNotesFnType = (notes: Set<number>, accidentals: "sharps" | "flats", relativeMode: boolean) => void;
 
     /// actually output the notes as text in the editor
-    const outputNotes: OutputNotesFnType = (notes: Set<number>, accidentals: `sharps` | `flats`, relativeMode: boolean) => {
+    const outputNotes: OutputNotesFnType = (notes: Set<number>, accidentals: Accidentals, relativeMode: boolean) => {
         const outputString = notesToString(notes, accidentals, relativeMode);
         if (outputString.length) {
             try {

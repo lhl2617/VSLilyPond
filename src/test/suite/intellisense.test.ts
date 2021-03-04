@@ -41,7 +41,7 @@ suite(`Intellisense Test Suite`, () => {
             ]
         ];
 
-        assert.deepEqual(JSON.stringify(got), JSON.stringify(exp));
+        assert.deepStrictEqual(JSON.stringify(got), JSON.stringify(exp));
     });
 
     test(`groupErrors - ignore header lines`, () => {
@@ -80,7 +80,7 @@ suite(`Intellisense Test Suite`, () => {
                 `syntax error, unexpected STRING, expecting \',\' or \'.\' or \'=\'`
             ]
         ];
-        assert.deepEqual(JSON.stringify(got), JSON.stringify(exp));
+        assert.deepStrictEqual(JSON.stringify(got), JSON.stringify(exp));
     });
 
     test(`groupErrors - no errors`, () => {
@@ -92,7 +92,7 @@ suite(`Intellisense Test Suite`, () => {
             got.push(curr);
         }
         const exp: string[][] = [];
-        assert.deepEqual(JSON.stringify(got), JSON.stringify(exp));
+        assert.deepStrictEqual(JSON.stringify(got), JSON.stringify(exp));
     });
 
     test(`groupErrors - ignore junk`, () => {
@@ -108,7 +108,7 @@ suite(`Intellisense Test Suite`, () => {
             got.push(curr);
         }
         const exp: string[][] = [];
-        assert.deepEqual(JSON.stringify(got), JSON.stringify(exp));
+        assert.deepStrictEqual(JSON.stringify(got), JSON.stringify(exp));
     });
 
     test(`groupErrors - generic functionality test`, () => {
@@ -128,6 +128,6 @@ suite(`Intellisense Test Suite`, () => {
             got.push(curr);
         }
         const exp: string[][] = [];
-        assert.deepEqual(JSON.stringify(got), JSON.stringify(exp));
+        assert.deepStrictEqual(JSON.stringify(got), JSON.stringify(exp));
     });
 });

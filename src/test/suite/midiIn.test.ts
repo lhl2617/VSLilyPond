@@ -46,7 +46,7 @@ suite(`MIDIIn test suite`, () => {
         const got = MIDIIn.getNoteChar(accidentals, noteNum);
         const exp = `c`;
 
-        assert.equal(got, exp);
+        assert.strictEqual(got, exp);
     });
 
     test(`getNoteChar - valid C, agnostic to accidentals`, () => {
@@ -56,7 +56,7 @@ suite(`MIDIIn test suite`, () => {
         const got = MIDIIn.getNoteChar(accidentals, noteNum);
         const exp = `c`;
 
-        assert.equal(got, exp);
+        assert.strictEqual(got, exp);
     });
 
     test(`getNoteChar - 10 sharp`, () => {
@@ -66,7 +66,7 @@ suite(`MIDIIn test suite`, () => {
         const got = MIDIIn.getNoteChar(accidentals, noteNum);
         const exp = `ais`;
 
-        assert.equal(got, exp);
+        assert.strictEqual(got, exp);
     });
 
     test(`getNoteChar - 10 flat`, () => {
@@ -76,7 +76,7 @@ suite(`MIDIIn test suite`, () => {
         const got = MIDIIn.getNoteChar(accidentals, noteNum);
         const exp = `bes`;
 
-        assert.equal(got, exp);
+        assert.strictEqual(got, exp);
     });
 
     test(`getAbsoluteOctavePostfix - exception below 0`, () => {
@@ -110,7 +110,7 @@ suite(`MIDIIn test suite`, () => {
         const got = MIDIIn.getAbsoluteOctavePostfix(octaveNum);
         const exp = ``;
 
-        assert.equal(got, exp);
+        assert.strictEqual(got, exp);
     });
 
     test(`getAbsoluteOctavePostfix - 9`, () => {
@@ -119,7 +119,7 @@ suite(`MIDIIn test suite`, () => {
         const got = MIDIIn.getAbsoluteOctavePostfix(octaveNum);
         const exp = `\'\'\'\'\'\'`;
 
-        assert.equal(got, exp);
+        assert.strictEqual(got, exp);
     });
 
     test(`getAbsoluteOctavePostfix - 0`, () => {
@@ -128,7 +128,7 @@ suite(`MIDIIn test suite`, () => {
         const got = MIDIIn.getAbsoluteOctavePostfix(octaveNum);
         const exp = `,,,`;
 
-        assert.equal(got, exp);
+        assert.strictEqual(got, exp);
     });
 
     test(`midiNumberToNoteName - exception below 12`, () => {
@@ -169,7 +169,7 @@ suite(`MIDIIn test suite`, () => {
         const got = MIDIIn.midiNumberToNoteName(note, accidentals, relativeMode);
         const exp = `c`;
 
-        assert.equal(got, exp);
+        assert.strictEqual(got, exp);
     });
 
     test(`midiNumberToNoteName - normal (sharp)`, () => {
@@ -180,7 +180,7 @@ suite(`MIDIIn test suite`, () => {
         const got = MIDIIn.midiNumberToNoteName(note, accidentals, relativeMode);
         const exp = `cis`;
 
-        assert.equal(got, exp);
+        assert.strictEqual(got, exp);
     });
 
     test(`midiNumberToNoteName - normal (flat)`, () => {
@@ -191,7 +191,7 @@ suite(`MIDIIn test suite`, () => {
         const got = MIDIIn.midiNumberToNoteName(note, accidentals, relativeMode);
         const exp = `des`;
 
-        assert.equal(got, exp);
+        assert.strictEqual(got, exp);
     });
 
     test(`midiNumberToNoteName - normal (relative mode)`, () => {
@@ -202,7 +202,7 @@ suite(`MIDIIn test suite`, () => {
         const got = MIDIIn.midiNumberToNoteName(note, accidentals, relativeMode);
         const exp = `c`;
 
-        assert.equal(got, exp);
+        assert.strictEqual(got, exp);
     });
 
     test(`midiNumberToNoteName - normal (non-relative mode)`, () => {
@@ -213,7 +213,7 @@ suite(`MIDIIn test suite`, () => {
         const got = MIDIIn.midiNumberToNoteName(note, accidentals, relativeMode);
         const exp = `c\'`;
 
-        assert.equal(got, exp);
+        assert.strictEqual(got, exp);
     });
 
     test(`notesToString - no notes`, () => {
@@ -224,7 +224,7 @@ suite(`MIDIIn test suite`, () => {
         const got = MIDIIn.notesToString(notes, accidentals, relativeMode);
         const exp = ``;
 
-        assert.equal(got, exp);
+        assert.strictEqual(got, exp);
     });
 
 
@@ -238,7 +238,7 @@ suite(`MIDIIn test suite`, () => {
         const got = MIDIIn.notesToString(notes, accidentals, relativeMode);
         const exp = ` c`;
 
-        assert.equal(got, exp);
+        assert.strictEqual(got, exp);
     });
 
     test(`notesToString - 2 notes`, () => {
@@ -252,7 +252,7 @@ suite(`MIDIIn test suite`, () => {
         const got = MIDIIn.notesToString(notes, accidentals, relativeMode);
         const exp = ` <c d>`;
 
-        assert.equal(got, exp);
+        assert.strictEqual(got, exp);
     });
 
     test(`processNote - chordMode off - press down only, no liftoff`, () => {
@@ -279,7 +279,7 @@ suite(`MIDIIn test suite`, () => {
         });
 
         const expOutput = ``;
-        assert.equal(output, expOutput);
+        assert.strictEqual(output, expOutput);
 
         let expActiveNotes = new Set();
         expActiveNotes.add(48);
@@ -314,7 +314,7 @@ suite(`MIDIIn test suite`, () => {
         });
 
         const expOutput = `48`;
-        assert.equal(output, expOutput);
+        assert.strictEqual(output, expOutput);
 
         let expActiveNotes = new Set();
         assert(eqSet(MIDIIn.activeNotes, expActiveNotes));
@@ -354,7 +354,7 @@ suite(`MIDIIn test suite`, () => {
         });
 
         const expOutput = `48485048`;
-        assert.equal(output, expOutput);
+        assert.strictEqual(output, expOutput);
 
         let expActiveNotes = new Set();
         assert(eqSet(MIDIIn.activeNotes, expActiveNotes));
@@ -389,7 +389,7 @@ suite(`MIDIIn test suite`, () => {
         });
 
         const expOutput = `4850`;
-        assert.equal(output, expOutput);
+        assert.strictEqual(output, expOutput);
 
         let expActiveNotes = new Set();
         expActiveNotes.add(48);
@@ -425,7 +425,7 @@ suite(`MIDIIn test suite`, () => {
         });
 
         const expOutput = `4850`;
-        assert.equal(output, expOutput);
+        assert.strictEqual(output, expOutput);
 
         let expActiveNotes = new Set();
         expActiveNotes.add(52);
@@ -464,7 +464,7 @@ suite(`MIDIIn test suite`, () => {
         });
 
         const expOutput = `485052`;
-        assert.equal(output, expOutput);
+        assert.strictEqual(output, expOutput);
 
         let expActiveNotes = new Set();
         assert(eqSet(MIDIIn.activeNotes, expActiveNotes));
@@ -497,7 +497,7 @@ suite(`MIDIIn test suite`, () => {
         });
 
         const expOutput = ``;
-        assert.equal(output, expOutput);
+        assert.strictEqual(output, expOutput);
 
         let expActiveNotes = new Set();
         expActiveNotes.add(48);
@@ -533,7 +533,7 @@ suite(`MIDIIn test suite`, () => {
         });
 
         const expOutput = `48`;
-        assert.equal(output, expOutput);
+        assert.strictEqual(output, expOutput);
 
         let expActiveNotes = new Set();
         assert(eqSet(MIDIIn.activeNotes, expActiveNotes));
@@ -573,7 +573,7 @@ suite(`MIDIIn test suite`, () => {
         });
 
         const expOutput = `48485048`;
-        assert.equal(output, expOutput);
+        assert.strictEqual(output, expOutput);
 
         let expActiveNotes = new Set();
         assert(eqSet(MIDIIn.activeNotes, expActiveNotes));
@@ -609,7 +609,7 @@ suite(`MIDIIn test suite`, () => {
         });
 
         const expOutput = ``;
-        assert.equal(output, expOutput);
+        assert.strictEqual(output, expOutput);
 
         let expActiveNotes = new Set();
         expActiveNotes.add(48);
@@ -646,7 +646,7 @@ suite(`MIDIIn test suite`, () => {
         });
 
         const expOutput = ``;
-        assert.equal(output, expOutput);
+        assert.strictEqual(output, expOutput);
 
         let expActiveNotes = new Set();
         expActiveNotes.add(48);
@@ -688,7 +688,7 @@ suite(`MIDIIn test suite`, () => {
         });
 
         const expOutput = `485052`;
-        assert.equal(output, expOutput);
+        assert.strictEqual(output, expOutput);
 
         let expActiveNotes = new Set();
         assert(eqSet(MIDIIn.activeNotes, expActiveNotes));
@@ -725,7 +725,7 @@ suite(`MIDIIn test suite`, () => {
         });
 
         const expOutput = ``;
-        assert.equal(output, expOutput);
+        assert.strictEqual(output, expOutput);
 
         let expActiveNotes = new Set();
         expActiveNotes.add(52);

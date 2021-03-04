@@ -10,7 +10,7 @@ suite(`MIDIOut test suite`, () => {
         const got = MIDIOut.msToMMSS(ms);
         const exp = `0:00`;
         
-        assert.equal(got, exp);
+        assert.strictEqual(got, exp);
     });
 
     test(`msToMMSS - almost 1 sec`, () => {
@@ -18,7 +18,7 @@ suite(`MIDIOut test suite`, () => {
         const got = MIDIOut.msToMMSS(ms);
         const exp = `0:01`;
         
-        assert.equal(got, exp);
+        assert.strictEqual(got, exp);
     });
     
     test(`msToMMSS - exactly 1 sec`, () => {
@@ -26,7 +26,7 @@ suite(`MIDIOut test suite`, () => {
         const got = MIDIOut.msToMMSS(ms);
         const exp = `0:01`;
         
-        assert.equal(got, exp);
+        assert.strictEqual(got, exp);
     });
     
     test(`msToMMSS - bit more than 1 sec`, () => {
@@ -34,7 +34,7 @@ suite(`MIDIOut test suite`, () => {
         const got = MIDIOut.msToMMSS(ms);
         const exp = `0:01`;
         
-        assert.equal(got, exp);
+        assert.strictEqual(got, exp);
     });
 
     test(`msToMMSS - 1 min`, () => {
@@ -42,7 +42,7 @@ suite(`MIDIOut test suite`, () => {
         const got = MIDIOut.msToMMSS(ms);
         const exp = `1:00`;
         
-        assert.equal(got, exp);
+        assert.strictEqual(got, exp);
     });
     
     test(`msToMMSS - large number`, () => {
@@ -50,7 +50,7 @@ suite(`MIDIOut test suite`, () => {
         const got = MIDIOut.msToMMSS(ms);
         const exp = `100:23`;
         
-        assert.equal(got, exp);
+        assert.strictEqual(got, exp);
     });
     
     test(`msToMMSS - negative time exception`, () => {
@@ -121,7 +121,7 @@ suite(`MIDIOut test suite`, () => {
         const got = MIDIOut.MMSSToms(mmss);
         const exp = 0;
 
-        assert.equal(got, exp);
+        assert.strictEqual(got, exp);
     });
 
     test(`MMSSToms - valid 2`, () => {
@@ -129,7 +129,7 @@ suite(`MIDIOut test suite`, () => {
         const got = MIDIOut.MMSSToms(mmss);
         const exp = 59000;
 
-        assert.equal(got, exp);
+        assert.strictEqual(got, exp);
     });
     
     test(`MMSSToms - valid 3`, () => {
@@ -137,7 +137,7 @@ suite(`MIDIOut test suite`, () => {
         const got = MIDIOut.MMSSToms(mmss);
         const exp = 60000;
 
-        assert.equal(got, exp);
+        assert.strictEqual(got, exp);
     });
     
     test(`MMSSToms - valid 4`, () => {
@@ -145,7 +145,7 @@ suite(`MIDIOut test suite`, () => {
         const got = MIDIOut.MMSSToms(mmss);
         const exp = 7414000;
 
-        assert.equal(got, exp);
+        assert.strictEqual(got, exp);
     });
 
     test(`validateMIDIStartTimeInput - exception longer`, () => {
@@ -156,7 +156,7 @@ suite(`MIDIOut test suite`, () => {
         const got = MIDIOut.validateMIDIStartTimeInput(durationMS, durationMMSS, mmss);
         const exp = `Duration ${mmss} is longer than duration of actual MIDI file ${durationMMSS}`;
 
-        assert.equal(got, exp);
+        assert.strictEqual(got, exp);
     });
     
 
@@ -168,7 +168,7 @@ suite(`MIDIOut test suite`, () => {
         const got = MIDIOut.validateMIDIStartTimeInput(durationMS, durationMMSS, mmss);
         const exp = undefined;
 
-        assert.equal(got, exp);
+        assert.strictEqual(got, exp);
     });
 
     test(`validateMIDIStartTimeInput - valid 2`, () => {
@@ -179,6 +179,6 @@ suite(`MIDIOut test suite`, () => {
         const got = MIDIOut.validateMIDIStartTimeInput(durationMS, durationMMSS, mmss);
         const exp = undefined;
 
-        assert.equal(got, exp);
+        assert.strictEqual(got, exp);
     });
 });

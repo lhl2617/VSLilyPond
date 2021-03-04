@@ -8,6 +8,6 @@ import { debugMode } from '../../consts';
 suite(`Debug Test Suite`, () => {
     vscode.window.showInformationMessage('Start debug tests.');
     test(`debug - debugMode false`, () => {
-        assert.equal(debugMode, false);
+        assert.strictEqual(debugMode, false);
     });
 });

@@ -1,7 +1,6 @@
 name: Test
 
-on:
-  pull_request
+on: pull_request
 
 jobs:
   test:
@@ -32,3 +31,10 @@ jobs:
           run: npm test
       - name: Test generateDocs
         run: npm run generateDocs
+      - name: Check version validity
+        if: ${{ github.base_ref == 'master' && runner.os == 'ubuntu-20.04' }}
+        run: |
+          export EXTENSION_ID=$(jq -r '.publisher' package.json).$(jq -r '.name' package.json)
+          export PACKAGE_VERSION=$(jq -r '.version' package.json)
+          export MARKETPLACE_VERSION=$(npx vsce show $EXTENSION_ID --json | jq -j '.versions[0].version')
+          dpkg --compare-versions $PACKAGE_VERSION "gt" $MARKETPLACE_VERSION

@@ -25,6 +25,13 @@ jobs:
       - name: Install Dependencies
         if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: npm install
+      - name: Check version validity
+        if: ${{ github.base_ref == 'master' }}
+        run: |
+          export EXTENSION_ID=$(jq -r '.publisher' package.json).$(jq -r '.name' package.json)
+          export PACKAGE_VERSION=$(jq -r '.version' package.json)
+          export MARKETPLACE_VERSION=$(npx vsce show $EXTENSION_ID --json | jq -j '.versions[0].version')
+          dpkg --compare-versions $PACKAGE_VERSION "gt" $MARKETPLACE_VERSION
       - name: Publish extension
         run: npx vsce publish
         env:

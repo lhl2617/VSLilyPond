@@ -1,5 +1,10 @@
 # VSLilyPond
 
+[![Release](https://github.com/lhl2617/VSLilyPond/actions/workflows/release.yml/badge.svg)](https://github.com/lhl2617/VSLilyPond/actions/workflows/release.yml)
+[![Visual Studio Marketplace](https://vsmarketplacebadge.apphb.com/version-short/lhl2617.vslilypond.svg)](https://marketplace.visualstudio.com/items?itemName=lhl2617.vslilypond)
+[![Visual Studio Marketplace](https://vsmarketplacebadge.apphb.com/downloads-short/lhl2617.vslilypond.svg)](https://marketplace.visualstudio.com/items?itemName=lhl2617.vslilypond)
+[![Visual Studio Marketplace](https://vsmarketplacebadge.apphb.com/rating-star/lhl2617.vslilypond.svg)](https://marketplace.visualstudio.com/items?itemName=lhl2617.vslilypond)
+
 Provides syntax and error highlighting, IntelliSense and AutoComplete, compilation on save, MIDI (input and playback) support for [LilyPond](http://lilypond.org/) in VSCode. Works with any VSCode supported PDF previewer for PDF preview.
 
 See [docs/INSTALL.md](docs/INSTALL.md) for a setup guide.

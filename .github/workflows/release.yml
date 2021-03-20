@@ -1,14 +1,13 @@
-name: CI
+name: Release
 
 on:
-  pull_request
+  push:
+    branches:
+      - master
 
 jobs:
-  test:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [macos-latest, windows-latest, ubuntu-20.04]
+  release:
+    runs-on: ubuntu-20.04
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -26,9 +25,5 @@ jobs:
       - name: Install Dependencies
         if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: npm install
-      - name: Run Test
-        uses: GabrielBB/xvfb-action@v1
-        with:
-          run: npm test
-      - name: Test generateDocs
-        run: npm run generateDocs
+      - name: Release extension
+        run: npx vsce publish

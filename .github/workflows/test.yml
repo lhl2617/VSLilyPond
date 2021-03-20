@@ -1,0 +1,41 @@
+name: Test
+
+on: pull_request
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-latest, windows-latest, ubuntu-20.04]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Install Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14
+      ## Test fails with cached node modules
+      # - name: Cache node_modules
+      #   id: cache-node-modules
+      #   uses: actions/cache@v2
+      #   with:
+      #     path: |
+      #       **/node_modules
+      #     key: ${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+      - name: Install Dependencies
+        # if: steps.cache-node-modules.outputs.cache-hit != 'true'
+        run: npm install
+      - name: Run Test
+        uses: GabrielBB/xvfb-action@v1
+        with:
+          run: npm test
+      - name: Test generateDocs
+        run: npm run generateDocs
+      - name: Check version validity
+        if: ${{ github.base_ref == 'master' && runner.os == 'ubuntu-20.04' }}
+        run: |
+          export EXTENSION_ID=$(jq -r '.publisher' package.json).$(jq -r '.name' package.json)
+          export PACKAGE_VERSION=$(jq -r '.version' package.json)
+          export MARKETPLACE_VERSION=$(npx vsce show $EXTENSION_ID --json | jq -j '.versions[0].version')
+          dpkg --compare-versions $PACKAGE_VERSION "gt" $MARKETPLACE_VERSION

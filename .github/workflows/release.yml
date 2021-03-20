@@ -26,6 +26,7 @@ jobs:
           dpkg --compare-versions $PACKAGE_VERSION "gt" $MARKETPLACE_VERSION
       - name: Publish extension
         uses: GabrielBB/xvfb-action@v1
-        run: npx vsce publish
+        with:  
+          run: npx vsce publish
         env:
           VSCE_PAT: ${{ secrets.VSCE_PAT }}

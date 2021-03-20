@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.5.1
+- Take extension out of preview
+- Fix typos in README
+
 ## 1.5.0
 - Use [LilyPond Syntax](https://marketplace.visualstudio.com/items?itemName=jeandeaual.lilypond-syntax) extension which supports Scheme syntax for syntax highlighting
 - Update dependencies

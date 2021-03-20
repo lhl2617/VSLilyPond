@@ -52,7 +52,7 @@ See the FAQ at [docs/FAQ.md](docs/FAQ.md).
 * Buy me a Coffee ☕️ via [PayPal](https://paypal.me/lhl2617)
 
 ## Acknowledgements
-Base syntax highlighting depends on the [LilyPond Syntax extension]https://marketplace.visualstudio.com/items?itemName=jeandeaual.lilypond-syntax) by [Alexis Jeandeau](https://github.com/jeandeaual), under the Creative Commons Attribution-NonCommercial 3.0 Unported (CC BY-NC 3.0) license (http://creativecommons.org/licenses/by-sa/3.0/). See that repository for additional acknowledgements.
+Base syntax highlighting depends on the [LilyPond Syntax extension](https://marketplace.visualstudio.com/items?itemName=jeandeaual.lilypond-syntax) by [Alexis Jeandeau](https://github.com/jeandeaual), under the Creative Commons Attribution-NonCommercial 3.0 Unported (CC BY-NC 3.0) license (http://creativecommons.org/licenses/by-sa/3.0/). See that repository for additional acknowledgements.
 
 IntelliSense and AutoComplete depends on the [LilyPond AutoComplete (Commands & Keywords) extension](https://marketplace.visualstudio.com/items?itemName=lhl2617.lilypond-snippets),
 under the [MIT license](https://github.com/lhl2617/VSLilyPond-snippets/blob/master/LICENSE).

@@ -5,7 +5,7 @@
 	"license": "SEE LICENSE IN README.md",
 	"repository": "https://github.com/lhl2617/VSLilyPond",
 	"description": "Provides syntax and error highlighting, compilation on save, MIDI (input and playback) support for LilyPond in VSCode. ",
-	"version": "1.5.1",
+	"version": "1.5.2",
 	"icon": "assets/icon.png",
 	"engines": {
 		"vscode": "^1.44.0"
@@ -20,7 +20,6 @@
 		"music"
 	],
 	"extensionDependencies": [
-		"jeandeaual.lilypond-syntax",
 		"lhl2617.lilypond-snippets",
 		"lhl2617.lilypond-formatter"
 	],

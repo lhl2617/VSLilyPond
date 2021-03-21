@@ -1,5 +1,8 @@
 # Change Log
 
+## 1.5.2
+- Temporarily remove `jeandeaual.lilypond-syntax` as it causes VSLilyPond to not be able to start up.
+
 ## 1.5.1
 - Take extension out of preview
 - Fix typos in README

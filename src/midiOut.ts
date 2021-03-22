@@ -77,7 +77,7 @@ export namespace MIDIOut {
   // returns in ms the required start time
   const askAndSetMIDIStartTime = async (
     durationMS: number
-  ): Promise<number> => {
+  ): Promise<number | undefined> => {
     const durationMMSS = msToMMSS(durationMS)
     const data = vscode.window.showInputBox({
       ignoreFocusOut: true,
@@ -87,11 +87,11 @@ export namespace MIDIOut {
         validateMIDIStartTimeInput(durationMS, durationMMSS, mmss),
     })
     const value = await data
-    if (value) {
+    if (value !== undefined) {
       const res = MMSSToms(value)
       return res
     }
-    return 0
+    return undefined
   }
 
   // tries to get the corresponding midi file path from the active text editor
@@ -238,10 +238,12 @@ export namespace MIDIOut {
         // get the maximum duration and ask user to input the required duration
         const durationMS = MIDIOutState.player.durationMS()
         const startMS = await askAndSetMIDIStartTime(durationMS)
-        MIDIOutState.player.play()
-        MIDIOutState.player.jumpMS(startMS)
-        MIDIOutState.playing = true
-        timeout = setTimeout(pollMIDIStatus, 100)
+        if (startMS !== undefined) {
+          MIDIOutState.player.play()
+          MIDIOutState.player.jumpMS(startMS)
+          MIDIOutState.playing = true
+          timeout = setTimeout(pollMIDIStatus, 100)
+        }
       } else {
         throw new Error(`Unable to load MIDI player`)
       }

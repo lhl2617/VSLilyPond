@@ -4,10 +4,7 @@ on: pull_request
 
 jobs:
   test:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [macos-latest, windows-latest, ubuntu-20.04]
+    runs-on: ubuntu-20.04
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -15,6 +12,11 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 14
+      - name: Install LilyPond
+        run: |
+          wget https://lilypond.org/download/binaries/linux-64/lilypond-2.22.0-1.linux-64.sh
+          sudo bash lilypond-2.22.0-1.linux-64.sh
+          lilypond -v
       ## Test fails with cached node modules
       # - name: Cache node_modules
       #   id: cache-node-modules
@@ -33,7 +35,7 @@ jobs:
       - name: Test generateDocs
         run: npm run generateDocs
       - name: Check version validity
-        if: ${{ github.base_ref == 'master' && runner.os == 'ubuntu-20.04' }}
+        if: ${{ github.base_ref == 'master' }}
         run: |
           export EXTENSION_ID=$(jq -r '.publisher' package.json).$(jq -r '.name' package.json)
           export PACKAGE_VERSION=$(jq -r '.version' package.json)

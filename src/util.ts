@@ -1,6 +1,8 @@
 import * as vscode from "vscode"
 import * as fs from "fs"
+import * as path from "path"
 import * as commandExists from "command-exists"
+import * as cp from "child_process"
 import { debugMode } from "./consts"
 
 export enum LogLevel {
@@ -49,6 +51,53 @@ export const lilypondExists = (): boolean => {
   const exists = commandExists.sync(binPath)
 
   return exists
+}
+
+// get output of `lilypond -v`
+const getLilypondVersion = async (
+  binPath: string
+): Promise<string | undefined> => {
+  try {
+    const versionOutput = cp.execSync(`${binPath} -v`, { encoding: "utf-8" })
+    return versionOutput
+  } catch (err) {
+    logger(`Can't get LilyPond version: ${err}`, LogLevel.error, true)
+    return undefined
+  }
+}
+
+const getExtensionVersion = async (
+  context: vscode.ExtensionContext
+): Promise<string | undefined> => {
+  const extensionpath = path.join(context.extensionPath, "package.json")
+  const packageFileContents = JSON.parse(
+    fs.readFileSync(extensionpath, `utf-8`)
+  )
+  if (packageFileContents) {
+    return packageFileContents.version
+  }
+  return undefined
+}
+
+export const setLilypondVersionInStatusBar = async (
+  context: vscode.ExtensionContext
+): Promise<void> => {
+  const binPath = getBinPath()
+  const lilypondVersion = await getLilypondVersion(binPath)
+  const extensionVersion = await getExtensionVersion(context)
+  if (lilypondVersion) {
+    const lilypondVersionShort = lilypondVersion.split(`\n`)[0]
+    const lilypondVersionStatusBarItem = vscode.window.createStatusBarItem(
+      vscode.StatusBarAlignment.Right,
+      10
+    )
+    lilypondVersionStatusBarItem.text = lilypondVersionShort
+    lilypondVersionStatusBarItem.tooltip =
+      `VSLilyPond ${extensionVersion}\n\n` +
+      `LilyPond path: ${binPath}\n\n` +
+      `${lilypondVersion}`
+    lilypondVersionStatusBarItem.show()
+  }
 }
 
 // ensure directory exists before writing file

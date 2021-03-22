@@ -15,6 +15,11 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 14
+      - name: Install LilyPond
+        run: |
+          wget https://lilypond.org/download/binaries/linux-64/lilypond-2.22.0-1.linux-64.sh
+          sudo bash lilypond-2.22.0-1.linux-64.sh
+          lilypond -v
       - name: Install Dependencies
         run: npm install
       - name: Check version validity

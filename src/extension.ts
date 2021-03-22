@@ -1,5 +1,10 @@
 import * as vscode from "vscode"
-import { lilypondExists, getConfiguration, getBinPath } from "./util"
+import {
+  lilypondExists,
+  getConfiguration,
+  getBinPath,
+  setLilypondVersionInStatusBar,
+} from "./util"
 import { compile, CompileMode, initCompile, killCompilation } from "./lilypond"
 import { subscribeIntellisense } from "./intellisense"
 import { MIDIOut } from "./midiOut"
@@ -14,6 +19,7 @@ export function activate(context: vscode.ExtensionContext) {
     )
     return
   }
+  setLilypondVersionInStatusBar(context)
 
   const config = getConfiguration()
 

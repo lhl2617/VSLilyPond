@@ -188,6 +188,9 @@ export namespace MIDIOut {
   }
 
   const pollMIDIStatus = async () => {
+    if (!MIDIOutState.player) {
+      throw new Error(`MIDI Player not initialised!`)
+    }
     const durationMS = MIDIOutState.player.durationMS()
     const positionMS = MIDIOutState.player.positionMS()
     // need to be called with a 500 ms timeout otherwise it will fail!

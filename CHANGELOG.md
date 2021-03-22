@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.5.3
+- Add StatusBarItem showing loaded LilyPond version
+- Update dependencies
+
 ## 1.5.2
 - Temporarily remove `jeandeaual.lilypond-syntax` as it causes VSLilyPond to not be able to start up.
 

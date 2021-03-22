@@ -1,3 +1,3 @@
-export const langId = `lilypond`;
+export const langId = `lilypond`
 
-export const debugMode = false;
+export const debugMode = false

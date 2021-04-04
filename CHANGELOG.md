@@ -1,6 +1,7 @@
 # Change Log
 
 ## 1.5.4
+- Use [LilyPond Syntax](https://marketplace.visualstudio.com/items?itemName=jeandeaual.lilypond-syntax) extension which supports Scheme syntax for syntax highlighting
 - Update dependencies
 ## 1.5.3
 - Add StatusBarItem showing loaded LilyPond version

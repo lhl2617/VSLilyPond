@@ -1,5 +1,7 @@
 # Change Log
 
+## 1.5.4
+- Update dependencies
 ## 1.5.3
 - Add StatusBarItem showing loaded LilyPond version
 - Update dependencies

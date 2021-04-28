@@ -1,0 +1,38 @@
+version: 2
+updates:
+- package-ecosystem: npm
+  directory: "/"
+  schedule:
+    interval: weekly
+  open-pull-requests-limit: 10
+  target-branch: dev
+  ignore:
+  - dependency-name: "@types/vscode"
+    versions:
+    - "> 1.53.0, < 2"
+  - dependency-name: "@typescript-eslint/eslint-plugin"
+    versions:
+    - 4.20.0
+  - dependency-name: "@typescript-eslint/parser"
+    versions:
+    - 4.19.0
+    - 4.20.0
+  - dependency-name: "@types/mocha"
+    versions:
+    - 8.2.2
+  - dependency-name: "@types/node"
+    versions:
+    - 14.14.22
+    - 14.14.25
+    - 14.14.28
+    - 14.14.35
+  - dependency-name: mocha
+    versions:
+    - 8.3.2
+  - dependency-name: vscode-test
+    versions:
+    - 1.5.0
+    - 1.5.1
+  - dependency-name: typescript
+    versions:
+    - 4.1.5

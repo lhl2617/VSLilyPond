@@ -160,9 +160,8 @@ export const compile = async (
     const filePath = getCompilationFilePath(compileMode, activeTextDocument)
 
     const config = getConfiguration(activeTextDocument)
-    const additionalArgs: string[] = config.compilation.additionalCommandLineArguments
-      .trim()
-      .split(/\s+/)
+    const additionalArgs: string[] =
+      config.compilation.additionalCommandLineArguments.trim().split(/\s+/)
 
     const args = [`--loglevel=WARNING`].concat(additionalArgs).concat(filePath)
 

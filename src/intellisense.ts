@@ -24,9 +24,8 @@ export type DiagnosticInfo = {
 }
 
 let intellisenseOutputChannel: vscode.OutputChannel | undefined = undefined
-let intellisenseProcess:
-  | cp.ChildProcessWithoutNullStreams
-  | undefined = undefined
+let intellisenseProcess: cp.ChildProcessWithoutNullStreams | undefined =
+  undefined
 let timeout: NodeJS.Timeout | undefined = undefined
 
 // make ready an output channel
@@ -159,9 +158,8 @@ const execIntellisense = async (
     const config = getConfiguration(doc)
     const binPath = getBinPath()
 
-    const additionalArgs: string[] = config.compilation.additionalCommandLineArguments
-      .trim()
-      .split(/\s+/)
+    const additionalArgs: string[] =
+      config.compilation.additionalCommandLineArguments.trim().split(/\s+/)
 
     // notice that this produces a midi file titled `-.mid`.
     // it is possible to set output to filePath, but then the --include gets broken...

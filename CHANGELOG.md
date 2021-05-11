@@ -1,5 +1,8 @@
 # Change Log
 
+## 1.5.6
+- Update documentation
+
 ## 1.5.5
 - Update dependencies
 - Update documentation

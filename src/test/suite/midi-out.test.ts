@@ -1,7 +1,7 @@
 import * as assert from "assert"
 import * as vscode from "vscode"
 
-import { MIDIOut } from "../../midiOut"
+import { MIDIOut } from "../../midi-out"
 
 suite(`MIDIOut test suite`, () => {
   vscode.window.showInformationMessage("Start MIDIOut tests.")

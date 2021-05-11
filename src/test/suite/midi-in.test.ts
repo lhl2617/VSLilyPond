@@ -1,6 +1,6 @@
 import * as assert from "assert"
 import * as vscode from "vscode"
-import { MIDIIn } from "../../midiIn"
+import { MIDIIn } from "../../midi-in"
 import { Accidentals } from "../../util"
 
 type MIDINote = {

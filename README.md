@@ -55,6 +55,32 @@ See the FAQ at [docs/FAQ.md](docs/FAQ.md).
 * Pull requests are welcome in the [GitHub repository](https://github.com/lhl2617/VSLilyPond)
 * Buy me a Coffee ☕️ via [PayPal](https://paypal.me/lhl2617)
 
+## Development
+
+#### Requirements
+
+- [VSCode](https://code.visualstudio.com/)
+- `npm`
+- Python (Tested on 3.8)
+- `git` (>= 2.13)
+
+#### Setup
+
+- Clone repository
+  ```bash
+  git clone https://github.com/lhl2617/VSLilyPond
+  ```
+- Install `npm` dependencies
+  ```bash
+  npm i
+  ```
+- Hit `F5` to run an Extension Development Host.
+
+  See [here](https://code.visualstudio.com/api/get-started/your-first-extension) for a detailed extension development guide.
+
+#### Releasing
+
+Releasing is done automatically via GitHub Actions. Bump the version in `package.json` and update `CHANGELOG.md` before merging into the default branch.
 ## Acknowledgements
 Base syntax highlighting depends on the [LilyPond Syntax extension](https://marketplace.visualstudio.com/items?itemName=jeandeaual.lilypond-syntax) by [Alexis Jeandeau](https://github.com/jeandeaual), under the Creative Commons Attribution-NonCommercial 3.0 Unported (CC BY-NC 3.0) license (http://creativecommons.org/licenses/by-sa/3.0/). See that repository for additional acknowledgements.
 

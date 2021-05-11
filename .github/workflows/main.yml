@@ -77,7 +77,9 @@ jobs:
         if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: npm install
       - name: Run prepublish
-        run: npm run vscode:prepublish
+        uses: GabrielBB/xvfb-action@v1
+        with:  
+          run: npm run vscode:prepublish
 
   release:
     # Only release when pushing to master
@@ -118,6 +120,8 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           custom_tag: ${{ steps.tag.outputs.tag }}
       - name: Publish extension
-        run: npx vsce publish
+        uses: GabrielBB/xvfb-action@v1
+        with:
+          run: npx vsce publish
         env:
           VSCE_PAT: ${{ secrets.VSCE_PAT }}

@@ -31,7 +31,7 @@ Supports chord mode, relative mode and sharp/flat accidentals. See [DEMOS.md](./
 
 See [docs/INSTALL.md](docs/INSTALL.md) for a setup guide.
 
-* [VSCode](https://code.visualstudio.com/) 1.44.0 minimum
+* [VSCode](https://code.visualstudio.com/) 1.14.0 minimum
 * [LilyPond](http://lilypond.org/) (Tested on 2.22.0)
 * (Optional) [python-ly](https://pypi.org/project/python-ly/): Required for formatting (more information [here](https://marketplace.visualstudio.com/items?itemName=lhl2617.lilypond-formatter))
 * (Optional) VSCode PDF previewer (Recommended: [vscode-pdf](https://marketplace.visualstudio.com/items?itemName=tomoki1207.pdf))

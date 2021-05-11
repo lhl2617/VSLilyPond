@@ -61,8 +61,6 @@ See the FAQ at [docs/FAQ.md](docs/FAQ.md).
 
 - [VSCode](https://code.visualstudio.com/)
 - `npm`
-- Python (Tested on 3.8)
-- `git` (>= 2.13)
 
 #### Setup
 

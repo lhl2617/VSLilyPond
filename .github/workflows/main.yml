@@ -64,7 +64,7 @@ jobs:
       - name: Install LilyPond
         run: |
           wget https://lilypond.org/download/binaries/linux-64/lilypond-2.22.1-1.linux-64.sh
-          sudo bash lilypond-2.22.0-1.linux-64.sh
+          sudo bash lilypond-2.22.1-1.linux-64.sh
           lilypond -v
       - name: Cache node_modules
         id: cache-node-modules
@@ -97,7 +97,7 @@ jobs:
       - name: Install LilyPond
         run: |
           wget https://lilypond.org/download/binaries/linux-64/lilypond-2.22.1-1.linux-64.sh
-          sudo bash lilypond-2.22.0-1.linux-64.sh
+          sudo bash lilypond-2.22.1-1.linux-64.sh
           lilypond -v
       - name: Cache node_modules
         id: cache-node-modules

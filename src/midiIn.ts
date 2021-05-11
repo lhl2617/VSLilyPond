@@ -171,57 +171,59 @@ export namespace MIDIIn {
     }
   }
 
-  export const processNote = (
-    MIDINoteNumber: number,
-    velocity: number,
-    MIDIInputConfig: MIDIInputConfig
-  ) => (outputNoteFn: OutputNotesFnType) => {
-    const { accidentals, relativeMode, chordMode } = MIDIInputConfig
+  export const processNote =
+    (
+      MIDINoteNumber: number,
+      velocity: number,
+      MIDIInputConfig: MIDIInputConfig
+    ) =>
+    (outputNoteFn: OutputNotesFnType) => {
+      const { accidentals, relativeMode, chordMode } = MIDIInputConfig
 
-    if (velocity) {
-      // press down
+      if (velocity) {
+        // press down
 
-      // if not chord mode, input the note that was still held
-      if (!chordMode) {
-        if (activeNotes.size) {
-          if (activeNotes.size > 1) {
-            logger(
-              `Outputting a chord despite not in chord mode!`,
-              LogLevel.warning,
-              false
-            )
+        // if not chord mode, input the note that was still held
+        if (!chordMode) {
+          if (activeNotes.size) {
+            if (activeNotes.size > 1) {
+              logger(
+                `Outputting a chord despite not in chord mode!`,
+                LogLevel.warning,
+                false
+              )
+            }
+            outputNoteFn(activeNotes, accidentals, relativeMode)
+            activeNotes.clear()
           }
-          outputNoteFn(activeNotes, accidentals, relativeMode)
-          activeNotes.clear()
         }
-      }
-      activeNotes.add(MIDINoteNumber)
-    } else {
-      // lift
-      if (chordMode) {
-        // lifting during chord mode
-        chordNotes.add(MIDINoteNumber)
-        activeNotes.delete(MIDINoteNumber)
-        if (activeNotes.size === 0) {
-          outputNoteFn(chordNotes, accidentals, relativeMode)
-          chordNotes.clear()
-        }
+        activeNotes.add(MIDINoteNumber)
       } else {
-        // lifting during non-chord mode
-        if (activeNotes.size) {
-          if (activeNotes.size > 1) {
-            logger(
-              `Outputting a chord despite not in chord mode!`,
-              LogLevel.warning,
-              false
-            )
+        // lift
+        if (chordMode) {
+          // lifting during chord mode
+          chordNotes.add(MIDINoteNumber)
+          activeNotes.delete(MIDINoteNumber)
+          if (activeNotes.size === 0) {
+            outputNoteFn(chordNotes, accidentals, relativeMode)
+            chordNotes.clear()
           }
-          outputNoteFn(activeNotes, accidentals, relativeMode)
-          activeNotes.clear()
+        } else {
+          // lifting during non-chord mode
+          if (activeNotes.size) {
+            if (activeNotes.size > 1) {
+              logger(
+                `Outputting a chord despite not in chord mode!`,
+                LogLevel.warning,
+                false
+              )
+            }
+            outputNoteFn(activeNotes, accidentals, relativeMode)
+            activeNotes.clear()
+          }
         }
       }
     }
-  }
 
   // ._receive is passed to JZZ from jzz-midi-smf
   // @ts-ignore

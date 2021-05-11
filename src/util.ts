@@ -121,7 +121,7 @@ export const getConfiguration = (
 ) => {
   // if a doc is provided use its workspace folder
   if (doc) {
-    return vscode.workspace.getConfiguration(`vslilypond`, doc)
+    return vscode.workspace.getConfiguration(`vslilypond`, doc.uri)
   }
   // if not, try the active text editor
   if (vscode.window.activeTextEditor) {
@@ -129,13 +129,16 @@ export const getConfiguration = (
       vscode.window.activeTextEditor.document.uri
     )
     if (workspaceFolder) {
-      return vscode.workspace.getConfiguration(`vslilypond`, workspaceFolder)
+      return vscode.workspace.getConfiguration(
+        `vslilypond`,
+        workspaceFolder.uri
+      )
     }
   }
   // try the root workspace folder if present
   if (vscode.workspace.workspaceFolders?.length) {
     const workspaceFolder = vscode.workspace.workspaceFolders[0]
-    return vscode.workspace.getConfiguration(`vslilypond`, workspaceFolder)
+    return vscode.workspace.getConfiguration(`vslilypond`, workspaceFolder.uri)
   }
   return vscode.workspace.getConfiguration(`vslilypond`)
 }

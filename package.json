@@ -214,13 +214,13 @@
     }
   },
   "scripts": {
-    "vscode:prepublish": "npm run test && npm run generateDocs",
+    "vscode:prepublish": "npm run test && npm run docs:gen",
     "compile": "tsc -p ./",
     "lint": "eslint src --ext ts",
     "watch": "tsc -watch -p ./",
     "pretest": "npm run compile && npm run lint",
     "test": "node ./out/test/runTest.js",
-    "generateDocs": "ts-node ./src/docsGenerator/docsGenerator.ts"
+    "docs:gen": "ts-node ./src/docs-gen/main.ts"
   },
   "devDependencies": {
     "@types/command-exists": "^1.2.0",

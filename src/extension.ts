@@ -146,7 +146,7 @@ export function activate(context: vscode.ExtensionContext) {
   )
   context.subscriptions.push(startInputMidiCmd)
 
-  // start midi input
+  // stop midi input
   const stopInputMidiCmd = vscode.commands.registerCommand(
     "vslilypond.stopMIDIInput",
     () => {
@@ -155,7 +155,7 @@ export function activate(context: vscode.ExtensionContext) {
   )
   context.subscriptions.push(stopInputMidiCmd)
 
-  // set midi output device
+  // set midi input device
   const setInputMidiDeviceCmd = vscode.commands.registerCommand(
     "vslilypond.setInputMIDIDevice",
     () => {

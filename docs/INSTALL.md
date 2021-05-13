@@ -4,7 +4,6 @@
  
 * [VSCode](https://code.visualstudio.com/) 1.44.0 minimum 
 * [LilyPond](http://lilypond.org/) (Tested on 2.20.0)
-* VSCode PDF previewer (Recommended: [vscode-pdf](https://marketplace.visualstudio.com/items?itemName=tomoki1207.pdf))
 * (Optional) MIDI Devices for MIDI Input and Playback
 
 ## [VSLilyPond](https://marketplace.visualstudio.com/items?itemName=lhl2617.vslilypond) Extension Setup Guide
@@ -34,10 +33,7 @@ LilyPond Manuals and Guides can be found on [lilypond.org](http://lilypond.org).
 1. Run `python -m pip install python-ly`, where `python` is your Python 3 installation.
 Note: more information [here](https://marketplace.visualstudio.com/items?itemName=lhl2617.lilypond-formatter), including if your Python 3 installation is different.
 
-## VSCode PDF previewer Setup & Usage Guide
+## LilyPond PDF Preview Usage Guide
 
-1. Install the [vscode-pdf](https://marketplace.visualstudio.com/items?itemName=tomoki1207.pdf) extension via the link.
-2. Open a valid LilyPond file and compile it (via the Command Palette, or, if you have compile-on-save enabled, save the file).
-3. A `.pdf` file should be generated when compilation completes.
-4. You should be able to live preview the PDF in VSCode.
+See [here](https://marketplace.visualstudio.com/items?itemName=lhl2617.lilypond-pdf-preview).
 

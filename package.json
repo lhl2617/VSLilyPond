@@ -22,7 +22,8 @@
   "extensionDependencies": [
     "jeandeaual.lilypond-syntax",
     "lhl2617.lilypond-snippets",
-    "lhl2617.lilypond-formatter"
+    "lhl2617.lilypond-formatter",
+    "lhl2617.lilypond-pdf-preview"
   ],
   "activationEvents": [
     "onCommand:vslilypond.playMIDI",

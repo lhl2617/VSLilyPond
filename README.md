@@ -27,6 +27,12 @@ Supports chord mode, relative mode and sharp/flat accidentals. See [DEMOS.md](./
 
 ![MIDI Playback](./docs/assets/gifs/midiPlayback.gif)
 
+### Point and Click 📄
+
+![Point-and-Click](./docs/assets/gifs/pointAndClick.gif)
+
+See [here](https://github.com/lhl2617/VSLilyPond-PDF-preview) for more information (including a usage guide).
+
 ## Requirements
 
 See [docs/INSTALL.md](docs/INSTALL.md) for a setup guide.
@@ -86,6 +92,9 @@ IntelliSense and AutoComplete depends on the [LilyPond AutoComplete (Commands & 
 under the [MIT license](https://github.com/lhl2617/VSLilyPond-snippets/blob/master/LICENSE).
 
 Formatting depends on the [LilyPond Formatter extension](https://marketplace.visualstudio.com/items?itemName=lhl2617.lilypond-formatter),
-under the [MIT license](https://github.com/lhl2617/VSLilyPond-formatter/blob/main/LICENSE).
+under the [MIT license](https://github.com/lhl2617/VSLilyPond-formatter/blob/master/LICENSE).
+
+Point and Click depends on the [LilyPond PDF Preview extension](https://marketplace.visualstudio.com/items?itemName=lhl2617.lilypond-pdf-preview),
+under the [MIT license](https://github.com/lhl2617/VSLilyPond-PDF-preview/blob/master/LICENSE).
 
 License: Creative Commons Attribution-NonCommercial 3.0 Unported (CC BY-NC 3.0) license, http://creativecommons.org/licenses/by-sa/3.0/.

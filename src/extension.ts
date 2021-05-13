@@ -7,8 +7,8 @@ import {
 } from "./util"
 import { compile, CompileMode, initCompile, killCompilation } from "./lilypond"
 import { subscribeIntellisense } from "./intellisense"
-import { MIDIOut } from "./midiOut"
-import { MIDIIn } from "./midiIn"
+import { MIDIOut } from "./midi-out"
+import { MIDIIn } from "./midi-in"
 import { langId } from "./consts"
 
 export function activate(context: vscode.ExtensionContext) {

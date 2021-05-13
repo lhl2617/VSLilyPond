@@ -1,5 +1,10 @@
 # Change Log
 
+
+## 1.6.0
+- Use [LilyPond PDF Preview](https://marketplace.visualstudio.com/items?itemName=lhl2617.lilypond-pdf-preview) extension which supports Point-and-Click.
+
+
 ## 1.5.6
 - Update documentation
 

@@ -176,12 +176,13 @@ export const compile = async (
     }
 
     compileProcess.process.stdout.on("data", (data) => {
-      logger(`stdout: ${data}`, LogLevel.info, true)
+      // logger(`stdout: ${data}`, LogLevel.info, true)
+      outputToChannel(`${data.toString()}`)
     })
 
     compileProcess.process.stderr.on("data", (data) => {
       // logger(`Compilation Error: ${data}`, LogLevel.error, mute);
-      // outputToChannel(`Compilation Error: ${data}`, true);
+      outputToChannel(`${data.toString()}`)
       processStderr(data.toString())
     })
 

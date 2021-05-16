@@ -27,9 +27,13 @@ Supports chord mode, relative mode and sharp/flat accidentals. See [DEMOS.md](./
 
 ![MIDI Playback](./docs/assets/gifs/midiPlayback.gif)
 
-### Point and Click 📄
+### Two-way Point and Click 📄
 
-![Point-and-Click](./docs/assets/gifs/pointAndClick.gif)
+#### Forward (Score to PDF)
+![Forward Point-and-Click](./docs/assets/gifs/point-and-click-forward.gif)
+
+#### Backward (PDF to Score)
+![Backward Point-and-Click](./docs/assets/gifs/point-and-click-backward.gif)
 
 See [here](https://github.com/lhl2617/VSLilyPond-PDF-preview) for more information (including a usage guide).
 

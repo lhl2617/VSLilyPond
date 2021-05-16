@@ -1,5 +1,9 @@
 # Change Log
 
+
+## 1.6.3
+- Update documentation
+
 ## 1.6.2
 - Output `lilypond` compilation stdout and stderr to the `VSLilyPond: Compilation` output channel.
 

@@ -52,7 +52,7 @@ Object.entries(settings).forEach(([settingTitle, setting]) => {
 // generate COMMANDS.md
 let commandFileContent = [
   `# VSLilyPond Commands`,
-  `### Can be accessed via Command Palette (Windows: \`Ctrl+Shift+P\`, Mac: \`Cmd+Shift+P\`)`,
+  `### Can be accessed via the Command Palette (Windows: \`Ctrl+Shift+P\`, Mac: \`Cmd+Shift+P\`)`,
 ]
 
 Object.entries(groupedCommands).forEach(([groupName, commands]) => {

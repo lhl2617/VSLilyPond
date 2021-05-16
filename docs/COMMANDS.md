@@ -1,6 +1,6 @@
 # VSLilyPond Commands
 
-### Can be accessed via Command Palette (Windows: `Ctrl+Shift+P`, Mac: `Cmd+Shift+P`)
+### Can be accessed via the Command Palette (Windows: `Ctrl+Shift+P`, Mac: `Cmd+Shift+P`)
 
 ## MIDI Playback
 

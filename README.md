@@ -85,9 +85,13 @@ See the FAQ at [docs/FAQ.md](docs/FAQ.md).
 
   See [here](https://code.visualstudio.com/api/get-started/your-first-extension) for a detailed extension development guide.
 
+#### Testing MIDI input
+- On Windows, download VMPK and loopMIDI. These will allow you to test with a virtual MIDI keyboard.
+
 #### Releasing
 
 Releasing is done automatically via GitHub Actions. Bump the version in `package.json` and update `CHANGELOG.md` before merging into the default branch.
+
 ## Acknowledgements
 Base syntax highlighting depends on the [LilyPond Syntax extension](https://marketplace.visualstudio.com/items?itemName=jeandeaual.lilypond-syntax) by [Alexis Jeandeau](https://github.com/jeandeaual), under the Creative Commons Attribution-NonCommercial 3.0 Unported (CC BY-NC 3.0) license (http://creativecommons.org/licenses/by-sa/3.0/). See that repository for additional acknowledgements.
 

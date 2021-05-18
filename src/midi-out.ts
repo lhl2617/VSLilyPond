@@ -153,7 +153,7 @@ export namespace MIDIOut {
 
     if (!midiFileName) {
       throw new Error(
-        `Cannot find MIDI file to play - make sure you are outputting a MIDI file`
+        `Cannot find MIDI file to play - make sure you are outputting a MIDI file, and the editor is currently active on the file that produces the MIDI.`
       )
     }
     return midiFileName
@@ -215,18 +215,8 @@ export namespace MIDIOut {
     }
   }
 
-  const prePlayCheck = async () => {
-    resetMIDI(true)
-    if (!(await MIDIFileExists())) {
-      throw new Error(
-        `Cannot find the corresponding MIDI file--make sure you're currently in the file that produces the MIDI.`
-      )
-    }
-  }
-
   export const playMIDI = async () => {
     try {
-      await prePlayCheck()
       await loadMIDI()
       if (MIDIOutState.player) {
         MIDIOutState.player.play()
@@ -243,7 +233,6 @@ export namespace MIDIOut {
 
   export const playMIDIFrom = async () => {
     try {
-      await prePlayCheck()
       await loadMIDI()
       if (MIDIOutState.player) {
         // get the maximum duration and ask user to input the required duration

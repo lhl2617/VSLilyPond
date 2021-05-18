@@ -117,30 +117,6 @@ export const compile = async (
 ) => {
   try {
     if (compileProcess) {
-      // basically, onSave compile cannot override onCompile/onCompileSpecific compile
-      if (
-        compileMode === CompileMode.onSave &&
-        (compileProcess.compileMode === CompileMode.onCompile ||
-          compileProcess.compileMode === CompileMode.onCompileSpecific)
-      ) {
-        // currently running compile process is onCompile and the current caller is onSave
-        // return and do nothing
-        return
-      }
-
-      // do not let onCompile/onCompileSpecific override each other
-      if (
-        compileProcess.compileMode === CompileMode.onCompile ||
-        compileProcess.compileMode === CompileMode.onCompileSpecific
-      ) {
-        logger(
-          `Cannot compile - there is an existing compilation, please wait for that to finish.`,
-          LogLevel.error,
-          false
-        )
-        return
-      }
-
       killCompilation(true)
     }
 

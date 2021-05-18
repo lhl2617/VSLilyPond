@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.6.4
+- Update dependencies
+  - Fix an issue with remote servers/dev containers crashing due to the absence of sound devices in a Linux based container
+    - https://github.com/jazz-soft/JZZ/issues/43
 
 ## 1.6.3
 - Update documentation

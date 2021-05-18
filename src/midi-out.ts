@@ -171,6 +171,10 @@ export namespace MIDIOut {
       MIDIOutState.currMidiFilePath = midiFileName
       MIDIOutState.player = smf.player()
 
+      const outputs = await getOutputMIDIDevices()
+      if (outputs.length === 0) {
+        throw new Error(`No output MIDI devices are found.`)
+      }
       const config = getConfiguration()
       const midiout = config.midiPlayback.output.length
         ? JZZ().openMidiOut(config.midiPlayback.output)
@@ -211,11 +215,19 @@ export namespace MIDIOut {
     }
   }
 
+  const prePlayCheck = async () => {
+    resetMIDI(true)
+    if (!(await MIDIFileExists())) {
+      throw new Error(
+        `Cannot find the corresponding MIDI file--make sure you're currently in the file that produces the MIDI.`
+      )
+    }
+  }
+
   export const playMIDI = async () => {
     try {
-      resetMIDI(true)
+      await prePlayCheck()
       await loadMIDI()
-
       if (MIDIOutState.player) {
         MIDIOutState.player.play()
         MIDIOutState.playing = true
@@ -231,9 +243,8 @@ export namespace MIDIOut {
 
   export const playMIDIFrom = async () => {
     try {
-      resetMIDI(true)
+      await prePlayCheck()
       await loadMIDI()
-
       if (MIDIOutState.player) {
         // get the maximum duration and ask user to input the required duration
         const durationMS = MIDIOutState.player.durationMS()
@@ -393,12 +404,17 @@ export namespace MIDIOut {
     }
   }
 
-  // set output midi device
-  export const setOutputMIDIDevice = async () => {
+  const getOutputMIDIDevices = async () => {
     const outputs: string[] = JZZ()
       .info()
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .outputs.map((x: any) => x.name)
+    return outputs
+  }
+
+  // set output midi device
+  export const setOutputMIDIDevice = async () => {
+    const outputs = await getOutputMIDIDevices()
     vscode.window.showQuickPick(outputs).then((val: string | undefined) => {
       if (val) {
         const config = getConfiguration()
@@ -421,11 +437,7 @@ export namespace MIDIOut {
 
   const shouldShowStatusBarItems = async (): Promise<boolean> => {
     const activeTextEditor = vscode.window.activeTextEditor
-    if (
-      activeTextEditor &&
-      activeTextEditor.document.languageId === langId &&
-      (await MIDIFileExists())
-    ) {
+    if (activeTextEditor && activeTextEditor.document.languageId === langId) {
       return true
     }
     return false

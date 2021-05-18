@@ -32,12 +32,15 @@ export const initCompile = () => {
   )
 }
 
-const compilingStatasBarItem = vscode.window.createStatusBarItem(
-  vscode.StatusBarAlignment.Left,
-  0
-)
-compilingStatasBarItem.text = `$(sync~spin) Compiling...`
-compilingStatasBarItem.tooltip = `You can kill the compilation process using the \`VSLilyPond: Kill Compilation Process\` command`
+const getCompilationStatusBarItem = () => {
+  const item = vscode.window.createStatusBarItem(
+    vscode.StatusBarAlignment.Left,
+    0
+  )
+  item.text = `$(sync~spin) Compiling...`
+  item.tooltip = `You can kill the compilation process using the \`VSLilyPond: Kill Compilation Process\` command`
+  return item
+}
 
 const outputToChannel = async (msg: string, show = false) => {
   if (compileOutputChannel) {
@@ -101,7 +104,6 @@ export const killCompilation = async (mute = false) => {
     compileProcess.process.kill(`SIGKILL`)
     compileProcess = undefined
     logger(`Compilation process killed`, LogLevel.info, mute)
-    compilingStatasBarItem.hide()
   } else {
     logger(`No active compilation process running`, LogLevel.info, mute)
   }
@@ -122,12 +124,14 @@ export const compile = async (
   mute = false,
   textDocument: vscode.TextDocument | undefined = undefined
 ) => {
+  const compilingStatasBarItem = getCompilationStatusBarItem()
+  compilingStatasBarItem.show()
+
   try {
     if (compileProcess) {
       killCompilation(true)
     }
 
-    compilingStatasBarItem.show()
     const binPath = getBinPath()
 
     const activeTextDocument =

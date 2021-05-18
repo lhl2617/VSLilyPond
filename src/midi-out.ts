@@ -412,18 +412,6 @@ export namespace MIDIOut {
     })
   }
 
-  const MIDIFileExists = async (): Promise<boolean> => {
-    try {
-      const midiFilePath = await getMidiFilePathFromWindow()
-      if (midiFilePath) {
-        return true
-      }
-    } catch (err) {
-      return false
-    }
-    return false
-  }
-
   const shouldShowStatusBarItems = async (): Promise<boolean> => {
     const activeTextEditor = vscode.window.activeTextEditor
     if (activeTextEditor && activeTextEditor.document.languageId === langId) {

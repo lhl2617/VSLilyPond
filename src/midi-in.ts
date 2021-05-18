@@ -261,12 +261,17 @@ export namespace MIDIIn {
     updateMIDIStatusBarItem()
   }
 
-  // set input midi device
-  export const setInputMIDIDevice = async () => {
+  const getInputMIDIDevices = async () => {
     const inputs: string[] = JZZ()
       .info()
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .inputs.map((x: any) => x.name)
+    return inputs
+  }
+
+  // set input midi device
+  export const setInputMIDIDevice = async () => {
+    const inputs = await getInputMIDIDevices()
     vscode.window.showQuickPick(inputs).then((val: string | undefined) => {
       if (val) {
         const config = getConfiguration()

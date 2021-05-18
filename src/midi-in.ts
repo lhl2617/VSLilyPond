@@ -279,7 +279,7 @@ export namespace MIDIIn {
     {
       const startBtn = vscode.window.createStatusBarItem(
         vscode.StatusBarAlignment.Right,
-        0
+        2
       )
       startBtn.command = `vslilypond.startMIDIInput`
       startBtn.text = `$(circle-filled) Start MIDI Input`
@@ -289,7 +289,7 @@ export namespace MIDIIn {
     {
       const stopBtn = vscode.window.createStatusBarItem(
         vscode.StatusBarAlignment.Right,
-        0
+        1
       )
       stopBtn.command = `vslilypond.stopMIDIInput`
       stopBtn.text = `$(debug-stop) Stop MIDI Input`

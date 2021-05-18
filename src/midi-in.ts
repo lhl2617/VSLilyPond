@@ -241,13 +241,21 @@ export namespace MIDIIn {
 
   // start midi input
   export const startMIDIInput = async () => {
-    const config = getConfiguration()
-    MIDIInState.midiInPort = config.midiInput.input.length
-      ? JZZ().openMidiIn(config.midiInput.input)
-      : JZZ().openMidiIn()
+    try {
+      const inputs = await getInputMIDIDevices()
+      if (inputs.length === 0) {
+        throw new Error(`No input MIDI devices are found.`)
+      }
+      const config = getConfiguration()
+      MIDIInState.midiInPort = config.midiInput.input.length
+        ? JZZ().openMidiIn(config.midiInput.input)
+        : JZZ().openMidiIn()
 
-    MIDIInState.midiInPort.connect(midiInMsgProcessor)
-    MIDIInState.active = true
+      MIDIInState.midiInPort.connect(midiInMsgProcessor)
+      MIDIInState.active = true
+    } catch (err) {
+      logger(err.message, LogLevel.error, false)
+    }
     updateMIDIStatusBarItem()
   }
 

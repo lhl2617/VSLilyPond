@@ -241,13 +241,21 @@ export namespace MIDIIn {
 
   // start midi input
   export const startMIDIInput = async () => {
-    const config = getConfiguration()
-    MIDIInState.midiInPort = config.midiInput.input.length
-      ? JZZ().openMidiIn(config.midiInput.input)
-      : JZZ().openMidiIn()
+    try {
+      const inputs = await getInputMIDIDevices()
+      if (inputs.length === 0) {
+        throw new Error(`No input MIDI devices are found.`)
+      }
+      const config = getConfiguration()
+      MIDIInState.midiInPort = config.midiInput.input.length
+        ? JZZ().openMidiIn(config.midiInput.input)
+        : JZZ().openMidiIn()
 
-    MIDIInState.midiInPort.connect(midiInMsgProcessor)
-    MIDIInState.active = true
+      MIDIInState.midiInPort.connect(midiInMsgProcessor)
+      MIDIInState.active = true
+    } catch (err) {
+      logger(err.message, LogLevel.error, false)
+    }
     updateMIDIStatusBarItem()
   }
 
@@ -261,12 +269,17 @@ export namespace MIDIIn {
     updateMIDIStatusBarItem()
   }
 
-  // set input midi device
-  export const setInputMIDIDevice = async () => {
+  const getInputMIDIDevices = async () => {
     const inputs: string[] = JZZ()
       .info()
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .inputs.map((x: any) => x.name)
+    return inputs
+  }
+
+  // set input midi device
+  export const setInputMIDIDevice = async () => {
+    const inputs = await getInputMIDIDevices()
     vscode.window.showQuickPick(inputs).then((val: string | undefined) => {
       if (val) {
         const config = getConfiguration()
@@ -279,7 +292,7 @@ export namespace MIDIIn {
     {
       const startBtn = vscode.window.createStatusBarItem(
         vscode.StatusBarAlignment.Right,
-        0
+        2
       )
       startBtn.command = `vslilypond.startMIDIInput`
       startBtn.text = `$(circle-filled) Start MIDI Input`
@@ -289,7 +302,7 @@ export namespace MIDIIn {
     {
       const stopBtn = vscode.window.createStatusBarItem(
         vscode.StatusBarAlignment.Right,
-        0
+        1
       )
       stopBtn.command = `vslilypond.stopMIDIInput`
       stopBtn.text = `$(debug-stop) Stop MIDI Input`

@@ -32,7 +32,7 @@ export const initCompile = () => {
   )
 }
 
-const getCompilationStatusBarItem = () => {
+const getCompilingStatusBarItem = () => {
   const item = vscode.window.createStatusBarItem(
     vscode.StatusBarAlignment.Left,
     0
@@ -40,6 +40,17 @@ const getCompilationStatusBarItem = () => {
   item.text = `$(sync~spin) Compiling...`
   item.tooltip = `You can kill the compilation process using the \`VSLilyPond: Kill Compilation Process\` command`
   return item
+}
+
+const showCompilationFailedStatusBarItem = (timeoutMS = 5000) => {
+  const item = vscode.window.createStatusBarItem(
+    vscode.StatusBarAlignment.Left,
+    0
+  )
+  item.text = `$(x) Compilation Failed`
+  item.tooltip = `See the \`VSLilyPond: Compilation\` output for more information`
+  item.show()
+  setTimeout(() => item.hide(), timeoutMS)
 }
 
 const outputToChannel = async (msg: string, show = false) => {
@@ -124,7 +135,7 @@ export const compile = async (
   mute = false,
   textDocument: vscode.TextDocument | undefined = undefined
 ) => {
-  const compilingStatasBarItem = getCompilationStatusBarItem()
+  const compilingStatasBarItem = getCompilingStatusBarItem()
   compilingStatasBarItem.show()
 
   try {
@@ -183,9 +194,14 @@ export const compile = async (
       if (code === 0) {
         logger(`Compilation successful`, LogLevel.info, mute)
         outputToChannel(`Compilation successful`)
+      } else if (code === null) {
+        // here, the compilation process is replaced (i.e. killed above)
+        logger(`Compilation killed`, LogLevel.error, mute)
+        outputToChannel(`Compilation killed`, false)
       } else {
         logger(`Compilation failed`, LogLevel.error, mute)
-        outputToChannel(`Compilation failed`, true)
+        outputToChannel(`Compilation failed`)
+        showCompilationFailedStatusBarItem()
       }
       compileProcess = undefined
       compilingStatasBarItem.hide()
@@ -193,6 +209,7 @@ export const compile = async (
   } catch (err) {
     logger(err.message, LogLevel.error, mute)
     outputToChannel(`Compilation failed: ${err.message}`, true)
+    showCompilationFailedStatusBarItem()
     compilingStatasBarItem.hide()
   }
 }

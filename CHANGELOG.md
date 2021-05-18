@@ -1,5 +1,12 @@
 # Change Log
 
+
+## 1.6.5
+- Fix [#253](https://github.com/lhl2617/VSLilyPond/issues/253)
+  - Kill the previous compilation job and let the next one take over
+- Fix [#252](https://github.com/lhl2617/VSLilyPond/issues/252)
+  - Add a `Compiling...` status bar icon as well as a Compilation Failed one to signify status.
+
 ## 1.6.4
 - Update dependencies
   - Fix an issue with remote servers/dev containers crashing due to the absence of sound devices in a Linux based container

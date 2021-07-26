@@ -230,7 +230,7 @@
     "@types/node": "^15.3.0",
     "@types/vscode": "1.46.0",
     "@typescript-eslint/eslint-plugin": "^4.24.0",
-    "@typescript-eslint/parser": "^4.24.0",
+    "@typescript-eslint/parser": "^4.28.4",
     "eslint": "^7.26.0",
     "eslint-plugin-prettier": "^3.4.0",
     "glob": "^7.1.7",

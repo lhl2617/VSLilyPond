@@ -174,13 +174,13 @@ export namespace MIDIIn {
   export const processNote =
     (
       MIDINoteNumber: number,
-      velocity: number,
+      keyDown: boolean,
       MIDIInputConfig: MIDIInputConfig
     ) =>
     (outputNoteFn: OutputNotesFnType) => {
       const { accidentals, relativeMode, chordMode } = MIDIInputConfig
 
-      if (velocity) {
+      if (keyDown) {
         // press down
 
         // if not chord mode, input the note that was still held
@@ -229,11 +229,16 @@ export namespace MIDIIn {
   // @ts-ignore
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   midiInMsgProcessor._receive = (msg: any) => {
+    const statusByte: number = msg[0]
     const MIDINoteNumber: number = msg[1]
-    if (MIDINoteNumber >= 12 && MIDINoteNumber <= 127) {
-      const velocity: number = msg[2] // 0 if lift
+    if (
+      [0x80, 0x90].includes(statusByte) &&
+      MIDINoteNumber >= 12 &&
+      MIDINoteNumber <= 127
+    ) {
+      const keyDown: boolean = statusByte === 0x90 // 0x90 indicates a keyDown event
       const MIDIInputConfig = getMIDIInputConfig()
-      processNote(MIDINoteNumber, velocity, MIDIInputConfig)(outputNotes)
+      processNote(MIDINoteNumber, keyDown, MIDIInputConfig)(outputNotes)
     } else {
       logger(`Received other MIDI message: ${msg}`, LogLevel.warning, true)
     }

@@ -182,7 +182,6 @@ export namespace MIDIIn {
 
       if (keyDown) {
         // press down
-
         // if not chord mode, input the note that was still held
         if (!chordMode) {
           if (activeNotes.size) {

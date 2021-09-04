@@ -136,7 +136,7 @@ export namespace MIDIIn {
         )
       }
     } catch (err) {
-      logger(`Error outputting note: ${err.message}`, LogLevel.error, false)
+      logger(`Error outputting note: ${err}`, LogLevel.error, false)
     }
     return ``
   }
@@ -166,7 +166,7 @@ export namespace MIDIIn {
           editBuilder.insert(position, outputString)
         })
       } catch (err) {
-        logger(err.message, LogLevel.error, false)
+        logger(String(err), LogLevel.error, false)
       }
     }
   }
@@ -258,7 +258,7 @@ export namespace MIDIIn {
       MIDIInState.midiInPort.connect(midiInMsgProcessor)
       MIDIInState.active = true
     } catch (err) {
-      logger(err.message, LogLevel.error, false)
+      logger(String(err), LogLevel.error, false)
     }
     updateMIDIStatusBarItem()
   }

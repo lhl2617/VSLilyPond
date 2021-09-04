@@ -207,8 +207,8 @@ export const compile = async (
       compilingStatasBarItem.hide()
     })
   } catch (err) {
-    logger(err.message, LogLevel.error, mute)
-    outputToChannel(`Compilation failed: ${err.message}`, true)
+    logger(String(err), LogLevel.error, mute)
+    outputToChannel(`Compilation failed: ${err}`, true)
     showCompilationFailedStatusBarItem()
     compilingStatasBarItem.hide()
   }

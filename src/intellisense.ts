@@ -133,7 +133,7 @@ const processIntellisenseErrors = async (
 
       addToDiagCol(diag, diagCol)
     } catch (err) {
-      outputToChannel(`Intellisense error: ${err.message}, ${output}`, true)
+      outputToChannel(`Intellisense error: ${err}, ${output}`, true)
     }
   }
 }
@@ -204,7 +204,7 @@ const execIntellisense = async (
       clearTmpMidiFile(path.dirname(doc.uri.fsPath))
     })
   } catch (err) {
-    const errMsg = `Intellisense failed with error ${err.message}`
+    const errMsg = `Intellisense failed with error ${err}`
     logger(errMsg, LogLevel.error, true)
     outputToChannel(errMsg, true)
   }

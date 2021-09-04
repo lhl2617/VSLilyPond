@@ -5,7 +5,7 @@ import { Accidentals } from "../../util"
 
 type MIDINote = {
   MIDINoteNumber: number
-  velocity: number
+  keydown: boolean
 }
 
 const eqSet = (a: Set<unknown>, b: Set<unknown>) =>
@@ -310,7 +310,7 @@ suite(`MIDIIn Test Suite`, () => {
     }[] = [
       {
         name: "chordMode off - press down only, no liftoff",
-        MIDINotes: [{ MIDINoteNumber: 48, velocity: 1 }],
+        MIDINotes: [{ MIDINoteNumber: 48, keydown: true }],
         MIDIInputConfig: {
           accidentals: `sharps`,
           relativeMode: true,
@@ -323,8 +323,8 @@ suite(`MIDIIn Test Suite`, () => {
       {
         name: "chordMode off - press down & liftoff",
         MIDINotes: [
-          { MIDINoteNumber: 48, velocity: 1 },
-          { MIDINoteNumber: 48, velocity: 0 },
+          { MIDINoteNumber: 48, keydown: true },
+          { MIDINoteNumber: 48, keydown: false },
         ],
         MIDIInputConfig: {
           accidentals: `sharps`,
@@ -338,14 +338,14 @@ suite(`MIDIIn Test Suite`, () => {
       {
         name: "chordMode off - press down & liftoff multiple notes",
         MIDINotes: [
-          { MIDINoteNumber: 48, velocity: 1 },
-          { MIDINoteNumber: 48, velocity: 0 },
-          { MIDINoteNumber: 48, velocity: 1 },
-          { MIDINoteNumber: 48, velocity: 0 },
-          { MIDINoteNumber: 50, velocity: 1 },
-          { MIDINoteNumber: 50, velocity: 0 },
-          { MIDINoteNumber: 48, velocity: 1 },
-          { MIDINoteNumber: 48, velocity: 0 },
+          { MIDINoteNumber: 48, keydown: true },
+          { MIDINoteNumber: 48, keydown: false },
+          { MIDINoteNumber: 48, keydown: true },
+          { MIDINoteNumber: 48, keydown: false },
+          { MIDINoteNumber: 50, keydown: true },
+          { MIDINoteNumber: 50, keydown: false },
+          { MIDINoteNumber: 48, keydown: true },
+          { MIDINoteNumber: 48, keydown: false },
         ],
         MIDIInputConfig: {
           accidentals: `sharps`,
@@ -359,9 +359,9 @@ suite(`MIDIIn Test Suite`, () => {
       {
         name: "chordMode off - press down multiple notes",
         MIDINotes: [
-          { MIDINoteNumber: 48, velocity: 1 },
-          { MIDINoteNumber: 50, velocity: 1 },
-          { MIDINoteNumber: 48, velocity: 1 },
+          { MIDINoteNumber: 48, keydown: true },
+          { MIDINoteNumber: 50, keydown: true },
+          { MIDINoteNumber: 48, keydown: true },
         ],
         MIDIInputConfig: {
           accidentals: `sharps`,
@@ -375,9 +375,9 @@ suite(`MIDIIn Test Suite`, () => {
       {
         name: "chordMode off - press down c major triad, no liftoff",
         MIDINotes: [
-          { MIDINoteNumber: 48, velocity: 1 },
-          { MIDINoteNumber: 50, velocity: 1 },
-          { MIDINoteNumber: 52, velocity: 1 },
+          { MIDINoteNumber: 48, keydown: true },
+          { MIDINoteNumber: 50, keydown: true },
+          { MIDINoteNumber: 52, keydown: true },
         ],
         MIDIInputConfig: {
           accidentals: `sharps`,
@@ -391,12 +391,12 @@ suite(`MIDIIn Test Suite`, () => {
       {
         name: "chordMode off - press down c major triad, liftoff",
         MIDINotes: [
-          { MIDINoteNumber: 48, velocity: 1 },
-          { MIDINoteNumber: 50, velocity: 1 },
-          { MIDINoteNumber: 52, velocity: 1 },
-          { MIDINoteNumber: 48, velocity: 0 },
-          { MIDINoteNumber: 50, velocity: 0 },
-          { MIDINoteNumber: 52, velocity: 0 },
+          { MIDINoteNumber: 48, keydown: true },
+          { MIDINoteNumber: 50, keydown: true },
+          { MIDINoteNumber: 52, keydown: true },
+          { MIDINoteNumber: 48, keydown: false },
+          { MIDINoteNumber: 50, keydown: false },
+          { MIDINoteNumber: 52, keydown: false },
         ],
         MIDIInputConfig: {
           accidentals: `sharps`,
@@ -409,7 +409,7 @@ suite(`MIDIIn Test Suite`, () => {
       },
       {
         name: "chordMode on - press down one note no liftoff",
-        MIDINotes: [{ MIDINoteNumber: 48, velocity: 1 }],
+        MIDINotes: [{ MIDINoteNumber: 48, keydown: true }],
         MIDIInputConfig: {
           accidentals: `sharps`,
           relativeMode: true,
@@ -422,8 +422,8 @@ suite(`MIDIIn Test Suite`, () => {
       {
         name: "chordMode on - press down & liftoff",
         MIDINotes: [
-          { MIDINoteNumber: 48, velocity: 1 },
-          { MIDINoteNumber: 48, velocity: 0 },
+          { MIDINoteNumber: 48, keydown: true },
+          { MIDINoteNumber: 48, keydown: false },
         ],
         MIDIInputConfig: {
           accidentals: `sharps`,
@@ -437,14 +437,14 @@ suite(`MIDIIn Test Suite`, () => {
       {
         name: "chordMode on - press down & liftoff multiple notes",
         MIDINotes: [
-          { MIDINoteNumber: 48, velocity: 1 },
-          { MIDINoteNumber: 48, velocity: 0 },
-          { MIDINoteNumber: 48, velocity: 1 },
-          { MIDINoteNumber: 48, velocity: 0 },
-          { MIDINoteNumber: 50, velocity: 1 },
-          { MIDINoteNumber: 50, velocity: 0 },
-          { MIDINoteNumber: 48, velocity: 1 },
-          { MIDINoteNumber: 48, velocity: 0 },
+          { MIDINoteNumber: 48, keydown: true },
+          { MIDINoteNumber: 48, keydown: false },
+          { MIDINoteNumber: 48, keydown: true },
+          { MIDINoteNumber: 48, keydown: false },
+          { MIDINoteNumber: 50, keydown: true },
+          { MIDINoteNumber: 50, keydown: false },
+          { MIDINoteNumber: 48, keydown: true },
+          { MIDINoteNumber: 48, keydown: false },
         ],
         MIDIInputConfig: {
           accidentals: `sharps`,
@@ -458,10 +458,10 @@ suite(`MIDIIn Test Suite`, () => {
       {
         name: "chordMode on - press down multiple notes",
         MIDINotes: [
-          { MIDINoteNumber: 48, velocity: 1 },
-          { MIDINoteNumber: 48, velocity: 1 },
-          { MIDINoteNumber: 50, velocity: 1 },
-          { MIDINoteNumber: 48, velocity: 1 },
+          { MIDINoteNumber: 48, keydown: true },
+          { MIDINoteNumber: 48, keydown: true },
+          { MIDINoteNumber: 50, keydown: true },
+          { MIDINoteNumber: 48, keydown: true },
         ],
         MIDIInputConfig: {
           accidentals: `sharps`,
@@ -475,9 +475,9 @@ suite(`MIDIIn Test Suite`, () => {
       {
         name: "chordMode on - press down c major triad, no liftoff",
         MIDINotes: [
-          { MIDINoteNumber: 48, velocity: 1 },
-          { MIDINoteNumber: 50, velocity: 1 },
-          { MIDINoteNumber: 52, velocity: 1 },
+          { MIDINoteNumber: 48, keydown: true },
+          { MIDINoteNumber: 50, keydown: true },
+          { MIDINoteNumber: 52, keydown: true },
         ],
         MIDIInputConfig: {
           accidentals: `sharps`,
@@ -491,12 +491,12 @@ suite(`MIDIIn Test Suite`, () => {
       {
         name: "chordMode on - press down c major triad, liftoff",
         MIDINotes: [
-          { MIDINoteNumber: 48, velocity: 1 },
-          { MIDINoteNumber: 50, velocity: 1 },
-          { MIDINoteNumber: 52, velocity: 1 },
-          { MIDINoteNumber: 48, velocity: 0 },
-          { MIDINoteNumber: 50, velocity: 0 },
-          { MIDINoteNumber: 52, velocity: 0 },
+          { MIDINoteNumber: 48, keydown: true },
+          { MIDINoteNumber: 50, keydown: true },
+          { MIDINoteNumber: 52, keydown: true },
+          { MIDINoteNumber: 48, keydown: false },
+          { MIDINoteNumber: 50, keydown: false },
+          { MIDINoteNumber: 52, keydown: false },
         ],
         MIDIInputConfig: {
           accidentals: `sharps`,
@@ -510,11 +510,11 @@ suite(`MIDIIn Test Suite`, () => {
       {
         name: "chordMode on - press down c major triad, liftoff except last",
         MIDINotes: [
-          { MIDINoteNumber: 48, velocity: 1 },
-          { MIDINoteNumber: 50, velocity: 1 },
-          { MIDINoteNumber: 52, velocity: 1 },
-          { MIDINoteNumber: 48, velocity: 0 },
-          { MIDINoteNumber: 50, velocity: 0 },
+          { MIDINoteNumber: 48, keydown: true },
+          { MIDINoteNumber: 50, keydown: true },
+          { MIDINoteNumber: 52, keydown: true },
+          { MIDINoteNumber: 48, keydown: false },
+          { MIDINoteNumber: 50, keydown: false },
         ],
         MIDIInputConfig: {
           accidentals: `sharps`,
@@ -552,7 +552,7 @@ suite(`MIDIIn Test Suite`, () => {
         MIDINotes.forEach((note) => {
           MIDIIn.processNote(
             note.MIDINoteNumber,
-            note.velocity,
+            note.keydown,
             MIDIInputConfig
           )(testOutputNotesFn)
         })

@@ -178,7 +178,7 @@ suite(`MIDIOut test suite`, () => {
         name: "Longer",
         durationMS: 1999,
         mmss: "0:02",
-        want: `Duration 0:02 is longer than duration of actual MIDI file 0:02`,
+        want: `Error: Duration 0:02 is longer than duration of actual MIDI file 0:02`,
       },
       {
         name: "OK 1",

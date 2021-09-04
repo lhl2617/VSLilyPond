@@ -68,7 +68,7 @@ export namespace MIDIOut {
         )
       }
     } catch (err) {
-      return err.message
+      return String(err)
     }
     // return undefined when valid;
     return undefined
@@ -161,28 +161,24 @@ export namespace MIDIOut {
 
   // loads midi file based on current active text editor into MIDIOutState.player
   const loadMIDI = async () => {
-    try {
-      const midiFileName = await getMidiFilePathFromWindow()
+    const midiFileName = await getMidiFilePathFromWindow()
 
-      const data = fs.readFileSync(midiFileName, `binary`)
-      // .SMF is passed to JZZ from jzz-midi-smf
-      // @ts-ignore
-      const smf = JZZ.MIDI.SMF(data)
-      MIDIOutState.currMidiFilePath = midiFileName
-      MIDIOutState.player = smf.player()
+    const data = fs.readFileSync(midiFileName, `binary`)
+    // .SMF is passed to JZZ from jzz-midi-smf
+    // @ts-ignore
+    const smf = JZZ.MIDI.SMF(data)
+    MIDIOutState.currMidiFilePath = midiFileName
+    MIDIOutState.player = smf.player()
 
-      const outputs = await getOutputMIDIDevices()
-      if (outputs.length === 0) {
-        throw new Error(`No output MIDI devices are found.`)
-      }
-      const config = getConfiguration()
-      const midiout = config.midiPlayback.output.length
-        ? JZZ().openMidiOut(config.midiPlayback.output)
-        : JZZ().openMidiOut()
-      MIDIOutState.player.connect(midiout)
-    } catch (err) {
-      throw new Error(err.message)
+    const outputs = await getOutputMIDIDevices()
+    if (outputs.length === 0) {
+      throw new Error(`No output MIDI devices are found.`)
     }
+    const config = getConfiguration()
+    const midiout = config.midiPlayback.output.length
+      ? JZZ().openMidiOut(config.midiPlayback.output)
+      : JZZ().openMidiOut()
+    MIDIOutState.player.connect(midiout)
   }
 
   const getPlayTimeStamp = (durationMS: number, positionMS: number): string => {
@@ -226,7 +222,7 @@ export namespace MIDIOut {
         throw new Error(`Unable to load MIDI player`)
       }
     } catch (err) {
-      logger(err.message, LogLevel.error, false)
+      logger(String(err), LogLevel.error, false)
     }
     updateMIDIStatusBarItem()
   }
@@ -248,7 +244,7 @@ export namespace MIDIOut {
         throw new Error(`Unable to load MIDI player`)
       }
     } catch (err) {
-      logger(err.message, LogLevel.error, false)
+      logger(String(err), LogLevel.error, false)
     }
     updateMIDIStatusBarItem()
   }
@@ -270,7 +266,7 @@ export namespace MIDIOut {
         throw new Error(`No active MIDI file to stop`)
       }
     } catch (err) {
-      logger(err.message, LogLevel.error, false)
+      logger(String(err), LogLevel.error, false)
     }
     updateMIDIStatusBarItem()
   }
@@ -296,7 +292,7 @@ export namespace MIDIOut {
         throw new Error(`No active MIDI file to pause`)
       }
     } catch (err) {
-      logger(err.message, LogLevel.error, false)
+      logger(String(err), LogLevel.error, false)
     }
     updateMIDIStatusBarItem()
   }
@@ -312,7 +308,7 @@ export namespace MIDIOut {
         playMIDI() // play from beginning
       }
     } catch (err) {
-      logger(err.message, LogLevel.error, false)
+      logger(String(err), LogLevel.error, false)
     }
     updateMIDIStatusBarItem()
   }

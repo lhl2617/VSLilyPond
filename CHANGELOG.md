@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.7.0
+- Fix [#341](https://github.com/lhl2617/VSLilyPond/issues/341)
+  - Thanks [paradox460](https://github.com/paradox460)
+- Update dependencies
 
 ## 1.6.5
 - Fix [#253](https://github.com/lhl2617/VSLilyPond/issues/253)

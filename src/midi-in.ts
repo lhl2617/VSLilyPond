@@ -273,6 +273,11 @@ export namespace MIDIIn {
     updateMIDIStatusBarItem()
   }
 
+  const restartMIDIInput = async () => {
+    await stopMIDIInput()
+    await startMIDIInput()
+  }
+
   const getInputMIDIDevices = async () => {
     const inputs: string[] = JZZ()
       .info()
@@ -288,6 +293,10 @@ export namespace MIDIIn {
       if (val) {
         const config = getConfiguration()
         config.update(`midiInput.input`, val)
+
+        if (MIDIInState.active) {
+          restartMIDIInput()
+        }
       }
     })
   }

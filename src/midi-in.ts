@@ -230,12 +230,14 @@ export namespace MIDIIn {
   midiInMsgProcessor._receive = (msg: any) => {
     const statusByte: number = msg[0]
     const MIDINoteNumber: number = msg[1]
+    const velocity: number = msg[2]
     if (
       [0x80, 0x90].includes(statusByte) &&
       MIDINoteNumber >= 12 &&
       MIDINoteNumber <= 127
     ) {
-      const keyDown: boolean = statusByte === 0x90 // 0x90 indicates a keyDown event
+      // 0x90 indicates a keyDown event, 0 velocity check in the case of running status mode
+      const keyDown: boolean = statusByte === 0x90 && velocity > 0
       const MIDIInputConfig = getMIDIInputConfig()
       processNote(MIDINoteNumber, keyDown, MIDIInputConfig)(outputNotes)
     } else {

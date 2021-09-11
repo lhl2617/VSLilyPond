@@ -228,14 +228,16 @@ export namespace MIDIIn {
   // @ts-ignore
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   midiInMsgProcessor._receive = (msg: any) => {
-    const statusByte: number = msg[0]
+    const statusByte: number = msg[0] & 0xf0 // Get only the status byte type, ignore the channel
     const MIDINoteNumber: number = msg[1]
+    const velocity: number = msg[2]
     if (
       [0x80, 0x90].includes(statusByte) &&
       MIDINoteNumber >= 12 &&
       MIDINoteNumber <= 127
     ) {
-      const keyDown: boolean = statusByte === 0x90 // 0x90 indicates a keyDown event
+      // 0x90 indicates a keyDown event, 0 velocity check in the case of running status mode
+      const keyDown: boolean = statusByte === 0x90 && velocity > 0
       const MIDIInputConfig = getMIDIInputConfig()
       processNote(MIDINoteNumber, keyDown, MIDIInputConfig)(outputNotes)
     } else {
@@ -273,6 +275,11 @@ export namespace MIDIIn {
     updateMIDIStatusBarItem()
   }
 
+  export const restartMIDIInput = async () => {
+    await stopMIDIInput()
+    await startMIDIInput()
+  }
+
   const getInputMIDIDevices = async () => {
     const inputs: string[] = JZZ()
       .info()
@@ -288,6 +295,10 @@ export namespace MIDIIn {
       if (val) {
         const config = getConfiguration()
         config.update(`midiInput.input`, val)
+
+        if (MIDIInState.active) {
+          restartMIDIInput()
+        }
       }
     })
   }

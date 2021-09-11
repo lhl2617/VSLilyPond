@@ -116,13 +116,13 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(resumeMidiCmd)
 
   // reset midi
-  const resetMidiCmd = vscode.commands.registerCommand(
-    "vslilypond.resetMIDI",
+  const resetMIDIOutputCmd = vscode.commands.registerCommand(
+    "vslilypond.resetMIDIOutput",
     () => {
       MIDIOut.resetMIDI()
     }
   )
-  context.subscriptions.push(resetMidiCmd)
+  context.subscriptions.push(resetMIDIOutputCmd)
 
   // set midi output device
   const setOutputMidiDeviceCmd = vscode.commands.registerCommand(
@@ -163,6 +163,15 @@ export function activate(context: vscode.ExtensionContext) {
     }
   )
   context.subscriptions.push(setInputMidiDeviceCmd)
+
+  // restart midi input
+  const restartMIDIInputCmd = vscode.commands.registerCommand(
+    "vslilypond.restartMIDIInput",
+    () => {
+      MIDIIn.restartMIDIInput()
+    }
+  )
+  context.subscriptions.push(restartMIDIInputCmd)
 
   // status bar items for MIDI playback
   MIDIIn.initMIDIStatusBarItems()

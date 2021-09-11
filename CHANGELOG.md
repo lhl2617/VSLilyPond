@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.7.3
+- Add Restart MIDI Input command to allow restarting MIDI input when changing devices
+- Merge MIDI input bugfixes by [paradox460](https://github.com/paradox460)
+
 ## 1.7.2
 - Unbump `jzz` dependencies updated in 1.7.0 due to virus scan blocks
 

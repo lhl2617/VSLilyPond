@@ -31,7 +31,7 @@
     "onCommand:vslilypond.stopMIDI",
     "onCommand:vslilypond.pauseMIDI",
     "onCommand:vslilypond.resumeMIDI",
-    "onCommand:vslilypond.resetMIDI",
+    "onCommand:vslilypond.resetMIDIOutput",
     "onCommand:vslilypond.setOutputMIDIDevice",
     "onCommand:vslilypond.startMIDIInput",
     "onCommand:vslilypond.stopMIDIInput",
@@ -75,7 +75,7 @@
         "description": "Resume MIDI playback. You can also use the `Play MIDI` button on the left of the status bar."
       },
       {
-        "command": "vslilypond.resetMIDI",
+        "command": "vslilypond.resetMIDIOutput",
         "title": "VSLilyPond: MIDI Playback: Reset",
         "group": "MIDI Playback",
         "description": "Reset MIDI playback state."

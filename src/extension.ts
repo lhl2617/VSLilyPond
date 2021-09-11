@@ -116,13 +116,13 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(resumeMidiCmd)
 
   // reset midi
-  const resetMidiCmd = vscode.commands.registerCommand(
-    "vslilypond.resetMIDI",
+  const resetMIDIOutputCmd = vscode.commands.registerCommand(
+    "vslilypond.resetMIDIOutput",
     () => {
       MIDIOut.resetMIDI()
     }
   )
-  context.subscriptions.push(resetMidiCmd)
+  context.subscriptions.push(resetMIDIOutputCmd)
 
   // set midi output device
   const setOutputMidiDeviceCmd = vscode.commands.registerCommand(

@@ -1,5 +1,8 @@
 # Change Log
 
+## 1.7.2
+- Unbump `jzz` dependencies updated in 1.7.0 due to virus scan blocks
+
 ## 1.7.1
 - Update dependencies
 - Renew VSCE PAT token and retry releasing as 1.7.0 did not release successfully

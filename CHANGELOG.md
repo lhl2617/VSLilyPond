@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.7.1
+- Update dependencies
+- Renew VSCE PAT token and retry releasing as 1.7.0 did not release successfully
+
 ## 1.7.0
 - Fix [#341](https://github.com/lhl2617/VSLilyPond/issues/341)
   - Thanks [paradox460](https://github.com/paradox460)
@@ -144,7 +148,7 @@
 ## 1.0.2
 - Minor package.json changes
 
-## 1.0.1 
+## 1.0.1
 - Clean up development items
 - Use webpack to optimise extension
 

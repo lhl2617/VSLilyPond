@@ -228,7 +228,7 @@ export namespace MIDIIn {
   // @ts-ignore
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   midiInMsgProcessor._receive = (msg: any) => {
-    const statusByte: number = msg[0]
+    const statusByte: number = msg[0] & 0xf0 // Get only the status byte type, ignore the channel
     const MIDINoteNumber: number = msg[1]
     const velocity: number = msg[2]
     if (

@@ -46,6 +46,10 @@ Stop MIDI Input. You can also use the `Stop MIDI Input` button on the right of t
 
 Set workspace-folder specific MIDI input device for input. You can also change this manually (for more scopes) in settings under `Vslilypond › Midi Input: Input`.
 
+### VSLilyPond: MIDI Input: Restart MIDI Input
+
+Restart MIDI Input. Try this if the input stops working after changing your MIDI Input device/port.
+
 ## Compilation
 
 ### VSLilyPond: Compile

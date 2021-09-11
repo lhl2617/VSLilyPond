@@ -273,7 +273,7 @@ export namespace MIDIIn {
     updateMIDIStatusBarItem()
   }
 
-  const restartMIDIInput = async () => {
+  export const restartMIDIInput = async () => {
     await stopMIDIInput()
     await startMIDIInput()
   }

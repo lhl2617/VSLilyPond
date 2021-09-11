@@ -227,7 +227,8 @@
     "watch": "tsc -watch -p ./",
     "pretest": "npm run compile && npm run lint",
     "test": "node ./out/test/runTest.js",
-    "docs:gen": "ts-node ./src/docs-gen/main.ts"
+    "docs:gen": "ts-node ./src/docs-gen/main.ts",
+    "package": "vsce package"
   },
   "devDependencies": {
     "@types/command-exists": "^1.2.0",

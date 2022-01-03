@@ -185,7 +185,7 @@
           "type": "string",
           "default": "",
           "group": "MIDI Input",
-          "description": "MIDI Device used for input. If none specified, the first valid device is used. After changing, please run the `VSLilyPond: MIDI Input: Restart MIDI Input` command. You can alternatively use the command `VSLilyPond: MIDI Input: Set output device` to select a device from a list.",
+          "description": "MIDI Device used for input. If none specified, the first valid device is used. After changing, please run the `VSLilyPond: MIDI Input: Restart MIDI Input` command. You can alternatively use the command `VSLilyPond: MIDI Input: Set input device` to select a device from a list.",
           "scope": "resource"
         },
         "vslilypond.midiInput.chordMode": {

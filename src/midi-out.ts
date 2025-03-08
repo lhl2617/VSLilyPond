@@ -35,10 +35,8 @@ export namespace MIDIOut {
       throw new Error(`Time cannot be negative`)
     }
     const seconds = Math.round(ms / 1000)
-    const mm = Math.round(seconds / 60).toString()
-    const ss = Math.round(seconds % 60)
-      .toString()
-      .padStart(2, `0`)
+    const mm = Math.floor(seconds / 60).toString()
+    const ss = (seconds % 60).toString().padStart(2, `0`)
 
     return `${mm}:${ss}`
   }

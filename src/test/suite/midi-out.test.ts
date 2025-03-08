@@ -42,6 +42,16 @@ suite(`MIDIOut test suite`, () => {
         ms: 6023000,
         want: `100:23`,
       },
+      {
+        name: "rounding at 30 seconds",
+        ms: 90000,
+        want: `1:30`,
+      },
+      {
+        name: "rounding at 59 seconds",
+        ms: 119000,
+        want: `1:59`,
+      },
     ]
 
     const msToMMSSTestsException: {
